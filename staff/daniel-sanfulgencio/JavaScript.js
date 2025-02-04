@@ -1,5 +1,6 @@
 function guessNumber() {
     var number = Math.floor(Math.random() * 10) + 1; 
+    var guess;
     while (guess !== number) {
         var guess = prompt('¿En qué número crees que estoy pensando? (1-10)');  
         if (guess === null || guess === '') {
@@ -12,8 +13,12 @@ function guessNumber() {
         if (guess === number) {
             alert('¡Enhorabuena! Has adivinado el número.');
             continue;
+        } else if (guess > number) {
+            console.log("Prueba un número más bajo")
+        } else if (guess < number) {
+            console.log("Prueba un número más alto")
         } else {
-            alert('Buuuh! Perdedor!');
+            alert('Buuuh! Perdedor/a!');
             continue;
         }
     }
@@ -24,5 +29,5 @@ var isGameOn = confirm('¿Quieres jugar a un juego?');
 if (isGameOn) {
     guessNumber();
 } else {
-    alert('Pues vete.');
+    alert('APESTAS!');
 }
