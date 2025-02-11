@@ -1,0 +1,56 @@
+/* Estilos generales */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #bde0fe;
+}
+
+/* Contenedor de la casa */
+.house {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Techo (Triángulo) */
+.roof {
+    width: 0;
+    height: 0;
+    border-left: 75px solid transparent;
+    border-right: 75px solid transparent;
+    border-bottom: 100px solid brown;
+    position: relative;
+}
+
+/* Paredes */
+.walls {
+    width: 150px;
+    height: 120px;
+    background-color: #ffb703;
+    position: relative;
+}
+
+/* Puerta */
+.door {
+    width: 40px;
+    height: 60px;
+    background-color: #8d6e63;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Ventana */
+.window {
+    width: 40px;
+    height: 40px;
+    background-color: #8ecae6;
+    position: absolute;
+    top: 30px;
+    left: 20px;
+    border: 3px solid white;
+}
