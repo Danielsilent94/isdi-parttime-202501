@@ -1,14 +1,14 @@
 //Rehacemos el código del HangMan pero más limpio y optimizado
 
 var word = 'charmander';  
-var guessedWordArray = Array(word.length).fill('-'); 
+var guessedWordArray = Array(word.length).fill('-'); //Crea un array con la misma longitud que word y lo llena de guiones
 var guessedWord = ''; 
 var lifes = 5; 
 var alphabet = 'abcdefghijklmnopqrstuvwxyz';
 
 // Convertimos guessedWordArray a string
 function updateGuessedWord() { 
-    guessedWord = guessedWordArray.join(''); 
+    guessedWord = guessedWordArray.join(''); //Evita el bucle for
 }
 
 // Inicializamos el guessedWordArray respetando los espacios
