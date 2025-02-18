@@ -1,4 +1,4 @@
-/* Estilos generales */
+/*Estilos*/
 body {
     display: flex;
     justify-content: center;
@@ -7,7 +7,7 @@ body {
     background-color: #bde0fe;
 }
 
-/* Contenedor de la casa */
+/*Casa*/
 .house {
     position: relative;
     display: flex;
@@ -15,7 +15,7 @@ body {
     align-items: center;
 }
 
-/* Techo (Triángulo) */
+/*Techo*/
 .roof {
     width: 0;
     height: 0;
@@ -25,7 +25,7 @@ body {
     position: relative;
 }
 
-/* Paredes */
+/*Paredes*/
 .walls {
     width: 150px;
     height: 120px;
@@ -33,7 +33,7 @@ body {
     position: relative;
 }
 
-/* Puerta */
+/*Puerta*/
 .door {
     width: 40px;
     height: 60px;
@@ -44,7 +44,7 @@ body {
     transform: translateX(-50%);
 }
 
-/* Ventana */
+/*Ventana*/
 .window {
     width: 40px;
     height: 40px;
@@ -53,4 +53,52 @@ body {
     top: 30px;
     left: 20px;
     border: 3px solid white;
+}
+
+/*Sharingan*/
+.sharingan {
+    background-color: red;
+    width: 200px;
+    height: 200px;
+    border: solid black;
+    border-radius: 50%;
+    position: absolute;
+    top: 9%;
+    left: 25%;
+    animation: sharingans ls linear infinite;
+}
+
+.lineaInterior {
+    width: 70%;
+    height: 70%;
+    outline-style: solid;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.circulo {
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    background-color: black;
+    top: 20%;
+    border-radius: 50%;
+
+}
+.triangulo {
+    height: 10px;
+    width: 10px;
+    background-color: black;
+    position: relative;
+    top: -9px;
+    left: 4px;
+    border-radius: 0% 145% 0% 90%;
+    transform: rotateZ(60deg) skewY(30deg);
+}
+
+@keyframes sharingans {
+    to {transform: rotate(360deg); }
 }
