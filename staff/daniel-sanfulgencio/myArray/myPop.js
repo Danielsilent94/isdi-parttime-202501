@@ -26,7 +26,7 @@ testCountries = myArray(countriesTest);
 
 //Iniciamos los test
 
-console.info('running test'); // Corregido "runing" a "running"
+console.info('running test'); 
 
 //Se calcula lengthToTest para asegurarse de recorrer el array más largo en caso de diferencias
 
