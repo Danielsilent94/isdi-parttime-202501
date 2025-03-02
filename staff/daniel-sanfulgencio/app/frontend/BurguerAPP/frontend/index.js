@@ -1,16 +1,16 @@
-var body = document.body;
-var currentView;
+var body = document.body; //Se guarda una referencia al elemento <body> del documento html y se irán insertando las diferentes páginas.
+var currentView; //La variable currentView nos servirá para llevar el control de la vista que se está mostrando.
 
 /*Función para añadir multiples hijos a el elemento padre que es el primero que pasamos hecha por nosotros para ver más fors*/
 function appendChildren() {
     var parent = arguments[0] //el primer elemento es el contendor
-    for (var i = 1; i < arguments.length; i++) {
-        parent.appendChild(arguments[i])   //añadimos el resto de elementos
+    for (var i = 1; i < arguments.length; i++) { //Recorre cada elemento y lo añade al elemento padre con appendChild()
+        parent.appendChild(arguments[i])  //aquí se añaden al appendChild()
     }
     return parent
 }
 
-/*Crear un elemento html que contiene texto*/
+/*Crear un elemento html que contiene texto y una clase CSS asignada*/
 function createTextContainer(tag, text, style) {
     var element = document.createElement(tag);
     element.textContent = text;
@@ -18,7 +18,7 @@ function createTextContainer(tag, text, style) {
     return element
 }
 
-/*Crear un botón y le pasa en el parametro "callback" que es la función que se ejecuta al hacer click*/
+/*Crear un botón, le añade clase y texto, y le pasa en el parametro "callback" que es la función que se ejecuta al hacer click*/
 function createButton(text, style, callback) {
     var button = document.createElement('button');
     button.className = style;
@@ -27,7 +27,7 @@ function createButton(text, style, callback) {
     return button
 }
 
-/*Crear un contenedor (un div con estilos definidos)*/
+/*Crear un contenedor (un div con estilos definidos). Sirve para agrupar otros elementos.*/
 function createContainer(style) {
     var container = document.createElement('div');
     container.className = style;
@@ -229,7 +229,7 @@ function navigateToLogin(previousView) {
 /*Renderizar landing*/
 function renderLanding() {
     var landingContainer = createContainer('');
-    var landingTitle = createTextContainer('h1', 'PET APP', 'title');
+    var landingTitle = createTextContainer('h1', 'BURGUER APP', 'title');
     var joinButton = createButton('JOIN IN!', '', function () { navigateToRegister(landingContainer) })
 
     currentView = landingContainer
