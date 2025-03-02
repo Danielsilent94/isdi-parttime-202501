@@ -152,7 +152,7 @@ function createHomePage() {
     //comprueba que el usuario loggeado esta en nuestra ddbb(si es que tenemos una base de datos)
 
     if (!userLogged) { //en caso de que no haya un id de usuario loggeado, en lugar de crear la vista de home, creamos la de register
-        alert('inicia sesión o create una cuenta primero, listillo tocacódigos')
+        alert('inicia sesión o crea una nueva cuenta')
         return createRegisterPage();
     }
 
