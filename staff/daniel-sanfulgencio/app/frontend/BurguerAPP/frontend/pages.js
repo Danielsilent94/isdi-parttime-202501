@@ -41,6 +41,31 @@ function createHomePage() {
     return homeContainer
 }
 
+// Función loginUser
+function loginUser(formData) {
+    var email = formData.email;
+    var password = formData.password;
+    var rememberMe = formData.remember;
+
+    var user = data.findUserByEmail(email);
+
+    if (!user || user.password !== password) {
+        alert('Email o contraseña incorrectos');
+        return;
+    }
+
+    sessionStorage.setItem('id', JSON.stringify(user.id));
+
+    if (rememberMe) {
+        localStorage.setItem('rememberedUser', JSON.stringify(user.id));
+    } else {
+        localStorage.removeItem('rememberedUser');
+    }
+
+    navigateToHome(currentView);
+}
+
+// Aquí van las demás funciones como createLoginPage, createHomePage, etc.
 
 
 function createLoginPage() {
@@ -48,11 +73,36 @@ function createLoginPage() {
     var loginTitle = createTextContainer('h1', 'Login', '');
     var objectEmail = { label: 'Email', inputType: 'email', inputPlaceholder: 'my@email.com', inputId: 'email', isRequired: true }
     var objectPassword = { label: 'Password', inputType: 'password', inputPlaceholder: '*******', inputId: 'password', isRequired: true }
-    var loginForm = createForm([objectEmail, objectPassword], 'Login', loginUser)
+    var objectRemember = { label: 'Remember me', inputType: 'checkbox', inputValue: 'remember', inputId: 'remember', isRequired: false }
+    var loginForm = createForm([objectEmail, objectPassword, objectRemember], 'Login', loginUser)
     var toRegisterButton = createButton('Go to register', '', function () { navigateToRegister(loginContainer) })
 
     appendChildren(loginContainer, loginTitle, loginForm, toRegisterButton)
     return loginContainer
+}
+
+function createHomePage() {
+    var homeContainer = createContainer('');
+    var loggedUserId = JSON.parse(sessionStorage.getItem('id')) || JSON.parse(localStorage.getItem('rememberedUser'));
+
+    var userLogged = data.findUserById(loggedUserId);
+
+    if (!userLogged) {
+        alert('Inicia sesión o crea una nueva cuenta');
+        return createLoginPage(); // En lugar de Register, mejor Login
+    }
+
+    var loggedUserUsername = userLogged.username;
+    var welcomeText = createTextContainer('h1', `Welcome, ${loggedUserUsername}`, '');
+
+    var logoutButton = createButton('Logout', '', function () { 
+        sessionStorage.removeItem('id'); 
+        localStorage.removeItem('rememberedUser'); // Borrar usuario recordado
+        navigateToLogin(homeContainer); 
+    });
+
+    appendChildren(homeContainer, welcomeText, logoutButton);
+    return homeContainer;
 }
 
 /*Renderizar landing*/
@@ -83,6 +133,7 @@ function navigateToRegister(previousView) {
 
     body.replaceChild(registerView, previousView)
 }
+
 
 /*Crea la vista de home y limpia la vista anterior */
 function navigateToHome(previousView) {

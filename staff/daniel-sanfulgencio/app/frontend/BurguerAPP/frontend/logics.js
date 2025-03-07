@@ -12,7 +12,12 @@ function loginUser(loginData) { //{'email': 'patata@mail.com'}
         return
     }
 
-    sessionStorage.id = userLoginCheckout.id
+    if (loginData['remember']) {
+        localStorage.id = userLoginCheckout.id
+    } else {
+        sessionStorage.id = userLoginCheckout.id
+    }
+   
 
     navigateToHome(currentView)
 

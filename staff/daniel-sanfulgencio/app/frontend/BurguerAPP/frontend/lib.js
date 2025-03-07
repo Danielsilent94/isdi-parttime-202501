@@ -34,51 +34,64 @@ function createContainer(style) {
     return container
 }
 
-function createForm(inputsArray, submitButtonText, callback) { //inputsArray = [{label: 'Email', inputType: 'email', inputPlaceholder: 'my@email.com', inputId: 'email'}, {label: 'Password....}]
+
+function createForm(inputsArray, submitButtonText, callback) {
     var formContainer = document.createElement('form');
-    formContainer.className = 'form'
+    formContainer.className = 'form';
+
     for (var i = 0; i < inputsArray.length; i++) {
-        var input = inputsArray[i] //input[i] = {label: 'Email', inputType: 'email', inputPlaceholder: 'my@email.com', inputId: 'email'}
-        var label = document.createElement('label')
-        label.htmlFor = input.inputId //input = {... inputId: 'email'}; input.inputId === 'email'
-        label.textContent = input.label
-        var inputElement = document.createElement('input')
+        var input = inputsArray[i]; // input = { label, inputType, inputPlaceholder, inputId, isRequired }
+        var label = document.createElement('label');
+        label.htmlFor = input.inputId;
+        label.textContent = input.label;
+
+        var inputElement = document.createElement('input');
         inputElement.type = input.inputType;
         inputElement.id = input.inputId;
-        inputElement.placeholder = input.inputPlaceholder
-        inputElement.required = input.isRequired
+        inputElement.name = input.inputId; // Importante para formularios
+        inputElement.required = input.isRequired || false;
 
-        appendChildren(formContainer, label, inputElement)
+        if (input.inputType === 'checkbox') {
+            inputElement.value = input.inputValue || 'on';
+            inputElement.checked = false; // Asegurar que no está marcado por defecto
+            
+            // Agrupar el checkbox con el label en un contenedor para mejor organización
+            var checkboxContainer = document.createElement('div');
+            checkboxContainer.className = 'checkbox-container'; // Puedes estilizarlo con CSS
+            appendChildren(checkboxContainer, inputElement, label);
+            formContainer.appendChild(checkboxContainer);
+        } else {
+            inputElement.placeholder = input.inputPlaceholder || '';
+            appendChildren(formContainer, label, inputElement);
+        }
     }
 
     var submitButton = document.createElement('input');
     submitButton.type = 'submit';
-    submitButton.value = submitButtonText
+    submitButton.value = submitButtonText;
 
-    formContainer.appendChild(submitButton)
+    formContainer.appendChild(submitButton);
 
     formContainer.addEventListener('submit', function (event) {
-        event.preventDefault()
+        event.preventDefault();
 
-        var form = event.target; // --> elemento form html al que le hemos dado submit
+        var form = event.target;
         var formData = {};
 
-        //iterar todos los inputs que he generado en el formulario, de esos inputs quiero acceder al valor que ha escrito el usuario
         for (var i = 0; i < inputsArray.length; i++) {
-            //inputsArray = [{ label: 'Email', inputType: 'email', inputPlaceholder: 'my@email.com', inputId: 'email' }, ...]
-            // normalmente para acceder al valor de un input a traves del id --> event.target.idDelInput (e.g. event.target.email)
-
-            //form[inputsArray[i].inputId] ---> event.target['email'] === event.target.email
-            //console.log(form[inputsArray[i].inputId].value) //<input />.value
             var fieldName = inputsArray[i].inputId;
-            var value = form[inputsArray[i].inputId].value
+            var value = inputsArray[i].inputType === 'checkbox' 
+                        ? form[fieldName].checked 
+                        : form[fieldName].value;
 
-            formData[fieldName] = value; //formData = {'email': 'patata@mail.com'}
+            formData[fieldName] = value;
         }
 
-        callback(formData)
-    })
+        callback(formData);
+    });
 
     return formContainer;
-
 }
+
+
+//A continuación, crearemos función para el logo.

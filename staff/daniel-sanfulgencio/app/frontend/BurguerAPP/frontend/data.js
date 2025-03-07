@@ -19,7 +19,7 @@ var data = {
 
         return userFound
     },
-    createUser: function (user) { //e.g user = {email: "percy1@mail.com", password: "percy1@mail.com", username: "percy1", id: 1740600285989}
+    createUser: function (user) { 
         var usersJson = localStorage.users
         var users;
         if (!usersJson) {

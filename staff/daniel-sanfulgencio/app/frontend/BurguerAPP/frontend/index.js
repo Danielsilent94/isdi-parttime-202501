@@ -245,3 +245,4 @@ function renderHomePage() {
 }
 
 sessionStorage.id ? renderHomePage() : renderLanding() //si hay un id de usuario logeado guardado, vamos a home, y si no a la landing
+
