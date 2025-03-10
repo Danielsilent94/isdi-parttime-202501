@@ -1,2 +1,1 @@
-sessionStorage.id || localStorage.id ? renderHomePage() : renderLanding() 
-//si hay un id de usuario logeado guardado, vamos a home, y si no a la landing
+sessionStorage.id || localStorage.id ? renderHomePage() : renderLanding() //si hay un id de usuario logeado guardado, vamos a home, y si no a la landing
