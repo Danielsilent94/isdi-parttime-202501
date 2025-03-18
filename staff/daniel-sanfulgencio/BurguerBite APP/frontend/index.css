@@ -1,0 +1,145 @@
+body
+{
+   font-family: Arial, sans-serif;
+   background-color: #f4f4f4;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   height: 100vh;
+   margin: 0;
+   width: 100%;
+}
+.background {
+   background-image: url('./Image/blue.jpg');
+   background-size: cover;
+   background-position: center;
+   background-attachment: fixed;
+   background-repeat: no-repeat;
+   height: 100vw;
+   width: 100%;
+   z-index: -1;
+   position: absolute;
+}
+.container {
+   background: white;
+   padding: 20px;
+   border-radius: 10px;
+   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+   text-align: center;
+   width: 350px;
+}
+
+h1 {
+   color: #070707;
+   margin-bottom: 20px;
+}
+
+form {
+   display: flex;
+   flex-direction: column;
+   gap: 15px;
+}
+
+label {
+   display: flex;
+   align-items: center;
+   gap: 5px;
+   font-weight: bold;
+   text-align: left;
+}
+
+
+label:has(input[type="checkbox"]) {
+   display: flex;
+   align-items: center;
+   gap: 5px;
+}
+
+
+input[type="text"], input[type="email"], input[type="password"] {
+   padding: 10px;
+   border: 1px solid #ccc;
+   border-radius: 5px;
+   width: 100%;
+}
+
+input[type="submit"], button {
+   background-color: #28a745;
+   color: white;
+   padding: 10px;
+   border: none;
+   border-radius: 5px;
+   cursor: pointer;
+   font-size: 16px;
+}
+
+input[type="submit"]:hover, button:hover {
+   background-color: #218838;
+}
+
+input[type="checkbox"]{
+   width: 20px;
+   height: 20px;
+   display: inline-block;
+   margin-left: 5px;
+}
+
+button {
+   background-color: #007bff; 
+   color: white;
+   padding: 10px;
+   border: none;
+   border-radius: 5px;
+   cursor: pointer;
+   font-size: 16px;
+   margin-top: 10px; 
+   width: 100%; 
+}
+
+button:hover {
+   background-color: #0056b3; 
+}
+
+.header__user-menu {
+   position: absolute;
+   top: 2.5rem;
+   right: 0.5rem;
+}
+
+.header__user-button {
+   
+   width: 2rem;
+}
+.header {
+   position: absolute;
+   top: 0;
+   left: 0;
+   display: flex;
+   flex-direction: row;
+   justify-content: space-between;
+   width: 90%;
+}
+.home {
+   display: flex;
+   flex-direction: column;
+   overflow-x: hidden;
+   max-width: inherit;
+   padding-top: 20rem;
+   z-index: 3;
+}
+.header_welcome {
+   color: rgb(255, 255, 255);
+   justify-content: center;
+
+}
+
+.header__join-button,
+.form .form__submit-button {
+   margin: 0;
+   background-color: #28a745;
+   color: white;
+   padding: 0.5rem 0.4rem;
+   border-radius: 0.5rem;
+   cursor: pointer;
+   font-family: "Josefin Sans", sans-serif;
+}
