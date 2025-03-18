@@ -1,4 +1,5 @@
-body {
+ body
+ {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     display: flex;
@@ -6,8 +7,19 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
+    width: 100%;
 }
-
+.background {
+    background-image: url('./Image/blue.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    height: 100vw;
+    width: 100%;
+    z-index: -1;
+    position: absolute;
+}
 .container {
     background: white;
     padding: 20px;
@@ -18,7 +30,7 @@ body {
 }
 
 h1 {
-    color: #333;
+    color: #070707;
     margin-bottom: 20px;
 }
 
@@ -29,9 +41,20 @@ form {
 }
 
 label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
     font-weight: bold;
     text-align: left;
 }
+
+
+label:has(input[type="checkbox"]) {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
 
 input[type="text"], input[type="email"], input[type="password"] {
     padding: 10px;
@@ -76,10 +99,53 @@ button {
 button:hover {
     background-color: #0056b3; 
 }
-body {
-    background-image: url('./Image/orange.jpg');
-    background-size: cover; 
-    background-position: center;  
-    background-attachment: fixed;  
-    background-repeat: no-repeat;  
+
+.header__user-menu {
+    position: absolute;
+    top: 2.5rem;
+    right: 0.5rem;
 }
+
+.header__user-button {
+    
+    width: 2rem;
+}
+.header {
+    .header {
+        position: fixed;  /* Fijar el encabezado */
+        top: 0;
+        left: 0;
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        padding: 10px;
+        z-index: 10; /* Asegúrate de que el encabezado esté por encima de otros contenidos */
+    }
+    
+}
+.home {
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    max-width: inherit;
+    padding-top: 20vh;
+    z-index: 3;
+}
+.header_welcome {
+    color: rgb(255, 255, 255);
+    justify-content: center;
+
+}
+
+.header__join-button,
+.form .form__submit-button {
+    margin: 0;
+    background-color: #28a745;
+    color: white;
+    padding: 0.5rem 0.4rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-family: "Josefin Sans", sans-serif;
+}
+
+

@@ -70,3 +70,21 @@ var data = {
         return posts
     }
 }
+document.addEventListener("DOMContentLoaded", function() {
+    // Crear el checkbox dinámicamente
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.id = "rememberMe"; // Establecer el id
+
+    // Obtener el label que ya tienes en el HTML
+    const label = document.querySelector("label[for='rememberMe']");
+
+    // Asegúrate de que el checkbox se añada al label correctamente
+    if (label) {
+        label.prepend(checkbox); // Inserta el checkbox al principio del label
+    }
+
+    // Opcional: Si quieres agregar algún estilo al checkbox dinámico
+    checkbox.style.width = "20px";
+    checkbox.style.height = "20px";
+});

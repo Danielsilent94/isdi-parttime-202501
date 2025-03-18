@@ -43,9 +43,9 @@ function openUserMenu(homeContainer) {
     menu.className = 'header__user-menu'
     menu.id = 'user-menu'
 
-    var button1 = createButton('Meh', 'header__user-menu--button', function () { closeUserMenu() })
-    var button2 = createButton('Meh', 'header__user-menu--button', function () { closeUserMenu() })
-    var button3 = createButton('Meh', 'header__user-menu--button', function () { closeUserMenu() })
+    var button1 = createButton('option1', 'header__user-menu--button', function () { closeUserMenu() })
+    var button2 = createButton('option2', 'header__user-menu--button', function () { closeUserMenu() })
+    var button3 = createButton('option3', 'header__user-menu--button', function () { closeUserMenu() })
 
     var logoutButton = createButton('Logout', 'header__user-menu--button', function () {
         if (sessionStorage.id) {
@@ -88,11 +88,11 @@ function createHomePage() {
 
     //var logo = createLogo('2rem')
     var loggedUserUsername = userLogged.username //nos traemos el nombre de usuario para dar un mensaje de bienvenida personalizado
-    var welcomeText = createTextContainer('p', `Welcome, ${loggedUserUsername}`, '')
+    var welcomeText = createTextContainer('p', `Welcome, ${loggedUserUsername}`, 'header_welcome')
 
     var userButton = createButton(userLogged.username[0].toUpperCase(), 'header__user-button', function () { onUserMenuClick(homeContainer) })
 
-    //var header = createHeader(logo, welcomeText, userButton);
+    var header = createHeader(/*logo,*/welcomeText, userButton);
 
     var titleInput = { label: 'Your post title', inputType: 'text', inputPlaceholder: 'I am a title :D', inputId: 'title', isRequired: true }
     var descriptionInput = { label: 'Your description', inputType: 'text', inputPlaceholder: 'Blah blah blah blah', inputId: 'description', isRequired: true }
@@ -122,7 +122,7 @@ function createHomePage() {
 
 
 
-    appendChildren(homeContainer, /*header,*/ createPostForm, postsContainer);
+    appendChildren(homeContainer, header, createPostForm, postsContainer);
     return homeContainer
 }
 
@@ -167,7 +167,7 @@ function createLoginPage() {
 function createLandingPage() {
     var landingContainer = createContainer('landing');
     var contentContainer = createContainer('landing__content')
-    var landingTitle = createTextContainer('h1', 'BURGUER APP', 'landing__title');
+    var landingTitle = createTextContainer('h1', 'BURGUER BITE', 'landing__title');
     var landingSubtitle = createTextContainer('h2', 'A social app for Burguer lovers', 'landing__subtitle');
     var joinButton = createButton('Join in!', 'header__join-button', function () { navigateToRegister(landingContainer) })
 
@@ -186,6 +186,8 @@ function createLandingPage() {
 /*Renderizar landing*/
 function renderLanding() {
     var landingContainer = createLandingPage()
+
+    //document.getElementById('app').appendChild(landingContainer);
 
     body.appendChild(landingContainer);
 }
