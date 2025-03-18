@@ -1,4 +1,4 @@
-//import { patita } from "./icons.mjs";
+import { patita } from "./icons.mjs";
 
 /**EL ARCHIVO LIB CONTIENE LAS FUNCIONES QUE PERMITEN CREAR ELEMENTOS PARA EL DOM**/
 /*Crear un elemento html que contiene texto*/
