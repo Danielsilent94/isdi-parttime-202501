@@ -13,7 +13,13 @@ const postList = {
             const postTitle = createTextContainer('h3', posts[i].title, 'post-card__title')
             const postDescription = createTextContainer('p', posts[i].description, 'post-card__description')
             const postLikes = createTextContainer('p', `${posts[i].likes.length}`)
-            const buttonLike = createButton('like', '', () => toggleLike(posts[i].id))
+            const buttonLike = createButton('', 'like-button', () => toggleLike(posts[i].id));
+                if (posts[i].likes.length > 0) {
+            buttonLike.innerHTML = likeFill;  // Aquí ponemos el icono cuando el like ya está activado
+                } else {
+            buttonLike.innerHTML = likeEmpty;  // Usa otro icono para el "like" vacío
+                }
+
             postContainer.append(authorAndDate, postTitle, postDescription, postLikes, buttonLike)
 
             let postImg;

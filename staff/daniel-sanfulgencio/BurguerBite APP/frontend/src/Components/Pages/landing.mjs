@@ -8,7 +8,7 @@ const landing = {
         const landingContainer = createContainer('landing');
         landingContainer.id = 'landing'
         const contentContainer = createContainer('landing__content')
-        const landingTitle = createTextContainer('h1', 'PET APP', 'landing__title');
+        const landingTitle = createTextContainer('h1', 'BURGUER BITE APP', 'landing__title');
         const landingSubtitle = createTextContainer('h2', 'A social app for pets', 'landing__subtitle');
 
         header.mount(landingContainer, 'landing')

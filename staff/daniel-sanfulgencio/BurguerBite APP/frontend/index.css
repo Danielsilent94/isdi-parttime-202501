@@ -261,6 +261,19 @@ dialog {
 ::backdrop {
     background-color: rgba(74, 48, 3, 0.53);
 }
+.size-6 {
+    width: 24px;  /* Ajustar al tamaño adecuado */
+    height: 24px;
+    fill: currentColor; /* Esto hará que el icono utilice el color del texto */
+}
+
+.like-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
 
 @media (min-width: 720px) {}
 
