@@ -1,8 +1,8 @@
-import createPostModal from '../components/createPostModal.mjs'
-import header from '../components/header.mjs'
-import postList from '../components/postList.mjs'
+import createPostModal from '../component/createPostModal.mjs'
+import header from '../component/header.mjs'
+import postList from '../component/postList.mjs'
 import { createContainer } from '../lib.mjs'
-import { publishPost } from '../logics.mjs'
+import { publishPost, toggleLike } from '../logics.mjs'
 
 const home = {
     mount: (body) => {
@@ -14,10 +14,15 @@ const home = {
             publishPost(postData)
             home.update(body)
         }
+        
+        const onLikePost = (postId) => {
+            toggleLike(postId)
+            home.update(body)
+        }
 
         header.mount(homeContainer, 'home')
         createPostModal.mount(homeContainer, onPublishPost)
-        postList.mount(homeContainer)
+        postList.mount(homeContainer, onLikePost)
 
         body.appendChild(homeContainer)
     },

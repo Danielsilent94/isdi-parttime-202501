@@ -1,7 +1,7 @@
 import { registerUser } from '../logics.mjs'
 import { createButton, createContainer, createForm, createTextContainer } from '../lib.mjs'
 import navigate from '../navigate.mjs';
-import header from '../components/header.mjs';
+import header from '../component/header.mjs';
 
 const register = {
     mount: (body) => {

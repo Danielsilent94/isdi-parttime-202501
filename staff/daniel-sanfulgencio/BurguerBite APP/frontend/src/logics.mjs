@@ -112,6 +112,7 @@ const getLoggedUserUsername = () => {
 }
 
 const toggleLike = (postId) => {
+    debugger
     let loggedUserId;
     if (localStorage.id) {
         loggedUserId = JSON.parse(localStorage.getItem('id'));
@@ -128,7 +129,7 @@ const toggleLike = (postId) => {
     if (userIndex !== -1) {
         post.likes.splice(userIndex, 1);
     } else {
-        post.likes.push()
+        post.likes.push(loggedUserId)
     }
 
     data.updatePostById(postId, post)

@@ -64,7 +64,7 @@ const data = {
 
         posts[postIndex] = newPostData
 
-        localStorage.post = JSON.stringify(posts)
+        localStorage.posts = JSON.stringify(posts)
     },
     findPostById: (id) => {
         const posts = localStorage.posts ? JSON.parse(localStorage.getItem("posts")) : [];

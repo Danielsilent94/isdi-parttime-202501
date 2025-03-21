@@ -1,9 +1,9 @@
-import { likeFill } from "../icons.mjs";
+import { likeFill, likeEmpty } from "../icons.mjs";
 import { createButton, createContainer, createTextContainer } from "../lib.mjs";
 import { getAllPosts, toggleLike } from "../logics.mjs";
 
 const postList = {
-    mount: (parentNode) => {
+    mount: (parentNode, onLikePost) => {
         const posts = getAllPosts();
         const postsContainer = createContainer('posts')
 
@@ -13,7 +13,7 @@ const postList = {
             const postTitle = createTextContainer('h3', posts[i].title, 'post-card__title')
             const postDescription = createTextContainer('p', posts[i].description, 'post-card__description')
             const postLikes = createTextContainer('p', `${posts[i].likes.length}`)
-            const buttonLike = createButton('', 'like-button', () => toggleLike(posts[i].id));
+            const buttonLike = createButton('', 'like-button', () => onLikePost(posts[i].id));
                 if (posts[i].likes.length > 0) {
             buttonLike.innerHTML = likeFill;  // Aquí ponemos el icono cuando el like ya está activado
                 } else {

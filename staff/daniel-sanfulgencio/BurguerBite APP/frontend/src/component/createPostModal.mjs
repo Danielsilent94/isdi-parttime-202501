@@ -18,7 +18,7 @@ const createPostModal = {
 
 
         const titleInput = { label: 'Your post title', inputType: 'text', inputPlaceholder: 'I am a title :D', inputId: 'title', isRequired: true }
-        const descriptionInput = { label: 'Your description', inputType: 'text', inputPlaceholder: 'Blah blah blah blah', inputId: 'description', isRequired: true }
+        const descriptionInput = { label: 'Your description', inputType: 'text', inputPlaceholder: 'Write something here', inputId: 'description', isRequired: true }
         const imgInput = { label: 'Your image url', inputType: 'url', inputPlaceholder: '.png, .jpg, etc', inputId: 'img', isRequired: false }
 
         const createPostForm = createForm([titleInput, descriptionInput, imgInput], 'Post', (postData) => {

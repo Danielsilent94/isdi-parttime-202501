@@ -1,4 +1,4 @@
-import header from '../components/header.mjs';
+import header from '../component/header.mjs';
 import { createContainer, createLogo, createTextContainer } from '../lib.mjs'
 import navigate from '../navigate.mjs';
 
@@ -9,7 +9,7 @@ const landing = {
         landingContainer.id = 'landing'
         const contentContainer = createContainer('landing__content')
         const landingTitle = createTextContainer('h1', 'BURGUER BITE APP', 'landing__title');
-        const landingSubtitle = createTextContainer('h2', 'A social app for pets', 'landing__subtitle');
+        const landingSubtitle = createTextContainer('h2', 'A social app for burguer lovers', 'landing__subtitle');
 
         header.mount(landingContainer, 'landing')
 
