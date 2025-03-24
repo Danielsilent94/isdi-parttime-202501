@@ -17,9 +17,9 @@ const openUserMenu = (homeContainer) => {
     menu.className = 'header__user-menu'
     menu.id = 'user-menu'
 
-    const button1 = createButton('Meh', 'header__user-menu--button', () => closeUserMenu)
-    const button2 = createButton('Meh', 'header__user-menu--button', () => closeUserMenu)
-    const button3 = createButton('Meh', 'header__user-menu--button', () => closeUserMenu)
+    const button1 = createButton('option 1', 'header__user-menu--button', () => closeUserMenu)
+    const button2 = createButton('option 2', 'header__user-menu--button', () => closeUserMenu)
+    const button3 = createButton('option 3', 'header__user-menu--button', () => closeUserMenu)
 
     const logoutButton = createButton('Logout', 'header__user-menu--button', () => {
         if (sessionStorage.id) {

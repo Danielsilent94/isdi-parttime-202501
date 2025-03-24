@@ -3,7 +3,7 @@
 body {
     margin: 0;
     padding: 0 0.25rem;
-    font-family: "Josefin Sans", sans-serif;
+    font-family: "Raleway", sans-serif;
     font-size: medium;
 }
 
@@ -20,7 +20,7 @@ body {
 
 button,
 input {
-    font-family: "Josefin Sans", sans-serif;
+    font-family: "Raleway", sans-serif;
     font-size: medium;
 }
 
@@ -45,19 +45,19 @@ input {
 .header__join-button,
 .form .form__submit-button {
     margin: 0;
-    background-color: black;
+    background-color: rgb(92, 2, 2);
     color: white;
     padding: 0.5rem 0.4rem;
     border-radius: 0.5rem;
     cursor: pointer;
-    font-family: "Josefin Sans", sans-serif;
+    font-family: "Raleway", sans-serif;
 }
 
 .header__user-button {
-    font-family: "Josefin Sans", sans-serif;
+    font-family: "Raleway", sans-serif;
     font-weight: 700;
     border-radius: 50%;
-    border: solid 2px #FFAC46;
+    border: solid 2px #c40000;
     background-color: white;
     width: 2rem;
     height: 1.75rem;
@@ -69,7 +69,7 @@ input {
 .header__join-button:hover,
 .form .form__submit-button:hover,
 .header__user-button:hover {
-    background-color: #FFAC46;
+    background-color: #c40000;
 }
 
 .header__user-menu {
@@ -79,7 +79,7 @@ input {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #ffac4684;
+    background-color: #ff469c84;
     border-radius: 0.2rem;
     padding: 0.5rem 0;
 }
@@ -92,7 +92,7 @@ input {
 }
 
 .header__user-menu--button:hover {
-    background-color: #FFAC46;
+    background-color: #c40000;
     width: 100%;
 }
 
@@ -145,7 +145,7 @@ input {
 .logo {
     display: flex;
     padding: 1%;
-    background-color: #FFAC46;
+    background-color: #2e0ea1;
     border-radius: 50%;
     justify-content: center;
     align-items: center;
@@ -182,7 +182,7 @@ input {
 
 .login__register--button:hover,
 .register__login--button:hover {
-    color: #FFAC46;
+    color: #c40000;
 }
 
 fieldset {
@@ -209,7 +209,7 @@ fieldset label {
 
 .form__input-checkbox:checked {
     appearance: auto;
-    accent-color: black;
+    accent-color: rgb(92, 2, 2);
 }
 
 .posts {
@@ -224,12 +224,12 @@ fieldset label {
     right: 1rem;
     cursor: pointer;
     background-color: white;
-    border: 1px solid #FFAC46;
+    border: 1px solid #c40000;
     border-radius: 50%;
 }
 
 .home__new-post-button:hover {
-    background-color: #FFAC46;
+    background-color: #c40000;
 }
 
 .home__create-post-dialog {
@@ -244,13 +244,13 @@ fieldset label {
 .home__close-form-button {
     border: none;
     background: none;
-    font-family: "Josefin Sans", sans-serif;
+    font-family: "Raleway", sans-serif;
     align-self: flex-end;
 }
 
 .home__close-form-button:hover {
     cursor: pointer;
-    color: #FFAC46
+    color: #c40000
 }
 
 dialog {
@@ -273,6 +273,9 @@ dialog {
     padding: 0;
     cursor: pointer;
 }
+
+
+
 
 
 @media (min-width: 720px) {}
