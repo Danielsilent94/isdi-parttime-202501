@@ -17,7 +17,7 @@ const Form = ({ inputsArray, onSubmitCallback, submitButtonText }) => { //inputs
             if (inputsArray[i].inputType === 'checkbox') {
                 value = form[inputsArray[i].inputId].checked
             } else {
-                vlue = form[inputsArray[i].inputId].value
+                value = form[inputsArray[i].inputId].value
             }
 
             formData[fieldName] = value; //formData = {'email': 'patata@mail.com'}

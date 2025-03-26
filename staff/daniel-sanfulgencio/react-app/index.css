@@ -37,6 +37,7 @@ input {
     flex-direction: row;
     padding-top: .25rem;
     justify-content: space-between;
+    height: 2rem;
 }
 
 .landing .header {
@@ -151,8 +152,8 @@ input {
 
 .logo {
     display: flex;
-    padding: 1%;
     background-color: #FFAC46;
+    padding: 1%;
     border-radius: 50%;
     justify-content: center;
     align-items: center;
@@ -170,6 +171,9 @@ input {
 
 .header .logo {
     cursor: pointer;
+    width: 2rem;
+    height: 1.85rem;
+    padding: 0.15rem;
 }
 
 

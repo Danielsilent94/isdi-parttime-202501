@@ -67,14 +67,13 @@ const Home = () => {
     const formRef = useRef(null)
 
     const handleOutsideModalClick = (event) => {
-        console.log('CLICK')
         if (!formRef.current.contains(event.target)) {
             setShowNewPostForm(false)
         }
     }
 
     useEffect(() => {
-        if (pageRef.current) pageRef.current.addEventListener("click", (event) => handleOutsideModalClick(event))
+        if (pageRef.current && showNewPostForm) pageRef.current.addEventListener("click", (event) => handleOutsideModalClick(event))
 
         if ((dialogRef.current && dialogRef.current.open) && !showNewPostForm) {
             dialogRef.current.close()

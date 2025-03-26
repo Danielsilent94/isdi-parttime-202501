@@ -7,6 +7,7 @@ const Header = ({ currentView, handleRegisterClick, handleLandingClick, handleAc
     const [isUserLogged, setIsUserLogged] = useState(isUserLoggedIn())
 
     useEffect(() => {
+        setIsUserLogged(isUserLoggedIn())
         if (currentView === 'home') {
             const retrivedUsername = getLoggedUserUsername()
             setUsername(retrivedUsername)
