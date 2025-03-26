@@ -1,0 +1,303 @@
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+
+#app {
+    margin: 0;
+    padding: 0 0.25rem;
+    font-family: "Josefin Sans", sans-serif;
+    font-size: medium;
+}
+
+.landing,
+.login,
+.register,
+.home,
+.account {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5rem;
+    padding-bottom: 5rem;
+}
+
+button,
+input {
+    font-family: "Josefin Sans", sans-serif;
+    font-size: medium;
+}
+
+.header {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    padding-top: .25rem;
+    justify-content: space-between;
+}
+
+.landing .header {
+    justify-content: end;
+}
+
+.register .header,
+.login .header {
+    justify-content: start;
+}
+
+
+.header__join-button,
+.form .form__submit-button {
+    margin: 0;
+    background-color: black;
+    color: white;
+    padding: 0.5rem 0.4rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-family: "Josefin Sans", sans-serif;
+}
+
+.header__user-button {
+    font-family: "Josefin Sans", sans-serif;
+    font-weight: 700;
+    border-radius: 50%;
+    border: solid 2px #FFAC46;
+    background-color: white;
+    width: 2rem;
+    height: 1.75rem;
+    padding-top: 0.35rem;
+    cursor: pointer;
+}
+
+.header__join-button:hover,
+.header__join-button:hover,
+.form .form__submit-button:hover,
+.header__user-button:hover {
+    background-color: #FFAC46;
+}
+
+.header__user-menu {
+    position: absolute;
+    top: 2.25rem;
+    right: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #ffac4684;
+    border-radius: 0.2rem;
+    padding: 0.5rem 0;
+}
+
+.header__user-menu--button {
+    background-color: transparent;
+    border: transparent;
+    cursor: pointer;
+    padding: 0.25rem;
+}
+
+.header__user-menu--button:hover {
+    background-color: #FFAC46;
+    width: 100%;
+}
+
+.post-card {
+    display: flex;
+    flex-direction: column;
+    max-width: 80vw;
+    gap: 0.5rem;
+    border: solid 0.09rem #d9d9d9;
+    padding: 1rem;
+    border-radius: 0.5rem
+}
+
+.post-card__author {
+    margin: 0;
+}
+
+.post-card__title {
+    margin: 0;
+    font-size: 1.75rem;
+}
+
+.post-card__description {
+    margin: 0;
+}
+
+.post-card__img {
+    width: 10rem;
+}
+
+.post-card__img-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.login,
+.register {
+    gap: 0.5rem
+}
+
+.landing__title {
+    text-align: center;
+}
+
+.landing__subtitle {
+    text-align: center;
+}
+
+.logo {
+    display: flex;
+    padding: 1%;
+    background-color: #FFAC46;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+}
+
+.sm {
+    width: 2rem;
+    height: 2rem;
+}
+
+.lg {
+    width: 20rem;
+    height: 20rem;
+}
+
+.header .logo {
+    cursor: pointer;
+}
+
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    width: 15rem;
+    border: solid 0.09rem #d9d9d9;
+    padding: 1rem;
+    border-radius: 0.5rem
+}
+
+.form__input-text {
+    padding: 0.25rem 0.65rem;
+    border: solid 0.09rem #d9d9d9;
+    border-radius: 0.4rem;
+    margin-bottom: 1rem;
+}
+
+.login__register--button,
+.register__login--button {
+    background: none;
+    border: transparent;
+    cursor: pointer;
+}
+
+.login__register--button:hover,
+.register__login--button:hover {
+    color: #FFAC46;
+}
+
+fieldset {
+    border: transparent;
+    padding: 0;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem
+}
+
+fieldset label {
+    margin-top: 0.2rem
+}
+
+.form__input {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form__input-checkbox {
+    appearance: none;
+    width: 1rem;
+    height: 1rem;
+    border: solid 0.09rem #d9d9d9;
+    border-radius: 0.2rem;
+}
+
+
+.form__input-checkbox:checked {
+    appearance: auto;
+    accent-color: black;
+}
+
+.posts {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem
+}
+
+.home__new-post-button {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    cursor: pointer;
+    background-color: white;
+    border: 1px solid #FFAC46;
+    border-radius: 50%;
+}
+
+.home__new-post-button:hover {
+    background-color: #FFAC46;
+}
+
+.home__create-post-dialog {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 0.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.home__close-form-button {
+    border: none;
+    background: none;
+    font-family: "Josefin Sans", sans-serif;
+    align-self: flex-end;
+}
+
+.home__close-form-button:hover {
+    cursor: pointer;
+    color: #FFAC46
+}
+
+dialog {
+    background: none;
+    border: none;
+}
+
+::backdrop {
+    background-color: rgba(74, 48, 3, 0.53);
+}
+
+.post-card__like {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    gap: 0.5rem
+}
+
+.post-card__like-btn {
+    cursor: pointer;
+}
+
+@media (min-width: 720px) {}
+
+
+@media (min-width: 1024px) {}
