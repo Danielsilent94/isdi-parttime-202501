@@ -1,0 +1,16 @@
+.login__register--button,
+.register__login--button {
+    background: none;
+    border: transparent;
+    cursor: pointer;
+}
+
+.login__register--button:hover,
+.register__login--button:hover {
+    color: #FFAC46;
+}
+
+.login,
+.register {
+    gap: 0.5rem
+}

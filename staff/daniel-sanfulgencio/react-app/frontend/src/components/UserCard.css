@@ -1,0 +1,25 @@
+.user-card {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    max-width: 40rem;
+    border: solid 0.09rem #d9d9d9;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+}
+
+.user-card__username-avatar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem
+}
+
+.user-card__bio {
+    font-size: 1.35rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    gap: 1rem;
+    padding-left: 2rem;
+}

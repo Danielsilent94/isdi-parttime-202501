@@ -1,0 +1,57 @@
+.post-card {
+    display: flex;
+    flex-direction: column;
+    max-width: 80vw;
+    gap: 0.5rem;
+    border: solid 0.09rem #d9d9d9;
+    padding: 1rem;
+    border-radius: 0.5rem
+}
+
+.post-card__author {
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    align-self: flex-start;
+    font-size: 1.25rem;
+}
+
+.post-card__creation-info {
+    display: flex;
+    align-items: end;
+    flex-direction: column;
+    font-size: 0.85rem;
+}
+
+.post-card__title {
+    margin: 0;
+    font-size: 1.75rem;
+}
+
+.post-card__description {
+    margin: 0;
+}
+
+.post-card__img {
+    width: 10rem;
+}
+
+.post-card__img-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.post-card__like {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    gap: 0.5rem
+}
+
+.post-card__like-btn {
+    cursor: pointer;
+}

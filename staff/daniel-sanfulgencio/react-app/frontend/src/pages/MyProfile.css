@@ -1,0 +1,9 @@
+.account__section-title {
+    display: flex;
+    flex-direction: row;
+    width: 20rem;
+    max-width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}

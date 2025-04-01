@@ -1,3 +1,5 @@
+import { FormatError } from "./errors"
+
 const validator = {
     email: (email) => {
         if (typeof email !== 'string') {
@@ -63,3 +65,5 @@ const validator = {
 
     }
 }
+
+export default validator

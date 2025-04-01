@@ -1,0 +1,43 @@
+.home__new-post-button {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    cursor: pointer;
+    background-color: white;
+    border: 1px solid #FFAC46;
+    border-radius: 50%;
+}
+
+.home__new-post-button:hover {
+    background-color: #FFAC46;
+}
+
+.home__create-post-dialog {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 0.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.home__close-form-button {
+    border: none;
+    background: none;
+    font-family: "Josefin Sans", sans-serif;
+    align-self: flex-end;
+}
+
+.home__close-form-button:hover {
+    cursor: pointer;
+    color: #FFAC46
+}
+
+dialog {
+    background: none;
+    border: none;
+}
+
+::backdrop {
+    background-color: rgba(74, 48, 3, 0.53);
+}

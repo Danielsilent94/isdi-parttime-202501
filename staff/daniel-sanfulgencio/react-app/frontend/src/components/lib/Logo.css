@@ -1,0 +1,18 @@
+.logo {
+    display: flex;
+    background-color: #FFAC46;
+    padding: 1%;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+}
+
+.sm {
+    width: 2rem;
+    height: 2rem;
+}
+
+.lg {
+    width: 20rem;
+    height: 20rem;
+}

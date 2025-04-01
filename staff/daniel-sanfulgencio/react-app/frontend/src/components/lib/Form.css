@@ -1,0 +1,74 @@
+.form .form__submit-button {
+    margin: 0;
+    background-color: black;
+    color: white;
+    padding: 0.5rem 0.4rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-family: "Josefin Sans", sans-serif;
+}
+
+.form .form__submit-button:hover,
+.header__user-button:hover {
+    background-color: #FFAC46;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    width: 15rem;
+    border: solid 0.09rem #d9d9d9;
+    padding: 1rem;
+    border-radius: 0.5rem
+}
+
+.form__input-text {
+    padding: 0.25rem 0.65rem;
+    border: solid 0.09rem #d9d9d9;
+    border-radius: 0.4rem;
+    margin-bottom: 1rem;
+}
+
+fieldset {
+    border: transparent;
+    padding: 0;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem
+}
+
+fieldset label {
+    margin-top: 0.2rem
+}
+
+.form__input {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form__input-checkbox {
+    appearance: none;
+    width: 1rem;
+    height: 1rem;
+    border: solid 0.09rem #d9d9d9;
+    border-radius: 0.2rem;
+}
+
+
+.form__input-checkbox:checked {
+    appearance: auto;
+    accent-color: black;
+}
+
+.form .form__submit-button {
+    margin: 0;
+    background-color: black;
+    color: white;
+    padding: 0.5rem 0.4rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-family: "Josefin Sans", sans-serif;
+}

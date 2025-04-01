@@ -1,0 +1,100 @@
+.header {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    padding-top: .25rem;
+    justify-content: space-between;
+    height: 2rem;
+}
+
+.landing .header {
+    justify-content: end;
+}
+
+.register .header,
+.login .header {
+    justify-content: start;
+}
+
+
+.header__join-button {
+    margin: 0;
+    background-color: black;
+    color: white;
+    padding: 0.5rem 0.4rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-family: "Josefin Sans", sans-serif;
+}
+
+.header__user-button {
+    font-family: "Josefin Sans", sans-serif;
+    font-weight: 700;
+    border-radius: 50%;
+    border: solid 2px #FFAC46;
+    background-color: white;
+    width: 2rem;
+    height: 1.75rem;
+    padding-top: 0.35rem;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.header__user-button-with-image {
+    border: none;
+    background: transparent;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.header__user-button-with-image:focus {
+    border: none;
+}
+
+.header__user-button--image {
+    top: 0;
+    object-fit: cover;
+    width: 3rem;
+    aspect-ratio: 1/1;
+}
+
+.header__join-button:hover,
+.header__join-button:hover {
+    background-color: #FFAC46;
+}
+
+.header__user-menu {
+    position: absolute;
+    top: 2.25rem;
+    right: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #ffac4684;
+    border-radius: 0.2rem;
+    padding: 0.5rem 0;
+}
+
+.header__user-menu--button {
+    background-color: transparent;
+    border: transparent;
+    cursor: pointer;
+    padding: 0.25rem;
+}
+
+.header__user-menu--button:hover {
+    background-color: #FFAC46;
+}
+
+.header .logo {
+    cursor: pointer;
+    width: 2rem;
+    height: 1.85rem;
+    padding: 0.15rem;
+}

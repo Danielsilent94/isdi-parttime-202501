@@ -1,4 +1,4 @@
-const data = {
+const users = {
     findUserById: (id) => { //definimos la función para poder acceder a ella
         const usersJson = localStorage.users //nos traemos los users de la bbdd del localStorage
         if (!usersJson) return undefined //si no hay bbdd devolvemos undefined porque no hay ningun usuario
@@ -43,43 +43,6 @@ const data = {
 
         localStorage.users = JSON.stringify(users)
     },
-    createPost: (post) => { //e.g post = {title: "Hello", description: "world", img: "https://iamalink.com/img.png"}
-        const postsJson = localStorage.posts
-        let posts;
-        if (!postsJson) {
-            posts = [];
-        } else {
-            posts = JSON.parse(postsJson)
-        }
-
-        post.createdOn = new Date();
-        post.id = Date.now()
-        post.likes = []
-
-        posts.push(post)
-
-        localStorage.posts = JSON.stringify(posts)
-
-    },
-    retrievePosts: () => {
-        const posts = localStorage.posts ? JSON.parse(localStorage.getItem("posts")) : [];
-
-        return posts
-    },
-    updatePostById: (id, newPostData) => {
-        const posts = localStorage.posts ? JSON.parse(localStorage.getItem("posts")) : [];
-        const postIndex = posts.findIndex(post => post.id === id)
-        if (postIndex === -1) {
-            return
-        }
-
-        posts[postIndex] = newPostData
-
-        localStorage.posts = JSON.stringify(posts)
-    },
-    findPostById: (id) => {
-        const posts = localStorage.posts ? JSON.parse(localStorage.getItem("posts")) : [];
-        const post = posts.find(post => post.id === id)
-        return post
-    }
 }
+
+export default users
