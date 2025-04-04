@@ -1,3 +1,4 @@
+import deletePost from "./deletePost";
 import getAllPosts from "./getAllPosts";
 import getPostsByAuthor from "./getPostsByAuthor";
 import publishPost from "./publishPost";
@@ -8,7 +9,8 @@ const posts = {
     getAllPosts,
     publishPost,
     toggleLike,
-    getPostsByAuthor
+    getPostsByAuthor,
+    deletePost
 }
 
 export default posts

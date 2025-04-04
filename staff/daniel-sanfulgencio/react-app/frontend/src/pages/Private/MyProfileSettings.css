@@ -1,4 +1,5 @@
-.account__section-title {
+.account__section-title,
+.settings__section-title {
     display: flex;
     flex-direction: row;
     width: 20rem;

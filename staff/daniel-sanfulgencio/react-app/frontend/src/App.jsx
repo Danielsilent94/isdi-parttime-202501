@@ -1,46 +1,37 @@
 import { useState, useEffect } from "react"
-import pages from "./pages/index"
 import logics from "./logic/index"
 import Header from "./components/Header"
+import { Routes, Route, useLocation, useNavigate } from "react-router"
+import isUserLoggedIn from "./logic/users/isUserLoggedIn"
+import Private from "./pages/Private"
+import Public from "./pages/Public"
 
-const { Landing, Home, Login, Register, MyProfile, UserProfile } = pages
 
 const App = () => {
-    const [view, setView] = useState(logics.users.isUserLoggedIn() ? 'home' : 'landing') //register, login, home
     const [refreshHeader, setRefreshHeader] = useState(Date.now())
-    const [selectedUserId, setSelectedUserId] = useState()
+    const [isUserLogged, setIsUserLogged] = useState(logics.users.isUserLoggedIn())
+    const location = useLocation()
+    const navigate = useNavigate()
 
-    const navigateToLogin = () => setView('login')
-    const navigateToRegister = () => setView('register')
-    const navigateToHome = () => setView('home')
-    const navigateToLanding = () => setView('landing')
-    const navigateToMyProfile = () => setView('account')
-    const navigateToUserProfile = (userId) => {
-        setSelectedUserId(userId)
-        setView('user-profile')
+    const onLogoutClick = () => {
+        logics.users.logoutUser()
+        setIsUserLogged(logics.users.isUserLoggedIn())
+        setRefreshHeader(Date.now())
+        navigate("/")
     }
 
-
     useEffect(() => {
-    }, [view])
+        setIsUserLogged(logics.users.isUserLoggedIn())
+    }, [location.pathname])
 
-
-    return <div className={view}>
+    return <>
         <Header
-            currentView={view}
+            isUserLogged={isUserLogged}
             refreshHeader={refreshHeader}
-            handleRegisterClick={navigateToRegister}
-            handleLandingClick={navigateToLanding}
-            handleAccountClick={navigateToMyProfile}
-            handleHomeClick={navigateToHome}
+            logout={onLogoutClick}
         />
-        {view === 'landing' && <Landing />}
-        {view === 'register' && <Register handleNavigateToHome={navigateToHome} handleLoginClick={navigateToLogin} />}
-        {view === 'login' && <Login handleNavigateToHome={navigateToHome} handleRegisterClick={navigateToRegister} />}
-        {view === 'home' && <Home handleNavigateToUserProfile={navigateToUserProfile} />}
-        {view === 'account' && <MyProfile updateHeader={setRefreshHeader} />}
-        {view === 'user-profile' && <UserProfile userId={selectedUserId} />}
-    </div>
+        {isUserLoggedIn() ? <Private setRefreshHeader={setRefreshHeader} /> : <Public setRefreshHeader={setRefreshHeader} />}
+    </>
 }
 
 export default App

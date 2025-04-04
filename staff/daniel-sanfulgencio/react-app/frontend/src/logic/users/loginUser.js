@@ -1,5 +1,5 @@
 import data from "../../data"
-import { AuthEror, ExistenceError } from "../../utils/errors"
+import { AuthError, ExistenceError } from "../../utils/errors"
 import validator from "../../utils/validators"
 
 const loginUser = (loginData) => { //{'email': 'patata@mail.com'}
@@ -14,7 +14,7 @@ const loginUser = (loginData) => { //{'email': 'patata@mail.com'}
     if (!userLoginCheckout) throw new ExistenceError('user not found')
 
     if (userLoginCheckout['password'] !== loginData['password']) {
-        throw new AuthEror("wrong credentials")
+        throw new AuthError("wrong credentials")
     }
 
     if (loginData['remember']) {

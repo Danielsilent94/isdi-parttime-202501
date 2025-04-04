@@ -1,4 +1,4 @@
-import Logo from "../components/lib/Logo"
+import Logo from "../../components/lib/Logo"
 import "./Landing.css"
 
 const Landing = () => {

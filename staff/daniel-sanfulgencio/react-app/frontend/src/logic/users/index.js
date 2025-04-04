@@ -1,5 +1,7 @@
+import deleteUserById from "./deleteUserById";
 import getUserAvatarById from "./getUserAvatarById";
 import getUserBioById from "./getUserBiobyId";
+import getUserIdByUsername from "./getUserIdByUsername";
 import getUserUsernameById from "./getUserUsernameById";
 import isUserLoggedIn from "./isUserLoggedIn";
 import loginUser from "./loginUser";
@@ -7,6 +9,8 @@ import logoutUser from "./logoutUser";
 import registerUser from "./registerUser";
 import updateAvatar from "./updateAvatar";
 import updateBio from "./updateBio";
+import updateEmail from "./updateEmail";
+import updatePassword from "./updatePassword";
 import updateUsername from "./updateUsername";
 
 const users = {
@@ -19,7 +23,11 @@ const users = {
     updateBio,
     updateUsername,
     getUserAvatarById,
-    getUserBioById
+    getUserBioById,
+    getUserIdByUsername,
+    updatePassword,
+    updateEmail,
+    deleteUserById
 }
 
 export default users

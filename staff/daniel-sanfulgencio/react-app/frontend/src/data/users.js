@@ -19,6 +19,16 @@ const users = {
 
         return userFound
     },
+    findUserByUsername: (username) => {
+        const usersJson = localStorage.users
+        if (!usersJson) return undefined
+
+        const users = JSON.parse(usersJson)
+
+        const userFound = users.find(user => user.username === username)
+
+        return userFound
+    },
     createUser: (user) => { //e.g user = {email: "percy1@mail.com", password: "percy1@mail.com", username: "percy1", id: 1740600285989}
         const usersJson = localStorage.users
         let users;
@@ -43,6 +53,17 @@ const users = {
 
         localStorage.users = JSON.stringify(users)
     },
+    deleteUserById: (id) => {
+        const users = localStorage.users ? JSON.parse(localStorage.getItem("users")) : [];
+        const userIndex = users.findIndex(user => user.id === id)
+        if (userIndex === -1) {
+            return
+        }
+
+        users.splice(userIndex, 1)
+
+        localStorage.users = JSON.stringify(users)
+    }
 }
 
 export default users

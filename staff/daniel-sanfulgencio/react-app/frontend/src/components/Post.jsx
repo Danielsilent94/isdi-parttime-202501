@@ -1,27 +1,57 @@
+import { useNavigate } from "react-router"
 import logics from "../logic"
 import './Post.css'
 import UserAvatar from "./UserAvatar"
+import Btn from "./lib/Btn"
+import getLoggedUserId from "../logic/helpers/getLoggedUserId"
 
-const Post = ({ postData, onLikePost, handleNavigateToUserProfile }) => {
+const Post = ({ postData, setRefreshPosts, isMyPostsPage }) => {
+    const navigate = useNavigate()
+
     const handleLikePost = (id) => {
         try {
             logics.posts.toggleLike(id)
-            onLikePost(Date.now())
+            setRefreshPosts(Date.now())
         } catch (error) {
             alert('ups, something is not working!')
             console.error(error)
         }
+    }
 
+    const handleDeletePost = (id) => {
+        try {
+            const isUserSure = confirm('you sure you want to delete?')
+            if (isUserSure) {
+                logics.posts.deletePost(getLoggedUserId(), id)
+                setRefreshPosts(Date.now())
+            }
+        } catch (error) {
+            alert('ups, something is not working!')
+            console.error(error)
+        }
     }
 
     return <div className="post-card">
-        <p className="post-card__creation-info">
+        {
+            isMyPostsPage && <Btn
+                btnClassnames={'post-card__delete-button'}
+                btnCallback={() => handleDeletePost(postData.id)}
+                btnContent={<i className="bi bi-trash-fill"></i>}
+            />
+        }
+        <div className="post-card__creation-info">
             <span className="post-card__author">
-                {postData.authorId && <UserAvatar userId={postData.authorId} size='md' buttonCallback={() => handleNavigateToUserProfile(postData.authorId)} />}
-                {postData.author}
+                {postData.author && <UserAvatar
+                    size='md'
+                    avatar={postData.author.avatar}
+                    letter={postData.author.username[0]}
+                    buttonCallback={() => navigate(`/profile/${postData.author.username}`)}
+                />
+                }
+                {postData.author.username}
             </span>
             {postData.createdOn}
-        </p>
+        </div>
         <h3 className="post-card__title">{postData.title}</h3>
         <p className="post-card__description">{postData.description}</p>
         {

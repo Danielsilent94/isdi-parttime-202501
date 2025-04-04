@@ -1,18 +1,22 @@
 .header {
     display: flex;
-    width: 100%;
+    min-width: 95%;
+    max-width: 100%;
     flex-direction: row;
     padding-top: .25rem;
-    justify-content: space-between;
     height: 2rem;
 }
 
-.landing .header {
+.between,
+.not-found {
+    justify-content: space-between;
+}
+
+.end {
     justify-content: end;
 }
 
-.register .header,
-.login .header {
+.start {
     justify-content: start;
 }
 
@@ -25,6 +29,7 @@
     border-radius: 0.5rem;
     cursor: pointer;
     font-family: "Josefin Sans", sans-serif;
+    text-decoration: none;
 }
 
 .header__user-button {

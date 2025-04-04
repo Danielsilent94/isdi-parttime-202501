@@ -5,10 +5,10 @@ import validator from "../../utils/validators";
 const getUserUsernameById = (id) => {
     validator.id(id)
 
-    const userLogged = data.users.findUserById(id)
+    const user = data.users.findUserById(id)
 
-    if (!userLogged) throw new ExistenceError('user not found')
-    return userLogged.username
+    if (!user) throw new ExistenceError('user not found')
+    return user.username
 }
 
 export default getUserUsernameById

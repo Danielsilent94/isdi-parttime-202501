@@ -1,34 +1,30 @@
-import { useEffect, useState } from "react"
 import Btn from "./lib/Btn"
-import logics from "../logic"
 import './UserAvatar.css'
 
-const UserAvatar = ({ userId, buttonCallback, size }) => {
-    const [username, setUsername] = useState('')
-    const [avatar, setAvatar] = useState('')
-
-    useEffect(() => {
-        const retrivedAvatar = logics.users.getUserAvatarById(userId)
-        if (retrivedAvatar) {
-            setAvatar(retrivedAvatar)
-        } else {
-            const retrivedUsername = logics.users.getUserUsernameById(userId)
-            setUsername(retrivedUsername)
-        }
-    }, [])
-
-    if ((avatar || username) && buttonCallback) {
-        return <Btn
-            btnContent={avatar ? <img className='avatar--image' src={avatar} /> : <div>{username[0].toUpperCase()}</div>}
+const UserAvatar = ({ buttonCallback, size, avatar, letter }) => {
+    return <div>
+        {(avatar && buttonCallback) && <Btn
+            btnContent={<img className='avatar--image' src={avatar} />}
             btnCallback={buttonCallback}
-            btnClassnames={`avatar-btn ${size} ${avatar ? 'avatar-with-image' : 'avatar'}`}
-        />
-    }
-    if (avatar || username) {
-        return <div className={`${size} ${avatar ? 'avatar-with-image' : 'avatar'}`}>
-            {avatar ? <img className='avatar--image' src={avatar} /> : <div>{username[0].toUpperCase()}</div>}
+            btnClassnames={`avatar-btn ${size} avatar-with-image`}
+        />}
+        {(avatar && !buttonCallback) && <div className={`${size} avatar-with-image`}>
+            <img className='avatar--image' src={avatar} />
         </div>
-    }
+        }
+        {(!avatar && letter && buttonCallback) && <Btn
+            btnContent={<div>{letter.toUpperCase()}</div>}
+            btnCallback={buttonCallback}
+            btnClassnames={`avatar-btn ${size} avatar`}
+        />
+        }
+        {(!avatar && letter && !buttonCallback) && <div className={`${size} avatar`}>
+            <div className="">{letter.toUpperCase()}</div>
+        </div>
+        }
+        {(!avatar && !letter) && <p>📎</p>}
+    </div>
 }
+
 
 export default UserAvatar

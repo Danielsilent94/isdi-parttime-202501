@@ -6,6 +6,8 @@
     background-color: white;
     border: 1px solid #FFAC46;
     border-radius: 50%;
+    font-size: 3rem;
+    padding: 0 0.75rem;
 }
 
 .home__new-post-button:hover {

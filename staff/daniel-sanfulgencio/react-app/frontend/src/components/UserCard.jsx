@@ -4,24 +4,27 @@ import getLoggedUserId from "../logic/helpers/getLoggedUserId"
 import UserAvatar from "./UserAvatar"
 import './UserCard.css'
 
-const UserCard = ({ userId, refreshSelf }) => {
-    const [user, setUser] = useState({})
+const UserCard = ({ userId, refreshSelf, tempAvatar }) => {
+    const [user, setUser] = useState()
 
     useEffect(() => {
         const retrivedUsername = logics.users.getUserUsernameById(userId)
         const retrivedBio = logics.users.getUserBioById(userId)
+        const retrivedAvatar = logics.users.getUserAvatarById(userId)
 
-        setUser({ username: retrivedUsername, bio: retrivedBio })
+        setUser({ username: retrivedUsername, bio: retrivedBio, avatar: retrivedAvatar })
     }, [refreshSelf])
 
 
     return <div className="user-card">
-        <div className="user-card__username-avatar">
-            <UserAvatar userId={userId} size={'lg'} />
-            <h2>{user.username}</h2>
+        {
+            user && <div className="user-card__username-avatar">
+                <UserAvatar avatar={tempAvatar ? tempAvatar : user.avatar} letter={user.username[0]} size={'lg'} />
+                <h2>{user.username}</h2>
 
-        </div>
-        <p className="user-card__bio"><i className="bi bi-info-circle"></i>{user.bio}</p>
+            </div>
+        }
+        {(user && user.bio) && <p className="user-card__bio"><i className="bi bi-info-circle"></i>{user.bio}</p>}
     </div>
 }
 

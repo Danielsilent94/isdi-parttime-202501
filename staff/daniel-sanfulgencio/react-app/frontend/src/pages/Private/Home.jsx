@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react"
-import PostList from "../components/PostList"
-import Btn from "../components/lib/Btn"
-import CreatePostModal from "../components/CreatePostModal"
+import PostList from "../../components/PostList"
+import Btn from "../../components/lib/Btn"
+import CreatePostModal from "../../components/CreatePostModal"
 import './Home.css'
-import logics from "../logic"
+import logics from "../../logic"
 
-const Home = ({ handleNavigateToUserProfile }) => {
+const Home = () => {
     const [refreshPosts, setRefreshPosts] = useState(Date.now())
     const [showNewPostForm, setShowNewPostForm] = useState(false)
     const [posts, setPosts] = useState([])
@@ -13,13 +13,9 @@ const Home = ({ handleNavigateToUserProfile }) => {
     const pageRef = useRef(null)
     const formRef = useRef(null)
 
-
-
     useEffect(() => {
-        setPosts([])
         try {
             const retrivedPosts = logics.posts.getAllPosts()
-            console.log(retrivedPosts)
             setPosts(retrivedPosts)
         } catch (error) {
             alert('ups, something is not working!')
@@ -45,10 +41,10 @@ const Home = ({ handleNavigateToUserProfile }) => {
         return () => {
             if (pageRef.current) pageRef.current.removeEventListener("click", handleOutsideModalClick);
         };
-    }, [showNewPostForm])
+    }, [showNewPostForm, refreshPosts])
 
     return <div className="main-container" ref={pageRef}>
-        <PostList posts={posts} refreshPosts={refreshPosts} setRefreshPosts={setRefreshPosts} handleNavigateToUserProfile={handleNavigateToUserProfile} />
+        <PostList posts={posts} refreshPosts={refreshPosts} setRefreshPosts={setRefreshPosts} />
         <Btn btnClassnames={'home__new-post-button'} btnContent={'+'} btnCallback={() => setShowNewPostForm(!showNewPostForm)} />
         <dialog ref={dialogRef}>
             <div ref={formRef}>

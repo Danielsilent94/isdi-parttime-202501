@@ -18,19 +18,19 @@ const posts = {
 
     },
     retrievePosts: () => {
-        const posts = localStorage.posts ? JSON.parse(localStorage.getItem("posts")) : [];
+        const posts = localStorage.posts ? JSON.parse(localStorage.getItem("posts")) : []
 
         return posts
     },
     retrievePostsByAuthorId: (id) => {
-        const posts = localStorage.posts ? JSON.parse(localStorage.getItem("posts")) : [];
+        const posts = localStorage.posts ? JSON.parse(localStorage.getItem("posts")) : []
 
         const filteredPosts = posts.filter(post => post.author === id)
 
         return filteredPosts
     },
     updatePostById: (id, newPostData) => {
-        const posts = localStorage.posts ? JSON.parse(localStorage.getItem("posts")) : [];
+        const posts = localStorage.posts ? JSON.parse(localStorage.getItem("posts")) : []
         const postIndex = posts.findIndex(post => post.id === id)
         if (postIndex === -1) {
             return
@@ -41,9 +41,20 @@ const posts = {
         localStorage.posts = JSON.stringify(posts)
     },
     findPostById: (id) => {
-        const posts = localStorage.posts ? JSON.parse(localStorage.getItem("posts")) : [];
+        const posts = localStorage.posts ? JSON.parse(localStorage.getItem("posts")) : []
         const post = posts.find(post => post.id === id)
         return post
+    },
+    deletePostById: (id) => {
+        const posts = localStorage.posts ? JSON.parse(localStorage.getItem("posts")) : []
+        const postIndex = posts.findIndex(post => post.id === id)
+        if (postIndex === -1) {
+            return
+        }
+
+        posts.splice(postIndex, 1)
+
+        localStorage.posts = JSON.stringify(posts)
     }
 }
 

@@ -5,10 +5,10 @@ import validator from "../../utils/validators";
 const getUserAvatarById = (id) => {
     validator.id(id)
 
-    const userLogged = data.users.findUserById(id)
+    const user = data.users.findUserById(id)
 
-    if (!userLogged) throw new ExistenceError('user not found')
-    return userLogged.avatar
+    if (!user) throw new ExistenceError('user not found')
+    return user.avatar
 }
 
 export default getUserAvatarById

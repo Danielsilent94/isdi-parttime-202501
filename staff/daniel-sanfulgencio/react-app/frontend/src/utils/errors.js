@@ -5,10 +5,10 @@ export class FormatError extends Error {
     }
 }
 
-export class AuthEror extends Error {
+export class AuthError extends Error {
     constructor(message) {
         super(message)
-        this.name = AuthEror
+        this.name = AuthError
     }
 }
 

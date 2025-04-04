@@ -1,6 +1,22 @@
 import './Form.css'
 
-const Form = ({ inputsArray, onSubmitCallback, submitButtonText }) => { //inputsArray = [{label: 'Email', inputType: 'email', inputPlaceholder: 'my@email.com', inputId: 'email'}, {label: 'Password....}]
+const Form = ({ inputsArray, onSubmitCallback, submitButtonText, onChangeCallback }) => { //inputsArray = [{label: 'Email', inputType: 'email', inputPlaceholder: 'my@email.com', inputId: 'email'}, {label: 'Password....}]
+    const handleInputChange = (event) => {
+        event.preventDefault()
+
+        if (onChangeCallback) {
+            const avatar = event.target.files[0];
+
+            const image = new FileReader();
+            image.onloadend = () => {
+                const base64 = image.result;
+                onChangeCallback(base64);
+            };
+            image.readAsDataURL(avatar)
+        }
+    }
+
+
     const handleSubmit = (event) => {
         event.preventDefault()
 
@@ -13,6 +29,8 @@ const Form = ({ inputsArray, onSubmitCallback, submitButtonText }) => { //inputs
             let value;
             if (inputsArray[i].inputType === 'checkbox') {
                 value = form[inputsArray[i].inputId].checked
+            } else if (inputsArray[i].inputType === 'file') {
+                value = form[inputsArray[i].inputId].files[0]
             } else {
                 value = form[inputsArray[i].inputId].value
             }
@@ -46,9 +64,9 @@ const Form = ({ inputsArray, onSubmitCallback, submitButtonText }) => { //inputs
                     </div>
 
                 } else {
-                    return <div className="form__input" key={index}>
+                    return <div className="form__input" key={index} >
                         <label htmlFor={inputElement.inputId}>{inputElement.label}</label>
-                        <input className="form__input-text" id={inputElement.inputId} required={inputElement.isRequired} type={inputElement.inputType} placeholder={inputElement.inputPlaceholder} />
+                        <input onChange={(event) => handleInputChange(event)} className="form__input-text" id={inputElement.inputId} required={inputElement.isRequired} type={inputElement.inputType} placeholder={inputElement.inputPlaceholder} />
                     </div>
                 }
             })

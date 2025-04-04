@@ -15,8 +15,7 @@ const getAllPosts = () => {
     for (let i = 0; i < posts.length; i++) {
         const author = data.users.findUserById(posts[i].author)
         if (!author) throw new ExistenceError('author not found')
-        posts[i].authorId = posts[i].author
-        posts[i].author = author.username
+        posts[i].author = { id: author.id, username: author.username, avatar: author.avatar }
         const date = new Date(posts[i].createdOn)
         posts[i].createdOn = date.toLocaleString()
         if (!posts[i].likes) posts[i].likes = []; //para manejar posts sin arrays de likes

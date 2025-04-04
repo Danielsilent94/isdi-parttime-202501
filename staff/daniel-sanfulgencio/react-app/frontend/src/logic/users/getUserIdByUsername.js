@@ -2,13 +2,13 @@ import data from "../../data";
 import { ExistenceError } from "../../utils/errors";
 import validator from "../../utils/validators";
 
-const getUserBioById = (id) => {
-    validator.id(id)
+const getUserIdByUsername = (username) => {
+    validator.username(username)
 
-    const user = data.users.findUserById(id)
+    const user = data.users.findUserByUsername(username)
 
     if (!user) throw new ExistenceError('user not found')
-    return user.bio
+    return user.id
 }
 
-export default getUserBioById
+export default getUserIdByUsername

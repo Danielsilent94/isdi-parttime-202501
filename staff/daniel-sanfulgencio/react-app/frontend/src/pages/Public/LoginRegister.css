@@ -3,6 +3,7 @@
     background: none;
     border: transparent;
     cursor: pointer;
+    text-decoration: none;
 }
 
 .login__register--button:hover,

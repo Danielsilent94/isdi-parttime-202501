@@ -3,12 +3,12 @@ import logics from "../logic"
 import Post from "./Post"
 import "./PostList.css"
 
-const PostList = ({ posts, setRefreshPosts, handleNavigateToUserProfile }) => {
+const PostList = ({ posts, setRefreshPosts, isMyPostsPage }) => {
 
     return <div className="posts">
         {
             (posts && posts.length > 0) && posts.map((post, index) => {
-                return <Post key={index} postData={post} onLikePost={setRefreshPosts} handleNavigateToUserProfile={handleNavigateToUserProfile} />
+                return <Post key={index} postData={post} setRefreshPosts={setRefreshPosts} isMyPostsPage={isMyPostsPage} />
             })
         }
         {
