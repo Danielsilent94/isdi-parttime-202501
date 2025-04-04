@@ -1,7 +1,30 @@
-.landing__title {
+/*.landing__title {
     text-align: center;
 }
 
 .landing__subtitle {
     text-align: center;
+}*/
+.landing__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100vh; /* Asegura que ocupe toda la altura de la pantalla */
+}
+
+.landing__title {
+    text-align: center;
+    margin-bottom: 20px; /* Añade espacio entre el título y el logo */
+    font-size: 3rem; /* Ajusta el tamaño del título si es necesario */
+}
+
+.landing__subtitle {
+    text-align: center;
+    font-size: 1.5rem; /* Ajusta el tamaño del subtítulo si es necesario */
+}
+
+.landing__logo {
+    margin-top: 20px; /* Espacio opcional entre el logo y el subtítulo */
 }

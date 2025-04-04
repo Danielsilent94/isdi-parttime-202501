@@ -1,6 +1,6 @@
 import deleteUserById from "./deleteUserById";
 import getUserAvatarById from "./getUserAvatarById";
-import getUserBioById from "./getUserBiobyId";
+import getUserBioById from "./getUserBioById";
 import getUserIdByUsername from "./getUserIdByUsername";
 import getUserUsernameById from "./getUserUsernameById";
 import isUserLoggedIn from "./isUserLoggedIn";
