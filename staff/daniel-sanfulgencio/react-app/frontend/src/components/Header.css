@@ -21,19 +21,36 @@
 }
 
 
-.header__join-button {
+/*.header__join-button {
     margin: 0;
     background-color: black;
     color: white;
     padding: 0.5rem 0.4rem;
     border-radius: 0.5rem;
     cursor: pointer;
-    font-family: "Josefin Sans", sans-serif;
+    font-family: 'Bebas Neue', sans-serif;
     text-decoration: none;
+}*/
+.header__join-button {
+    margin: 0;
+    background-color: #FFAC46;
+    color: black;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    text-decoration: none;
+    text-transform: uppercase;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+
 .header__user-button {
-    font-family: "Josefin Sans", sans-serif;
+    font-family: 'Bebas Neue', sans-serif;
     font-weight: 700;
     border-radius: 50%;
     border: solid 2px #FFAC46;
@@ -69,10 +86,15 @@
     aspect-ratio: 1/1;
 }
 
-.header__join-button:hover,
+/*.header__join-button:hover,
 .header__join-button:hover {
     background-color: #FFAC46;
+}*/
+.header__join-button:hover {
+    background-color: #e6983c;
+    transform: translateY(-2px);
 }
+
 
 .header__user-menu {
     position: absolute;

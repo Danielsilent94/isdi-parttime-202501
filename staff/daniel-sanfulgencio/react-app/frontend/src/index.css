@@ -1,15 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
 
 body {
+    background: #121212;/*linear-gradient(135deg, #F9A825, #F57C00);*/ /* Gradiente  */
+    color: #FFAC46; /* Color de texto  */
     margin: 0;
     padding: 0;
     width: 100%;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.5px;
+   
 }
+
 
 #root {
     margin: 0;
     width: 100%;
-    font-family: "Josefin Sans", sans-serif;
+    font-family: 'Bebas Neue', sans-serif;
     font-size: medium;
     display: flex;
     flex-direction: column;
@@ -43,7 +50,7 @@ a:visited {
 
 button,
 input {
-    font-family: "Josefin Sans", sans-serif;
+    font-family: 'Bebas Neue', sans-serif;
     font-size: medium;
 }
 

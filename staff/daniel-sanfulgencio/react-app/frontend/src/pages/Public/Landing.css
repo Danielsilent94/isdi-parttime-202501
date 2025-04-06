@@ -11,7 +11,7 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    height: 100vh; /* Asegura que ocupe toda la altura de la pantalla */
+    height: 100vh; /*Asegura que ocupe toda la altura de la pantalla*/
 }
 
 .landing__title {
