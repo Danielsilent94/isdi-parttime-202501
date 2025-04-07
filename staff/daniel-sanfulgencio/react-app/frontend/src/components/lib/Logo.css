@@ -20,25 +20,38 @@
     height: 20rem;
 }*/
 .logo {
-    width: 20rem;         /* Ancho del círculo */
-    height: 20rem;        /* Alto del círculo */
-    background-color: #F4C542; /* Color círculo */
-    border-radius: 50%;
-    border: 2px solid black; /* Contorno negro círculo*/
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  width: 20rem;         /* Ancho del círculo */
+  height: 20rem;        /* Alto del círculo */
+  background-color: #F4C542; /* Color círculo */
+  border-radius: 50%;
+  border: 2px solid black; /* Contorno negro círculo*/
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  object-fit: contain;
+
+  animation: logoIntro 1s ease-out forwards;
+  transform: scale(0.8);
+  opacity: 0;
+}
+
+.logo:hover {
+  background-color: #E0A62D; /* Color al hacer hover */
+}
+
+.logo svg {
+  width: 15rem;       /* Tamaño del icono de hamburguesa */
+  height: 15rem;
+  fill: white;
+}
+
+@keyframes logoIntro {
+  to {
+      transform: scale(1);
+      opacity: 1;
   }
-  
-  .logo:hover {
-    background-color: #E0A62D; /* Color al hacer hover */
-  }
-  
-  .logo svg {
-    width: 15rem;       /* Tamaño del icono de hamburguesa */
-    height: 15rem;
-    fill: white;
-  }
+}
+
   

@@ -7,12 +7,19 @@
     border: 1px solid #FFAC46;
     border-radius: 50%;
     font-size: 3rem;
-    padding: 0 0.75rem;
+    width: 2rem;  /* Asegura que el botón tenga un tamaño uniforme */
+    height: 2rem; /* Asegura que el botón tenga un tamaño uniforme */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;  /* Elimina el padding extra para un tamaño uniforme */
 }
 
 .home__new-post-button:hover {
     background-color: #FFAC46;
+    color: white;  /* Cambio de color de texto al hacer hover */
 }
+
 
 .home__create-post-dialog {
     background-color: white;

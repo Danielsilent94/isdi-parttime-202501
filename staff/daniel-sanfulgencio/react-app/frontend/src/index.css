@@ -2,7 +2,7 @@
 
 
 body {
-    background: #121212;/*linear-gradient(135deg, #F9A825, #F57C00);*/ /* Gradiente  */
+    background: radial-gradient(circle at top left, #111 0%, #000 100%);/*linear-gradient(135deg, #F9A825, #F57C00);*/ /* Gradiente  */
     color: #FFAC46; /* Color de texto  */
     margin: 0;
     padding: 0;

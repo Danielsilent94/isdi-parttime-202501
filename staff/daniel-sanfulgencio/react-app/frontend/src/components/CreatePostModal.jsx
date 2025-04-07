@@ -3,8 +3,8 @@ import Btn from "./lib/Btn"
 import Form from "./lib/Form"
 
 const CreatePostModal = ({ setRefreshPosts, closeModal }) => {
-    const titleInput = { label: 'Your post title', inputType: 'text', inputPlaceholder: 'I am a title :D', inputId: 'title', isRequired: true }
-    const descriptionInput = { label: 'Your description', inputType: 'text', inputPlaceholder: 'Blah blah blah blah', inputId: 'description', isRequired: true }
+    const titleInput = { label: 'Your post title', inputType: 'text', inputPlaceholder: 'Write a title here!', inputId: 'title', isRequired: true }
+    const descriptionInput = { label: 'Your description', inputType: 'text', inputPlaceholder: 'Your description here!', inputId: 'description', isRequired: true }
     const imgInput = { label: 'Your image url', inputType: 'url', inputPlaceholder: '.png, .jpg, etc', inputId: 'img', isRequired: false }
 
     const handlePublishPost = (formData) => {
