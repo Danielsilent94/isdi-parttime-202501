@@ -11,9 +11,11 @@ const MyProfile = ({ updateHeader }) => {
     const [showBioForm, setShowBioForm] = useState(false)
     const [refreshUserCard, setRefreshUserCard] = useState(Date.now())
     const [tempAvatar, setTempAvatar] = useState()
+    const [isLocalAvatar, setIsLocalAvatar] = useState (false)
 
     const usernameObject = { label: 'Username', inputType: 'text', inputPlaceholder: 'myNewUserName', inputId: 'username', isRequired: true }
-    const avatarObject = { label: 'Avatar', inputType: 'file', inputPlaceholder: 'https/new.com/avatar.png', inputId: 'avatar', isRequired: true }
+    const avatarObject = { label: 'Load a local file', inputType: 'file', inputPlaceholder: '', inputId: 'avatar-64', isRequired: false }
+    const avatarObject2 = { label: 'Use a public url image', inputType: 'url', inputPlaceholder: 'https/new.com/avatar.png', inputId: 'avatar-url', isRequired: false }
     const bioObject = { label: 'Bio', inputType: 'text-area', inputPlaceholder: 'More about me here!', inputId: 'bio', isRequired: true }
 
     const onUpdateUsername = (formData) => {
@@ -29,14 +31,20 @@ const MyProfile = ({ updateHeader }) => {
     }
 
     const onUpdateAvatar = (formData) => {
+        setIsLocalAvatar(formData['avatar-64'] ? true : false)
         try {
-            const newAvatar = formData['avatar']
-            const image = new FileReader();
-            image.onload = () => {
-                const base64 = image.result;
-                setTempAvatar(base64)
-            };
-            image.readAsDataURL(newAvatar)
+            if (isLocalAvatar) {
+                const newAvatar = formData['avatar-64']
+                const image = new FileReader();
+                image.onload = () => {
+                    const base64 = image.result;
+                    setTempAvatar(base64)
+                };
+                image.readAsDataURL(newAvatar)
+            } else {
+                setTempAvatar(formData['avatar-url'])
+            }
+            
 
             logics.users.updateAvatar(tempAvatar)
             updateHeader(Date.now())
@@ -61,6 +69,11 @@ const MyProfile = ({ updateHeader }) => {
         }
     }
 
+    const onChangeTemporal = (newTempAvatar, isBase64Avatar) => {
+        setIsLocalAvatar (isBase64Avatar)
+        setTempAvatar (newTempAvatar)
+    }
+
     return <div className="main-container">
         <UserCard userId={getLoggedUserId()} refreshSelf={refreshUserCard} tempAvatar={tempAvatar} />
         <div className="account__section-title" onClick={() => setShowUsernameForm(!showUsernameForm)}>
@@ -72,7 +85,7 @@ const MyProfile = ({ updateHeader }) => {
             <h2>Change my avatar</h2>
             <i className={`bi bi-chevron-compact-${showAvatarForm ? 'up' : 'down'}`}></i>
         </div>
-        {showAvatarForm && <Form inputsArray={[avatarObject]} onSubmitCallback={onUpdateAvatar} submitButtonText={"Save new avatar"} onChangeCallback={setTempAvatar} />}
+        {showAvatarForm && <Form inputsArray={[avatarObject, avatarObject2]} onSubmitCallback={onUpdateAvatar} submitButtonText={"Save new avatar"} onChangeCallback={onChangeTemporal} />}
         <div className="account__section-title" onClick={() => setShowBioForm(!showBioForm)}>
             <h2>Change my bio</h2>
             <i className={`bi bi-chevron-compact-${showBioForm ? 'up' : 'down'}`}></i>
