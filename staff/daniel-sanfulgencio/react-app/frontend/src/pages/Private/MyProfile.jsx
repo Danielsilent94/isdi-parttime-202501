@@ -4,6 +4,7 @@ import logics from "../../logic/index"
 import './MyProfileSettings.css'
 import UserCard from "../../components/UserCard"
 import getLoggedUserId from "../../logic/helpers/getLoggedUserId"
+import Btn from "../../components/lib/Btn"
 
 const MyProfile = ({ updateHeader }) => {
     const [showUsernameForm, setShowUsernameForm] = useState(false)
@@ -74,6 +75,10 @@ const MyProfile = ({ updateHeader }) => {
         setTempAvatar (newTempAvatar)
     }
 
+    /*const saveRandomBio = () => {
+        const xhr = new XMLHttpRequest()
+    }*/
+
     return <div className="main-container">
         <UserCard userId={getLoggedUserId()} refreshSelf={refreshUserCard} tempAvatar={tempAvatar} />
         <div className="account__section-title" onClick={() => setShowUsernameForm(!showUsernameForm)}>
@@ -91,6 +96,7 @@ const MyProfile = ({ updateHeader }) => {
             <i className={`bi bi-chevron-compact-${showBioForm ? 'up' : 'down'}`}></i>
         </div>
         {showBioForm && <Form inputsArray={[bioObject]} onSubmitCallback={onUpdateBio} submitButtonText={"Save new bio"} />}
+        {showBioForm && <div> Are you bored? Generate a random bio. <Btn btnContent= {'Randomize!'} btnCallback={saveRandomBio} btnClassnames={''}/> </div>}
     </div>
 }
 
