@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "bootstrap-icons": "^1.11.3",
+    "common": "file:../common",
     "heroicon": "^0.0.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
