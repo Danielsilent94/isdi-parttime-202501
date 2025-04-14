@@ -1,6 +1,6 @@
 import data from "../../data"
-import { ContentError, ExistenceError } from "../../utils/errors"
-import validator from "../../utils/validators"
+import { ContentError, ExistenceError } from "common/errors"
+import validator from "common"
 
 const registerUser = (registerData) => { //registerData = {'email': '', 'password': '', 'confirmation-password': ''}
     validator.email(registerData['email'])

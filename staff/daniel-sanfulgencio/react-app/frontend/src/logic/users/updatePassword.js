@@ -1,6 +1,6 @@
 import data from "../../data"
-import { AuthError, ContentError, ExistenceError } from "../../utils/errors"
-import validator from "../../utils/validators"
+import { AuthError, ContentError, ExistenceError } from "common/errors"
+import validator from "common"
 import getLoggedUserId from "../helpers/getLoggedUserId"
 
 const updatePassword = (newPassword, confirmationNewPassword, oldPassword) => {

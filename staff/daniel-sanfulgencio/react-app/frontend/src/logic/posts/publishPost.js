@@ -1,11 +1,15 @@
 import data from "../../data";
-import validator from "../../utils/validators"
+import validator from "common"
 import getLoggedUserId from "../helpers/getLoggedUserId";
 
-const publishPost = (postData) => {
-    validator.text(postData['title'], 40, 1, 'Post-Title')
-    validator.text(postData['description'], 210, 1, 'Post-Description')
-    if (postData['img']) validator.imgUrl(postData['img'])
+const publishPost = (title, description, img) => {
+    validator.text(title, 40, 1, 'Post-Title')
+    validator.text(description, 210, 1, 'Post-Description')
+    //if (postData['img']) validator.imgUrl(postData['img'])
+
+    const postData = { title, description }
+
+    if (img) postData.img = img
 
     const userId = getLoggedUserId()
 

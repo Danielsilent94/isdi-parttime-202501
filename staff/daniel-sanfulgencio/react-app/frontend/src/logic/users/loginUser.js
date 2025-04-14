@@ -1,6 +1,6 @@
 import data from "../../data"
-import { AuthError, ExistenceError } from "../../utils/errors"
-import validator from "../../utils/validators"
+import { AuthError, ExistenceError } from "common/errors"
+import validator from "common"
 
 const loginUser = (loginData) => { //{'email': 'patata@mail.com'}
     //comprobamos si el email que ha puesto el usuario esta en la bbdd y si no lo esta, lanzamos un alert

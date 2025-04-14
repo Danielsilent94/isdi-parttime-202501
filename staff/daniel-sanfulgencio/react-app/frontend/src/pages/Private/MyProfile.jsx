@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Form from "../../components/lib/Form"
 import logics from "../../logic/index"
 import './MyProfileSettings.css'
@@ -12,7 +12,7 @@ const MyProfile = ({ updateHeader }) => {
     const [showBioForm, setShowBioForm] = useState(false)
     const [refreshUserCard, setRefreshUserCard] = useState(Date.now())
     const [tempAvatar, setTempAvatar] = useState()
-    const [isLocalAvatar, setIsLocalAvatar] = useState (false)
+    const [isLocalAvatar, setIsLocalAvatar] = useState(false)
 
     const usernameObject = { label: 'Username', inputType: 'text', inputPlaceholder: 'myNewUserName', inputId: 'username', isRequired: true }
     const avatarObject = { label: 'Load a local file', inputType: 'file', inputPlaceholder: '', inputId: 'avatar-64', isRequired: false }
@@ -45,7 +45,7 @@ const MyProfile = ({ updateHeader }) => {
             } else {
                 setTempAvatar(formData['avatar-url'])
             }
-            
+
 
             logics.users.updateAvatar(tempAvatar)
             updateHeader(Date.now())
@@ -71,13 +71,26 @@ const MyProfile = ({ updateHeader }) => {
     }
 
     const onChangeTemporal = (newTempAvatar, isBase64Avatar) => {
-        setIsLocalAvatar (isBase64Avatar)
-        setTempAvatar (newTempAvatar)
+        setIsLocalAvatar(isBase64Avatar)
+        setTempAvatar(newTempAvatar)
     }
 
-    /*const saveRandomBio = () => {
-        const xhr = new XMLHttpRequest()
-    }*/
+    const saveRandomBio = (error, newBio) => {
+        if (error) alert(error)
+        else {
+            logics.users.updateBio(newBio)
+            setRefreshUserCard(Date.now())
+        }
+    }
+
+    const onRandomBioClick = () => {
+        try {
+            logics.users.getRandomBio(saveRandomBio)
+        } catch (error) {
+            alert('ups, something went wrong')
+            console.error(error)
+        }
+    }
 
     return <div className="main-container">
         <UserCard userId={getLoggedUserId()} refreshSelf={refreshUserCard} tempAvatar={tempAvatar} />
@@ -96,7 +109,7 @@ const MyProfile = ({ updateHeader }) => {
             <i className={`bi bi-chevron-compact-${showBioForm ? 'up' : 'down'}`}></i>
         </div>
         {showBioForm && <Form inputsArray={[bioObject]} onSubmitCallback={onUpdateBio} submitButtonText={"Save new bio"} />}
-        {showBioForm && <div> Are you bored? Generate a random bio. <Btn btnContent= {'Randomize!'} btnCallback={saveRandomBio} btnClassnames={''}/> </div>}
+        {showBioForm && <div className="account__bio"><b>Do you need some help?</b><p>Generate a random bio:</p><Btn btnContent={'Randomize!'} btnCallback={onRandomBioClick} btnClassnames={'account__random-bio-btn'} /></div>}
     </div>
 }
 

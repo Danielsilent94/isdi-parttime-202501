@@ -31,7 +31,7 @@ const Logo = ({ size, onClick }) => {
 
 export default Logo;*/
 import React from "react";
-import './Logo.css'; // Si tienes estilos personalizados para el logo
+import './Logo.css'; // Los estilos personalizados para el logo
 
 const Logo = ({ size, onClick }) => {
   return (
