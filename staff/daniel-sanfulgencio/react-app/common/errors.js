@@ -1,34 +1,45 @@
-export class FormatError extends Error {
+class FormatError extends Error {
     constructor(message) {
         super(message)
         this.name = 'FormatError'
     }
 }
 
-export class AuthError extends Error {
+class AuthError extends Error {
     constructor(message) {
         super(message)
         this.name = AuthError
     }
 }
 
-export class ExistenceError extends Error {
+class ExistenceError extends Error {
     constructor(message) {
         super(message)
         this.name = ExistenceError
     }
 }
 
-export class ContentError extends Error {
+class ContentError extends Error {
     constructor(message) {
         super(message)
         this.name = ContentError
     }
 }
 
-export class DuplicityError extends Error {
+class DuplicityError extends Error {
     constructor(message) {
         super(message)
         this.name = DuplicityError
     }
+}
+
+class ServerError extends Error {
+    constructor(message) {
+        super(message)
+        this.name = ServerError
+    }
+}
+
+export default {
+    ExistenceError, DuplicityError, ContentError, AuthError, FormatError, ServerError
 }

@@ -1,6 +1,6 @@
 const Btn = ({ btnContent, btnClassnames, btnCallback }) => {
 
-    return <button onClick={btnCallback} className={btnClassnames}>{btnContent}</button>
+    return <button type="button" onClick={btnCallback} className={btnClassnames}>{btnContent}</button>
 }
 
 export default Btn

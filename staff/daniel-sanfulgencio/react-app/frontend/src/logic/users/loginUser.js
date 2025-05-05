@@ -1,30 +1,36 @@
-import data from "../../data"
-import { AuthError, ExistenceError } from "common/errors"
-import validator from "common"
+import { errors, validator } from "common"
 
-const loginUser = (loginData) => { //{'email': 'patata@mail.com'}
+const loginUser = (loginData, callback) => { //{'email': 'patata@mail.com'}
     //comprobamos si el email que ha puesto el usuario esta en la bbdd y si no lo esta, lanzamos un alert
     validator.password(loginData['password'])
     validator.email(loginData['email'])
 
-    const userLoginCheckout = data.users.findUserByEmail(loginData['email'])
+    const user = { email: loginData.email, password: loginData.password }
 
-    //comprueba que el usuario loggeado esta en nuestra ddbb(si es que tenemos una base de datos)
-    //si esta en la base de datos, comprobamos que la cotnraseña coincide con la del usuario, sino, lanzamos un alert
-    if (!userLoginCheckout) throw new ExistenceError('user not found')
+    const xhr = new XMLHttpRequest()
 
-    if (userLoginCheckout['password'] !== loginData['password']) {
-        throw new AuthError("wrong credentials")
+    xhr.open('POST', `${import.meta.env.VITE_API_APP}/users/auth`, true)
+
+    xhr.setRequestHeader('Content-Type', 'application/json')
+
+    xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4)
+            if (xhr.status === 200) {
+                if (loginData['remember']) {
+                    localStorage.id = xhr.response
+                } else {
+                    sessionStorage.id = xhr.response
+                }
+                callback(null)
+            } else {
+                const response = JSON.parse(xhr.response)
+                if (errors[response.name]) callback(new errors[response.name](response.message))
+                else callback(new Error(`${response.name}: ${response.message}`))
+                callback(new errors[response.name](response.message))
+            }
     }
 
-    if (loginData['remember']) {
-        localStorage.id = userLoginCheckout.id
-    } else {
-        sessionStorage.id = userLoginCheckout.id
-    }
-
-    //y si se cumple todo, guardamos el id en el session storage y navegamos a home*/
-
+    xhr.send(JSON.stringify(user))
 }
 
 export default loginUser

@@ -1,6 +1,5 @@
 import data from "../../data";
-import { ExistenceError } from "common/errors";
-import validator from "common";
+import { errors, validator } from "common"
 import getLoggedUserId from "../helpers/getLoggedUserId";
 
 const toggleLike = (postId) => {
@@ -10,7 +9,7 @@ const toggleLike = (postId) => {
 
     const post = data.posts.findPostById(postId)
 
-    if (!post) throw new ExistenceError('post not found')
+    if (!post) throw new errors.ExistenceError('post not found')
 
     if (!post.likes) post.likes = [];
 

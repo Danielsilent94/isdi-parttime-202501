@@ -1,1 +1,27 @@
-[]
+[
+    {
+        "likes": [],
+        "createdOn": "2025-04-29T19:03:01.920Z",
+        "title": "test-post",
+        "description": "this is a curl test post",
+        "author": 1745433875083,
+        "id": 1745953381920
+    },
+    {
+        "likes": [],
+        "createdOn": "2025-04-29T19:12:52.379Z",
+        "title": "test desde el front",
+        "description": "esto es un test",
+        "author": 1745433875083,
+        "id": 1745953972394
+    },
+    {
+        "likes": [],
+        "createdOn": "2025-04-29T19:15:35.383Z",
+        "title": "test con imagen desde el front",
+        "description": "hjsadfhljads asdfasdf",
+        "img": "https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/135.png",
+        "author": 1745433875083,
+        "id": 1745954135406
+    }
+]

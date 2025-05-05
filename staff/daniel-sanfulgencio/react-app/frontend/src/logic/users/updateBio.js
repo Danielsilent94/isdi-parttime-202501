@@ -1,6 +1,5 @@
 import data from "../../data"
-import { ExistenceError } from "common/errors"
-import validator from "common"
+import { errors, validator } from "common"
 import getLoggedUserId from "../helpers/getLoggedUserId"
 
 const updateBio = (newBio) => {
@@ -11,7 +10,7 @@ const updateBio = (newBio) => {
     validator.id(loggedUserId)
 
     const user = data.users.findUserById(loggedUserId)
-    if (!user) throw new ExistenceError('user not found')
+    if (!user) throw new errors.ExistenceError('user not found')
     user.bio = newBio
     data.users.updateUserById(loggedUserId, user)
 }

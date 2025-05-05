@@ -1,6 +1,5 @@
 import data from "../../data"
-import { AuthError, ExistenceError } from "common/errors"
-import validator from "common"
+import { errors, validator } from "common"
 
 const deleteUserById = (id, password) => {
     validator.id(id)
@@ -8,8 +7,8 @@ const deleteUserById = (id, password) => {
 
     const user = data.users.findUserById(id)
 
-    if (!user) throw new ExistenceError('user not found')
-    if (user.password !== password) throw new AuthError('incorrect password')
+    if (!user) throw new errors.ExistenceError('user not found')
+    if (user.password !== password) throw new errors.AuthError('incorrect password')
 
     const userPosts = data.posts.retrievePostsByAuthorId(id)
 

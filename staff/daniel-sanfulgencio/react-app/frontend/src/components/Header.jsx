@@ -6,8 +6,9 @@ import './Header.css'
 import getLoggedUserId from "../logic/helpers/getLoggedUserId"
 import UserAvatar from "./UserAvatar"
 import { useLocation, useNavigate } from "react-router"
+import locales from "../locales"
 
-const Header = ({ refreshHeader, logout, isUserLogged }) => {
+const Header = ({ refreshHeader, logout, isUserLogged, locale }) => {
     const location = useLocation();
     const [username, setUsername] = useState('')
     const [isUserMenuOpen, setUserMenuOpen] = useState(false)
@@ -15,6 +16,12 @@ const Header = ({ refreshHeader, logout, isUserLogged }) => {
     const [path, setPath] = useState('')
     const [justifyItems, setJustifyItems] = useState('')
     const navigate = useNavigate()
+
+    const [translations, setTranslations] = useState(locales[locale]['header'])
+
+    useEffect(() => {
+        setTranslations(locales[locale]['header'])
+    }, [locale])
 
     const onLogoutClick = () => {
         setUserMenuOpen(false)
@@ -27,10 +34,25 @@ const Header = ({ refreshHeader, logout, isUserLogged }) => {
 
         if (logics.users.isUserLoggedIn()) {
             setJustifyItems('between')
-            const retrivedUsername = logics.users.getUserUsernameById(getLoggedUserId())
-            setUsername(retrivedUsername)
-            const retrivedAvatar = logics.users.getUserAvatarById(getLoggedUserId())
-            setAvatar(retrivedAvatar)
+            logics.users.getUserUsername((error, retrivedUsername) => {
+                if (error) {
+                    alert('error!')
+                    console.error(error)
+                }
+                else {
+                    setUsername(retrivedUsername)
+                    logics.users.getUserAvatar((error, retrivedAvatar) => {
+                        if (error) {
+                            alert('error!')
+                            console.error(error)
+                        } else {
+                            setAvatar(retrivedAvatar)
+                        }
+                    })
+                }
+            })
+
+
         } else {
             if (pathname === '/login' || pathname === '/register') {
                 setJustifyItems('start')
@@ -57,10 +79,10 @@ const Header = ({ refreshHeader, logout, isUserLogged }) => {
             ((path === '/register' || path === '/login' || justifyItems === 'not-found') || isUserLogged) && <Logo onClick={handleLogoClick} size="sm" />
         }
         {
-            (isUserLogged && username.length > 0) && <p>{`Welcome, ${username}`}</p>
+            (isUserLogged && username.length > 0) && <p>{`${translations.welcome}, ${username}`}</p>
         }
         {
-            !isUserLogged && (path === '/' || justifyItems === 'not-found') && <Btn btnClassnames={"header__join-button"} btnContent={"Join in!"} btnCallback={() => navigate('/register')} />
+            !isUserLogged && (path === '/' || justifyItems === 'not-found') && <Btn btnClassnames={"header__join-button"} btnContent={translations.joinBtn} btnCallback={() => navigate('/register')} />
         }
         {
             (((username || avatar) && isUserLogged) &&
@@ -73,10 +95,10 @@ const Header = ({ refreshHeader, logout, isUserLogged }) => {
         }
         {
             isUserMenuOpen && <aside className="header__user-menu">
-                <Btn btnContent={'Account'} btnClassnames={'header__user-menu--button'} btnCallback={() => onMenuRouteClick('/my-profile')} />
-                <Btn btnContent={'Settings'} btnClassnames={'header__user-menu--button'} btnCallback={() => onMenuRouteClick('/settings')} />
-                <Btn btnContent={'My Posts'} btnClassnames={'header__user-menu--button'} btnCallback={() => onMenuRouteClick('/my-posts')} />
-                <Btn btnContent={'Logout'} btnClassnames={'header__user-menu--button'} btnCallback={onLogoutClick} />
+                <Btn btnContent={translations.account} btnClassnames={'header__user-menu--button'} btnCallback={() => onMenuRouteClick('/my-profile')} />
+                <Btn btnContent={translations.settings} btnClassnames={'header__user-menu--button'} btnCallback={() => onMenuRouteClick('/settings')} />
+                <Btn btnContent={translations.myPosts} btnClassnames={'header__user-menu--button'} btnCallback={() => onMenuRouteClick('/my-posts')} />
+                <Btn btnContent={translations.logout} btnClassnames={'header__user-menu--button'} btnCallback={onLogoutClick} />
             </aside>
         }
 

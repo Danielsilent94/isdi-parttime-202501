@@ -1,14 +1,27 @@
 [
     {
+        "email": "percy1@mail.com",
+        "password": "percy1A@mail.com",
+        "username": "Percito",
+        "id": 1745433875083,
+        "avatar": "https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/134.png"
+    },
+    {
+        "email": "hiro@mail.com",
+        "password": "12345Aa!",
+        "username": "Hirito",
+        "id": 1745519748421
+    },
+    {
         "email": "cosmo@mail.com",
         "password": "12345Aa!",
         "username": "cosmo",
-        "id": 1744310237075
+        "id": 1745520811922
     },
     {
-        "email": "percy@mail.com",
+        "email": "patata@mail.com",
         "password": "12345Aa!",
-        "username": "percy",
-        "id": 1744311957077
+        "username": "patata",
+        "id": 1745523117419
     }
 ]

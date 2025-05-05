@@ -5,7 +5,7 @@ import validator from 'common';
 import { FormatError } from 'common/errors.js';
 import cors from 'cors'
 
-const port = 4321 //localhost:4321/
+const port = 5173 //localhost:5173/
 
 const api = express()
 

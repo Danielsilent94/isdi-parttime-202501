@@ -8,11 +8,22 @@ const UserCard = ({ userId, refreshSelf, tempAvatar }) => {
     const [user, setUser] = useState()
 
     useEffect(() => {
-        const retrivedUsername = logics.users.getUserUsernameById(userId)
-        const retrivedBio = logics.users.getUserBioById(userId)
-        const retrivedAvatar = logics.users.getUserAvatarById(userId)
-
-        setUser({ username: retrivedUsername, bio: retrivedBio, avatar: retrivedAvatar })
+        logics.users.getUserUsername((error, retrivedUsername) => {
+            if (error) {
+                alert(error)
+                console.error(error)
+            } else {
+                logics.users.getUserAvatar((error, retrivedAvatar) => {
+                    if (error) {
+                        alert(error)
+                        console.error(error)
+                    } else {
+                        //TODO retrieve bio
+                        setUser({ avatar: retrivedAvatar, username: retrivedUsername, bio: '' })
+                    }
+                })
+            }
+        })
     }, [refreshSelf])
 
 
@@ -24,7 +35,7 @@ const UserCard = ({ userId, refreshSelf, tempAvatar }) => {
 
             </div>
         }
-        {(user && user.bio) && <p className="user-card__bio"><i className="bi bi-info-circle"></i>{user.bio}</p>}
+        {(user && user.bio) && <p className="user-card__bio"><i className="bi bi-person-circle"></i>{user.bio}</p>}
     </div>
 }
 

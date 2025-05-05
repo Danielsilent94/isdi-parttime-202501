@@ -1,6 +1,5 @@
 import data from "../../data"
-import { ExistenceError } from "common/errors"
-import validator from "common"
+import { errors, validator } from "common"
 import getLoggedUserId from "../helpers/getLoggedUserId"
 
 const updateEmail = (newEmail) => {
@@ -9,12 +8,12 @@ const updateEmail = (newEmail) => {
 
     const doesUserExist = data.users.findUserByEmail(newEmail)
     if (doesUserExist) {
-        throw new ExistenceError('something went wrong, try again with new credentials')
+        throw new errors.ExistenceError('something went wrong, try again with new credentials')
     }
 
     const user = data.users.findUserById(loggedUserId)
 
-    if (!user) throw new ExistenceError('user not found')
+    if (!user) throw new errors.ExistenceError('user not found')
     user.email = newEmail
     data.users.updateUserById(loggedUserId, user)
 }

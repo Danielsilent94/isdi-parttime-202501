@@ -1,23 +1,43 @@
-import { useEffect } from 'react'
+import { useState } from 'react'
 import './Form.css'
+import PasswordFeedback from './PasswordFeedback'
+import PasswordInput from './PasswordInput'
 
-const Form = ({ inputsArray, onSubmitCallback, submitButtonText, onChangeCallback }) => { //inputsArray = [{label: 'Email', inputType: 'email', inputPlaceholder: 'my@email.com', inputId: 'email'}, {label: 'Password....}]
+const Form = ({ inputsArray, onSubmitCallback, submitButtonText, onFileChangeCallback, onPasswordChangeCallback, securityPasswordErrors }) => { //inputsArray = [{label: 'Email', inputType: 'email', inputPlaceholder: 'my@email.com', inputId: 'email'}, {label: 'Password....}]
+    const [tempPassword, setTempPassword] = useState()
+    const [arePasswordsEqual, setArePasswordsEqual] = useState(null)
 
-    const handleInputChange = (event) => {
+    const handleFileInputChange = (event) => {
         event.preventDefault()
 
-        if (onChangeCallback) {
+        if (onFileChangeCallback) {
             let img;
-            if (!event.target.files) return onChangeCallback(event.target.value, false)
+            if (!event.target.files) return onFileChangeCallback(event.target.value, false)
 
             img = event.target.files[0];
 
             const image = new FileReader();
             image.onloadend = () => {
                 const base64 = image.result;
-                onChangeCallback(base64, true);
+                onFileChangeCallback(base64, true);
             };
             image.readAsDataURL(img)
+        }
+    }
+
+    const handlePasswordInputChange = (event, inputId) => {
+        event.preventDefault()
+
+        const password = event.target.value
+
+        if (onPasswordChangeCallback) {
+            if (inputId === 'password') {
+                setTempPassword(password)
+                onPasswordChangeCallback(password)
+            }
+            if (inputId === 'confirmation-password') {
+                setArePasswordsEqual(password === tempPassword)
+            }
         }
     }
 
@@ -44,8 +64,7 @@ const Form = ({ inputsArray, onSubmitCallback, submitButtonText, onChangeCallbac
         }
 
         try {
-            onSubmitCallback(formData)
-            form.reset()
+            onSubmitCallback(formData, () => form.reset())
         } catch (error) {
             console.error(error)
             if (error.name === 'FormatError' || error.name === 'RangeError' || error.name === 'TypeError') {
@@ -70,7 +89,15 @@ const Form = ({ inputsArray, onSubmitCallback, submitButtonText, onChangeCallbac
                 } else if (inputElement.inputType === 'url' || inputElement.inputType === 'file') {
                     return <div className="form__input" key={index} >
                         <label htmlFor={inputElement.inputId}>{inputElement.label}</label>
-                        <input onChange={(event) => handleInputChange(event)} className="form__input-text" id={inputElement.inputId} required={inputElement.isRequired} type={inputElement.inputType} placeholder={inputElement.inputPlaceholder} />
+                        <input onChange={(event) => handleFileInputChange(event)} className="form__input-text"
+                            id={inputElement.inputId} required={inputElement.isRequired} type={inputElement.inputType} placeholder={inputElement.inputPlaceholder} />
+                    </div>
+                } else if (inputElement.inputType === 'password') {
+                    return <div className="form__input" key={index} >
+                        <label htmlFor={inputElement.inputId}>{inputElement.label}</label>
+                        <PasswordInput inputElement={inputElement}
+                            onChangeCallback={(inputElement.inputId === 'password' || inputElement.inputId === 'confirmation-password') ? handlePasswordInputChange : null} />
+
                     </div>
                 } else {
                     return <div className="form__input" key={index} >
@@ -80,8 +107,10 @@ const Form = ({ inputsArray, onSubmitCallback, submitButtonText, onChangeCallbac
                 }
             })
         }
+        {(securityPasswordErrors) && <PasswordFeedback securityPasswordErrors={securityPasswordErrors} arePasswordsEqual={arePasswordsEqual} />}
         <input className="form__submit-button" type="submit" value={submitButtonText} />
     </form>
 }
 
 export default Form
+

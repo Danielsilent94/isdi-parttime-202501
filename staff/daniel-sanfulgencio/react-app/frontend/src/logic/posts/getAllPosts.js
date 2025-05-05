@@ -1,6 +1,5 @@
 import data from "../../data";
-import { ExistenceError } from "common/errors";
-import validator from "common";
+import { errors, validator } from "common"
 import getLoggedUserId from "../helpers/getLoggedUserId";
 
 const getAllPosts = () => {
@@ -14,7 +13,7 @@ const getAllPosts = () => {
 
     for (let i = 0; i < posts.length; i++) {
         const author = data.users.findUserById(posts[i].author)
-        if (!author) throw new ExistenceError('author not found')
+        if (!author) throw new errors.ExistenceError('author not found')
         posts[i].author = { id: author.id, username: author.username, avatar: author.avatar }
         const date = new Date(posts[i].createdOn)
         posts[i].createdOn = date.toLocaleString()
