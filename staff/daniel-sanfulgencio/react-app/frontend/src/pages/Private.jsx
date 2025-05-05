@@ -6,11 +6,11 @@ import NotFound from "./NotFound"
 import MyPosts from "./Private/MyPosts"
 import Settings from "./Private/Settings"
 
-const Private = ({ setRefreshHeader }) => {
+const Private = ({ setRefreshHeader, locale }) => {
     return <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/my-profile" element={<MyProfile updateHeader={setRefreshHeader} />} />
-        <Route path="/settings" element={<Settings />} />
+        <Route path="/" element={<Home locale={locale} />} />
+        <Route path="/my-profile" element={<MyProfile updateHeader={setRefreshHeader} locale={locale} />} />
+        <Route path="/settings" element={<Settings locale={locale} />} />
         <Route path="/my-posts" element={<MyPosts />} />
         <Route path="/profile/:username" element={<UserProfile />} />
         <Route path="/*" element={<NotFound />} />

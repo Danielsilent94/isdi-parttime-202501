@@ -3,17 +3,20 @@ import NotFound from "./NotFound"
 import Landing from "./Public/Landing"
 import Login from "./Public/Login"
 import Register from "./Public/Register"
+import { useEffect } from "react"
 
 
 
-const Public = ({ setRefreshHeader }) => {
+const Public = ({ setRefreshHeader, locale }) => {
 
-    return <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<Login setRefreshHeader={setRefreshHeader} />} />
-        <Route path="/register" element={<Register setRefreshHeader={setRefreshHeader} />} />
-        <Route path="/*" element={<NotFound />} />
-    </Routes>
+    return <div>
+        <Routes>
+            <Route path="/" element={<Landing locale={locale} />} />
+            <Route path="/login" element={<Login setRefreshHeader={setRefreshHeader} locale={locale} />} />
+            <Route path="/register" element={<Register setRefreshHeader={setRefreshHeader} locale={locale} />} />
+            <Route path="/*" element={<NotFound />} />
+        </Routes>
+    </div>
 }
 
 export default Public
