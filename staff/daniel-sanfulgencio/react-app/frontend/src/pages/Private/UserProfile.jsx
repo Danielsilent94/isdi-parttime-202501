@@ -3,7 +3,7 @@ import UserCard from "../../components/UserCard"
 import PostList from "../../components/PostList"
 import logics from "../../logic"
 import { useParams } from "react-router"
-import { ExistenceError } from "../../utils/errors"
+import { errors } from "common"
 import NotFound from "../NotFound"
 
 const UserProfile = () => {
@@ -19,7 +19,7 @@ const UserProfile = () => {
             const retrivedPosts = logics.posts.getPostsByAuthor(retrivedId)
             setPosts(retrivedPosts)
         } catch (error) {
-            if (error instanceof ExistenceError) {
+            if (error instanceof errors.ExistenceError) {
                 setUserId('not-found')
             } else {
                 alert('ups, something is not working!')

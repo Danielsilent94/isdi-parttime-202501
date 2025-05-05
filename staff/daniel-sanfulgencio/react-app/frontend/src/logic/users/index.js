@@ -1,8 +1,8 @@
 import deleteUserById from "./deleteUserById";
-import getUserAvatar from "./getUserAvatar";
+import getUserAvatarById from "./getUserAvatarById";
 import getUserBioById from "./getUserBioById";
 import getUserIdByUsername from "./getUserIdByUsername";
-import getUserUsername from "./getUserUsername";
+import getUserUsernameById from "./getUserUsernameById";
 import isUserLoggedIn from "./isUserLoggedIn";
 import loginUser from "./loginUser";
 import logoutUser from "./logoutUser";
@@ -15,7 +15,7 @@ import updatePassword from "./updatePassword";
 import updateUsername from "./updateUsername";
 
 const users = {
-    getUserUsername,
+    getUserUsernameById,
     isUserLoggedIn,
     loginUser,
     logoutUser,
@@ -23,7 +23,7 @@ const users = {
     updateAvatar,
     updateBio,
     updateUsername,
-    getUserAvatar,
+    getUserAvatarById,
     getUserBioById,
     getUserIdByUsername,
     updatePassword,
