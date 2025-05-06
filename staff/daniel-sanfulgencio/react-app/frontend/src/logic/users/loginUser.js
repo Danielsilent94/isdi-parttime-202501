@@ -1,6 +1,6 @@
 import { errors, validator } from "common"
 
-const loginUser = (loginData, callback) => { //{'email': 'patata@mail.com'}
+const loginUser = (loginData, callback) => { //{'email': 'algo@mail.com'}
     //comprobamos si el email que ha puesto el usuario esta en la bbdd y si no lo esta, lanzamos un alert
     validator.password(loginData['password'])
     validator.email(loginData['email'])
