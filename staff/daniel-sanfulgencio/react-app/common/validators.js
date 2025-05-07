@@ -1,4 +1,5 @@
-import errors from "./errors.js"
+import * as errors from './errors.js'
+
 
 const _validator = {
     email: (email) => {

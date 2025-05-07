@@ -34,25 +34,21 @@ const Header = ({ refreshHeader, logout, isUserLogged, locale }) => {
 
         if (logics.users.isUserLoggedIn()) {
             setJustifyItems('between')
-            logics.users.getUserUsername((error, retrivedUsername) => {
-                if (error) {
-                    alert('error!')
-                    console.error(error)
-                }
-                else {
-                    setUsername(retrivedUsername)
-                    logics.users.getUserAvatar((error, retrivedAvatar) => {
-                        if (error) {
-                            alert('error!')
-                            console.error(error)
-                        } else {
-                            setAvatar(retrivedAvatar)
-                        }
-                    })
-                }
-            })
+            try {
+                const retrivedUsername = logics.users.getUserUsernameById()
+                setUsername(retrivedUsername)
 
-
+                logics.users.getUserAvatar((error, retrivedAvatar) => {
+                    if (error) {
+                        alert('error!')
+                        console.error(error)
+                    } else {
+                        setAvatar(retrivedAvatar)
+                    }
+                })
+            } catch (error) {
+                console.error(error)
+            }
         } else {
             if (pathname === '/login' || pathname === '/register') {
                 setJustifyItems('start')
@@ -63,7 +59,6 @@ const Header = ({ refreshHeader, logout, isUserLogged, locale }) => {
             }
         }
     }, [refreshHeader, location])
-
 
     const handleLogoClick = () => {
         navigate("/")
@@ -82,16 +77,21 @@ const Header = ({ refreshHeader, logout, isUserLogged, locale }) => {
             (isUserLogged && username.length > 0) && <p>{`${translations.welcome}, ${username}`}</p>
         }
         {
-            !isUserLogged && (path === '/' || justifyItems === 'not-found') && <Btn btnClassnames={"header__join-button"} btnContent={translations.joinBtn} btnCallback={() => navigate('/register')} />
+            !isUserLogged && (path === '/' || justifyItems === 'not-found') &&
+            <Btn
+                btnClassnames={"header__join-button"}
+                btnContent={translations.joinBtn}
+                btnCallback={() => navigate('/register')}
+            />
         }
         {
-            (((username || avatar) && isUserLogged) &&
-                <UserAvatar
-                    size={'sm'}
-                    avatar={avatar}
-                    letter={username[0]}
-                    buttonCallback={() => setUserMenuOpen(!isUserMenuOpen)}
-                />)
+            ((username || avatar) && isUserLogged) &&
+            <UserAvatar
+                size={'sm'}
+                avatar={avatar}
+                letter={username[0]}
+                buttonCallback={() => setUserMenuOpen(!isUserMenuOpen)}
+            />
         }
         {
             isUserMenuOpen && <aside className="header__user-menu">
@@ -101,8 +101,6 @@ const Header = ({ refreshHeader, logout, isUserLogged, locale }) => {
                 <Btn btnContent={translations.logout} btnClassnames={'header__user-menu--button'} btnCallback={onLogoutClick} />
             </aside>
         }
-
-
     </header>
 }
 
