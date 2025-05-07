@@ -1,7 +1,7 @@
 const en = {
     landing: {
-        appName: 'PET APP',
-        subtitle: 'A social app for pets'
+        appName: '🔥BURGUER BLISS🔥',
+        subtitle: 'A social app for Burguer lovers'
     },
     header: {
         joinBtn: 'Join in!',

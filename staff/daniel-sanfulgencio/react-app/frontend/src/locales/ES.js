@@ -1,7 +1,7 @@
 const es = {
     landing: {
-        appName: 'APP DE MASCOTAS',
-        subtitle: 'Una app para animales'
+        appName: '🔥BURGUER BLISS🔥',
+        subtitle: 'Una app para amantes de las hamburguesas'
     },
     header: {
         joinBtn: '¡Únete!',
