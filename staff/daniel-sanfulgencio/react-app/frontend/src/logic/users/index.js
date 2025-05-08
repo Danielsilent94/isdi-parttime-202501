@@ -15,7 +15,8 @@ import updatePassword from "./updatePassword";
 import updateUsername from "./updateUsername";
 
 const users = {
-    getUserUsernameById,
+    getUserUsername: getUserUsernameById, // alias usado en Header.jsx
+    getUserAvatar: getUserAvatarById,     // alias usado en Header.jsx
     isUserLoggedIn,
     loginUser,
     logoutUser,
@@ -32,4 +33,4 @@ const users = {
     getRandomBio
 }
 
-export default users
+export default users;

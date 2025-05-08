@@ -1,3 +1,4 @@
+// src/components/Header.jsx
 import { useState, useEffect } from "react"
 import Btn from "./lib/Btn"
 import Logo from "./lib/Logo"
@@ -34,21 +35,24 @@ const Header = ({ refreshHeader, logout, isUserLogged, locale }) => {
 
         if (logics.users.isUserLoggedIn()) {
             setJustifyItems('between')
-            try {
-                const retrivedUsername = logics.users.getUserUsernameById()
-                setUsername(retrivedUsername)
 
-                logics.users.getUserAvatar((error, retrivedAvatar) => {
-                    if (error) {
-                        alert('error!')
-                        console.error(error)
-                    } else {
-                        setAvatar(retrivedAvatar)
-                    }
-                })
-            } catch (error) {
-                console.error(error)
-            }
+            logics.users.getUserUsername((error, retrivedUsername) => {
+                if (error) {
+                    alert('Error getting username')
+                    console.error(error)
+                } else {
+                    setUsername(retrivedUsername)
+                    logics.users.getUserAvatar((error, retrivedAvatar) => {
+                        if (error) {
+                            alert('Error getting avatar')
+                            console.error(error)
+                        } else {
+                            setAvatar(retrivedAvatar)
+                        }
+                    })
+                }
+            })
+
         } else {
             if (pathname === '/login' || pathname === '/register') {
                 setJustifyItems('start')
@@ -74,15 +78,10 @@ const Header = ({ refreshHeader, logout, isUserLogged, locale }) => {
             ((path === '/register' || path === '/login' || justifyItems === 'not-found') || isUserLogged) && <Logo onClick={handleLogoClick} size="sm" />
         }
         {
-            (isUserLogged && username.length > 0) && <p>{`${translations.welcome}, ${username}`}</p>
+            (isUserLogged && username?.length > 0) && <p>{`${translations.welcome}, ${username}`}</p>
         }
         {
-            !isUserLogged && (path === '/' || justifyItems === 'not-found') &&
-            <Btn
-                btnClassnames={"header__join-button"}
-                btnContent={translations.joinBtn}
-                btnCallback={() => navigate('/register')}
-            />
+            !isUserLogged && (path === '/' || justifyItems === 'not-found') && <Btn btnClassnames={"header__join-button"} btnContent={translations.joinBtn} btnCallback={() => navigate('/register')} />
         }
         {
             ((username || avatar) && isUserLogged) &&
