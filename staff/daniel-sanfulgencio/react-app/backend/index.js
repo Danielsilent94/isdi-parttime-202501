@@ -3,7 +3,9 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import { validator, errors } from 'common';
 import { FormatError } from 'common/errors.js';
-import User from './models/User.js'; // <<-- Importamos el modelo User
+
+import User from './models/User.js';
+import Post from './models/Post.js';
 
 const port = 4321;
 const api = express();
@@ -27,7 +29,7 @@ api.post('/users', async (req, res) => {
         if (existingUser) return res.status(409).send('Duplicity error.');
 
         const newUser = await User.create({ email, password, username });
-        res.status(201).send({ id: newUser._id });
+        res.status(201).json({ id: newUser._id });
     } catch (error) {
         if (error instanceof TypeError || error instanceof RangeError || error instanceof FormatError) {
             res.status(400).send(error.message);
@@ -50,7 +52,7 @@ api.post('/users/auth', async (req, res) => {
 
         if (user.password !== password) return res.status(401).send('invalid credentials');
 
-        res.status(200).send(user._id.toString());
+        res.status(200).json({ id: user._id.toString() });
     } catch (error) {
         if (error instanceof TypeError || error instanceof RangeError || error instanceof FormatError) {
             res.status(400).send(error.message);
@@ -90,6 +92,37 @@ api.get('/users/avatar', async (req, res) => {
     }
 });
 
+// Crear nuevo post
+api.post('/posts', async (req, res) => {
+    const authHeader = req.headers.authorization;
+    const id = authHeader?.split(" ")[1];
+    const { title, description, img } = req.body;
+
+    try {
+        validator.id(id);
+        validator.text(title, 40, 1, 'Post Title');
+        validator.text(description, 210, 1, 'Post Description');
+
+        const post = await Post.create({
+            title,
+            description,
+            img,
+            author: id,
+            likes: [],
+            createdOn: new Date()
+        });
+
+        res.status(201).json(post);
+    } catch (error) {
+        if (error instanceof TypeError || error instanceof RangeError || error instanceof FormatError) {
+            res.status(400).send(error.message);
+        } else {
+            console.error(error);
+            res.status(500).send('Server error');
+        }
+    }
+});
+
 // Conexión a Mongo y arranque del servidor
 mongoose.connect('mongodb://127.0.0.1:27017/my-app')
     .then(() => {
@@ -101,4 +134,3 @@ mongoose.connect('mongodb://127.0.0.1:27017/my-app')
     .catch(error => {
         console.error('❌ Failed to connect to MongoDB', error);
     });
-
