@@ -1,73 +1,44 @@
-import fs from 'fs';
+import Post from '../models/Post.js'
 import { errors } from 'common'
 
 const posts = {
-    createPost: (post, callback) => {
-        fs.readFile('./data/posts.json', (error, data) => {
-            if (error) callback(error)
-            else {
-                let posts = JSON.parse(data)
-                if (!posts) posts = []
-
-                post.id = Date.now()
-                posts.push(post)
-
-                const postsJson = JSON.stringify(posts)
-
-                fs.writeFile('./data/posts.json', postsJson, (error) => {
-                    if (error) callback(error)
-                    else callback(null, post)
-                })
-            }
-        })
+    createPost: async (post, callback) => {
+        try {
+            post.createdOn = new Date()
+            post.likes = []
+            const newPost = await Post.create(post)
+            callback(null, newPost)
+        } catch (error) {
+            callback(error)
+        }
     },
-    findPosts: (callback) => {
-        fs.readFile('./data/posts.json', (error, data) => {
-            if (error) callback(error)
-            else {
-                let posts = JSON.parse(data)
-                if (!posts) posts = []
 
-                callback(null, posts)
-            }
-        })
+    findPosts: async (callback) => {
+        try {
+            const allPosts = await Post.find()
+            callback(null, allPosts)
+        } catch (error) {
+            callback(error)
+        }
     },
-    findPostById: (id, callback) => {
-        fs.readFile('./data/posts.json', (error, data) => {
-            if (error) callback(error)
-            else {
-                let posts = JSON.parse(data)
-                if (!posts) posts = []
 
-                const postFound = posts.find(post => post.id === id)
-
-                callback(null, postFound)
-            }
-        })
+    findPostById: async (id, callback) => {
+        try {
+            const post = await Post.findById(id)
+            callback(null, post)
+        } catch (error) {
+            callback(error)
+        }
     },
-    updatePostById: (id, newpostData, callback) => {
-        fs.readFile('./data/posts.json', (error, data) => {
-            if (error) callback(error)
-            else {
-                let posts = JSON.parse(data)
-                if (!posts) callback(new errors.ExistenceError('post not found'))
-                else {
-                    const postIndex = posts.findIndex(post => post.id === id)
-                    if (postIndex === -1) {
-                        callback(new errors.ExistenceError('post not found'))
-                    } else {
-                        posts[postIndex] = newpostData
 
-                        const postsJson = JSON.stringify(posts)
-
-                        fs.writeFile('./data/posts.json', postsJson, (error) => {
-                            if (error) callback(error)
-                            else callback(null, newpostData)
-                        })
-                    }
-                }
-            }
-        })
+    updatePostById: async (id, newPostData, callback) => {
+        try {
+            const updated = await Post.findByIdAndUpdate(id, newPostData, { new: true })
+            if (!updated) return callback(new errors.ExistenceError('post not found'))
+            callback(null, updated)
+        } catch (error) {
+            callback(error)
+        }
     }
 }
 

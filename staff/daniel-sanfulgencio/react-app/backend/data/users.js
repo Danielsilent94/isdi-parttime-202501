@@ -1,75 +1,53 @@
-import fs from 'fs';
-import { errors } from 'common'
+import { errors } from 'common';
+import User from '../models/User.js';
 
 const users = {
-    createUser: (user, callback) => { //e.g user = {email: "danny@mail.com", password: "12345Aa!", username: "danny"}
-        fs.readFile('./data/users.json', (error, data) => {
-            if (error) callback(error)
-            else {
-                let users = JSON.parse(data)
-                if (!users) users = []
-                user.id = Date.now()
-                users.push(user)
-
-                const usersJson = JSON.stringify(users)
-
-                fs.writeFile('./data/users.json', usersJson, (error) => {
-                    if (error) callback(error)
-                    else callback(null, user)
-                })
-            }
-        })
+    createUser: async (userData, callback) => {
+        try {
+            const user = new User({
+                email: userData.email,
+                password: userData.password,
+                username: userData.username,
+                avatar: userData.avatar || '',
+                bio: userData.bio || ''
+            });
+            await user.save();
+            callback(null, user);
+        } catch (error) {
+            callback(error);
+        }
     },
-    findUserByEmail: (email, callback) => {
-        fs.readFile('./data/users.json', (error, data) => {
-            if (error) callback(error)
-            else {
-                let users = JSON.parse(data)
-                if (!users) users = []
 
-                const userFound = users.find(user => user.email === email)
-
-                callback(null, userFound)
-            }
-        })
+    findUserByEmail: async (email, callback) => {
+        try {
+            const user = await User.findOne({ email });
+            callback(null, user);
+        } catch (error) {
+            callback(error);
+        }
     },
-    findUserById: (id, callback) => {
-        fs.readFile('./data/users.json', (error, data) => {
-            if (error) callback(error)
-            else {
-                let users = JSON.parse(data)
-                if (!users) users = []
 
-                const userFound = users.find(user => user.id === id)
-
-                callback(null, userFound)
-            }
-        })
+    findUserById: async (id, callback) => {
+        try {
+            const user = await User.findById(id);
+            callback(null, user);
+        } catch (error) {
+            callback(error);
+        }
     },
-    updateUserById: (id, newUserData, callback) => {
-        fs.readFile('./data/users.json', (error, data) => {
-            if (error) callback(error)
-            else {
-                let users = JSON.parse(data)
-                if (!users) callback(new errors.ExistenceError('user not found'))
-                else {
-                    const userIndex = users.findIndex(user => user.id === id)
-                    if (userIndex === -1) {
-                        callback(new errors.ExistenceError('user not found'))
-                    } else {
-                        users[userIndex] = newUserData
 
-                        const usersJson = JSON.stringify(users)
-
-                        fs.writeFile('./data/users.json', usersJson, (error) => {
-                            if (error) callback(error)
-                            else callback(null, newUserData)
-                        })
-                    }
-                }
+    updateUserById: async (id, newUserData, callback) => {
+        try {
+            const user = await User.findByIdAndUpdate(id, newUserData, { new: true });
+            if (!user) {
+                callback(new errors.ExistenceError('user not found'));
+            } else {
+                callback(null, user);
             }
-        })
+        } catch (error) {
+            callback(error);
+        }
     }
-}
+};
 
-export default users
+export default users;

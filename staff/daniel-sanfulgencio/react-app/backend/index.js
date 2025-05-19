@@ -1,121 +1,104 @@
-import express from 'express';
-import { json } from 'express';
-import { data } from './data/index.js';
-import { validator, errors } from 'common' 
+import express, { json } from 'express';
+import cors from 'cors';
+import mongoose from 'mongoose';
+import { validator, errors } from 'common';
 import { FormatError } from 'common/errors.js';
-import cors from 'cors'
+import User from './models/User.js'; // <<-- Importamos el modelo User
 
-const port = 4321 //localhost:4321/
-
-const api = express()
-
-api.use(cors())
-
-const jsonBodyParser = json()
+const port = 4321;
+const api = express();
+api.use(cors());
+api.use(json());
 
 api.get('/api', (req, res) => {
-    res.status(200)
-    res.send('Hello World!')
-})
+    res.status(200).send('Hello World!');
+});
 
-api.post('/users', jsonBodyParser, (req, res) => {
-    const { email, password } = req.body
-
-    try {
-        validator.email(email)
-        validator.password(password)
-        const username = email.split('@')[0]
-
-        data.users.findUserByEmail(email, (error, user) => {
-            if (error) res.status(500).send(error.message)
-            else if (user) res.status(409).send('Duplicity error.')
-            else {
-                data.users.createUser({ email, password, username }, (error, user) => {
-                    if (error) res.status(500).send(error.message)
-                    else if (user) res.status(201).send()
-                    else {
-                        res.status(500).send('something went wrong')
-                    }
-                })
-            }
-        })
-    } catch (error) {
-        if (error instanceof TypeError || error instanceof RangeError || error instanceof FormatError) {
-            res.status(400).send(error.message)
-        } else {
-            res.status(500).send(error.message)
-        }
-    }
-})
-
-api.post('/users/auth', jsonBodyParser, (req, res) => {
-    const { email, password } = req.body
+// Registro de usuario
+api.post('/users', async (req, res) => {
+    const { email, password } = req.body;
 
     try {
-        validator.email(email)
-        validator.password(password)
+        validator.email(email);
+        validator.password(password);
+        const username = email.split('@')[0];
 
-        data.users.findUserByEmail(email, (error, user) => {
-            if (error) res.status(500).send(error.message)
-            else if (!user) res.status(404).send('user not found')
-            else {
-                if (user.password !== password) res.status(401).send('invalid credentials')
-                else {
-                    res.status(200).send(user.id)
-                }
-            }
-        })
+        const existingUser = await User.findOne({ email });
+        if (existingUser) return res.status(409).send('Duplicity error.');
+
+        const newUser = await User.create({ email, password, username });
+        res.status(201).send({ id: newUser._id });
     } catch (error) {
         if (error instanceof TypeError || error instanceof RangeError || error instanceof FormatError) {
-            res.status(400).send(error.message)
+            res.status(400).send(error.message);
         } else {
-            res.status(500).send(error.message)
+            res.status(500).send(error.message);
         }
     }
-})
+});
 
-api.get('/users/username', (req, res) => {
-    const auhtHeader = req.headers.authorization
-
-    const id = Number(auhtHeader.split(" ")[1])
+// Login de usuario
+api.post('/users/auth', async (req, res) => {
+    const { email, password } = req.body;
 
     try {
-        validator.id(id)
-        data.users.findUserById(id, (error, user) => {
-            if (error) res.status(500).send(error.message)
-            else if (!user) res.status(404).send('user not found')
-            else res.status(200).send(user.username)
-        })
+        validator.email(email);
+        validator.password(password);
+
+        const user = await User.findOne({ email });
+        if (!user) return res.status(404).send('user not found');
+
+        if (user.password !== password) return res.status(401).send('invalid credentials');
+
+        res.status(200).send(user._id.toString());
     } catch (error) {
         if (error instanceof TypeError || error instanceof RangeError || error instanceof FormatError) {
-            res.status(400).send(error.message)
+            res.status(400).send(error.message);
         } else {
-            res.status(500).send(error.message)
+            res.status(500).send(error.message);
         }
     }
-})
+});
 
-api.get('/users/avatar', (req, res) => {
-    const auhtHeader = req.headers.authorization
-
-    const id = Number(auhtHeader.split(" ")[1])
+// Obtener username
+api.get('/users/username', async (req, res) => {
+    const authHeader = req.headers.authorization;
+    const id = authHeader?.split(" ")[1];
 
     try {
-        validator.id(id)
-        data.users.findUserById(id, (error, user) => {
-            if (error) res.status(500).send(error.message)
-            else if (!user) res.status(404).send('user not found')
-            else res.status(200).send(user.avatar)
-        })
-    } catch (error) {
-        if (error instanceof TypeError || error instanceof RangeError || error instanceof FormatError) {
-            res.status(400).send(error.message)
-        } else {
-            res.status(500).send(error.message)
-        }
-    }
-})
+        const user = await User.findById(id);
+        if (!user) return res.status(404).send('user not found');
 
-api.listen(port, () => {
-    console.info(`API listening to PORT: ${port}`)
-})
+        res.status(200).send(user.username);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+
+// Obtener avatar
+api.get('/users/avatar', async (req, res) => {
+    const authHeader = req.headers.authorization;
+    const id = authHeader?.split(" ")[1];
+
+    try {
+        const user = await User.findById(id);
+        if (!user) return res.status(404).send('user not found');
+
+        res.status(200).send(user.avatar || '');
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+
+// Conexión a Mongo y arranque del servidor
+mongoose.connect('mongodb://127.0.0.1:27017/my-app')
+    .then(() => {
+        console.log('✅ Connected to MongoDB');
+        api.listen(port, () => {
+            console.info(`🚀 API listening to PORT: ${port}`);
+        });
+    })
+    .catch(error => {
+        console.error('❌ Failed to connect to MongoDB', error);
+    });
+
