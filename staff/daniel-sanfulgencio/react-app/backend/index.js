@@ -12,6 +12,7 @@ const api = express();
 api.use(cors());
 api.use(json());
 
+// Test endpoint
 api.get('/api', (req, res) => {
     res.status(200).send('Hello World!');
 });
@@ -92,6 +93,24 @@ api.get('/users/avatar', async (req, res) => {
     }
 });
 
+// Obtener datos de un usuario por ID
+api.get('/users/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const user = await User.findById(id).lean();
+        if (!user) return res.status(404).json({ name: 'ExistenceError', message: 'user not found' });
+
+        res.status(200).json({
+            _id: user._id,
+            username: user.username,
+            avatar: user.avatar || ''
+        });
+    } catch (error) {
+        res.status(500).json({ name: error.name, message: error.message });
+    }
+});
+
 // Crear nuevo post
 api.post('/posts', async (req, res) => {
     const authHeader = req.headers.authorization;
@@ -123,6 +142,80 @@ api.post('/posts', async (req, res) => {
     }
 });
 
+// Obtener todos los posts
+api.get('/posts', async (req, res) => {
+    const authHeader = req.headers.authorization;
+    const id = authHeader?.split(" ")[1];
+
+    try {
+        validator.id(id);
+
+        const posts = await Post.find()
+            .populate('author', '_id username avatar')
+            .sort({ createdOn: -1 });
+
+        const normalizedPosts = posts.map(post => ({
+            id: post._id.toString(),
+            title: post.title,
+            description: post.description,
+            img: post.img,
+            author: {
+                id: post.author._id.toString(),
+                username: post.author.username,
+                avatar: post.author.avatar || ''
+            },
+            createdOn: post.createdOn.toLocaleString(),
+            likes: post.likes.map(u => u.toString()),
+            isLiked: post.likes.map(u => u.toString()).includes(id)
+        }));
+
+        res.status(200).json(normalizedPosts);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ name: error.name, message: error.message });
+    }
+});
+
+// Obtener posts de un autor específico
+api.get('/posts/author/:authorId', async (req, res) => {
+    const authHeader = req.headers.authorization;
+    const loggedUserId = authHeader?.split(" ")[1];
+    const authorId = req.params.authorId;
+
+    try {
+        validator.id(loggedUserId);
+        validator.id(authorId);
+
+        const posts = await Post.find({ author: authorId })
+            .populate('author', '_id username avatar')
+            .sort({ createdOn: -1 });
+
+        const normalizedPosts = posts.map(post => ({
+            id: post._id.toString(),
+            title: post.title,
+            description: post.description,
+            img: post.img,
+            author: {
+                id: post.author._id.toString(),
+                username: post.author.username,
+                avatar: post.author.avatar || ''
+            },
+            createdOn: post.createdOn.toLocaleString(),
+            likes: post.likes.map(userId => userId.toString()),
+            isLiked: post.likes.map(userId => userId.toString()).includes(loggedUserId)
+        }));
+
+        res.status(200).json(normalizedPosts);
+    } catch (error) {
+        if (error instanceof TypeError || error instanceof RangeError || error instanceof FormatError) {
+            res.status(400).send(error.message);
+        } else {
+            console.error(error);
+            res.status(500).send('Server error');
+        }
+    }
+});
+
 // Conexión a Mongo y arranque del servidor
 mongoose.connect('mongodb://127.0.0.1:27017/my-app')
     .then(() => {
@@ -134,3 +227,4 @@ mongoose.connect('mongodb://127.0.0.1:27017/my-app')
     .catch(error => {
         console.error('❌ Failed to connect to MongoDB', error);
     });
+

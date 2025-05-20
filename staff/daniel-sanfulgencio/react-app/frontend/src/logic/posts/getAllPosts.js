@@ -1,32 +1,41 @@
-import data from "../../data";
-import { errors, validator } from "common"
+import { errors, validator } from "common";
 import getLoggedUserId from "../helpers/getLoggedUserId";
 
-const getAllPosts = () => {
-    const loggedUserId = getLoggedUserId()
+const getAllPosts = (callback) => {
+    const loggedUserId = getLoggedUserId();
 
-    validator.id(loggedUserId)
+    try {
+        validator.id(loggedUserId);
 
-    const posts = data.posts.retrievePosts()
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', `${import.meta.env.VITE_API_APP}/posts`, true);
+        xhr.setRequestHeader('Authorization', `Basic ${loggedUserId}`);
 
-    if (posts.length > 0) posts.sort((item1, item2) => new Date(item2.createdOn) - new Date(item1.createdOn))
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    const posts = JSON.parse(xhr.response);
 
-    for (let i = 0; i < posts.length; i++) {
-        const author = data.users.findUserById(posts[i].author)
-        if (!author) throw new errors.ExistenceError('author not found')
-        posts[i].author = { id: author.id, username: author.username, avatar: author.avatar }
-        const date = new Date(posts[i].createdOn)
-        posts[i].createdOn = date.toLocaleString()
-        if (!posts[i].likes) posts[i].likes = []; //para manejar posts sin arrays de likes
-        if (posts[i].likes.length > 0 && posts[i].likes.includes(loggedUserId)) {
-            posts[i].isLiked = true
-        } else {
-            posts[i].isLiked = false
-        }
+                    posts.forEach(post => {
+                        const date = new Date(post.createdOn);
+                        post.createdOn = date.toLocaleString();
+                        post.isLiked = post.likes.includes(loggedUserId);
+                    });
 
+                    callback(null, posts);
+                } else {
+                    const response = JSON.parse(xhr.response);
+                    if (errors[response.name]) callback(new errors[response.name](response.message));
+                    else callback(new Error(`${response.name}: ${response.message}`));
+                }
+            }
+        };
+
+        xhr.send();
+
+    } catch (error) {
+        callback(error);
     }
+};
 
-    return posts
-}
-
-export default getAllPosts
+export default getAllPosts;
