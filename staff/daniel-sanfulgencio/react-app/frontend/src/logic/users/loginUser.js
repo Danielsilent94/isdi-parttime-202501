@@ -1,36 +1,44 @@
-import { errors, validator } from "common"
+import { errors, validator } from "common";
+import getLoggedUserId from "../helpers/getLoggedUserId";
 
-const loginUser = (loginData, callback) => { //{'email': 'algo@mail.com'}
-    //comprobamos si el email que ha puesto el usuario esta en la bbdd y si no lo esta, lanzamos un alert
-    validator.password(loginData['password'])
-    validator.email(loginData['email'])
+const loginUser = ({email, password}, callback) => {
+    try {
+        validator.email(email);
+        validator.password(password);
 
-    const user = { email: loginData.email, password: loginData.password }
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', `${import.meta.env.VITE_API_APP}/users/auth`, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
 
-    const xhr = new XMLHttpRequest()
-
-    xhr.open('POST', `${import.meta.env.VITE_API_APP}/users/auth`, true)
-
-    xhr.setRequestHeader('Content-Type', 'application/json')
-
-    xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4)
-            if (xhr.status === 200) {
-                if (loginData['remember']) {
-                    localStorage.id = xhr.response
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    try {
+                        const { id } = JSON.parse(xhr.responseText);
+                        localStorage.setItem("userId", id);
+                        callback(null);
+                    } catch (parseError) {
+                        callback(new Error("Unexpected response format"));
+                    }
                 } else {
-                    sessionStorage.id = xhr.response
+                    try {
+                        const response = JSON.parse(xhr.responseText);
+                        if (errors[response.name]) {
+                            callback(new errors[response.name](response.message));
+                        } else {
+                            callback(new Error(`${response.name}: ${response.message}`));
+                        }
+                    } catch (parseError) {
+                        callback(new Error("Unexpected response format"));
+                    }
                 }
-                callback(null)
-            } else {
-                const response = JSON.parse(xhr.response)
-                if (errors[response.name]) callback(new errors[response.name](response.message))
-                else callback(new Error(`${response.name}: ${response.message}`))
-                callback(new errors[response.name](response.message))
             }
+        };
+
+        xhr.send(JSON.stringify({ email, password }));
+    } catch (error) {
+        callback(error);
     }
+};
 
-    xhr.send(JSON.stringify(user))
-}
-
-export default loginUser
+export default loginUser;

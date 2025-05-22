@@ -1,12 +1,6 @@
 const isUserLoggedIn = () => {
-    if (localStorage.id) {
-        return true
-    }
-    if (sessionStorage.id) {
-        return true
-    }
+    const userId = localStorage.getItem('userId');
+    return Boolean(userId);
+};
 
-    return false
-}
-
-export default isUserLoggedIn
+export default isUserLoggedIn;

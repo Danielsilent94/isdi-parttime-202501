@@ -1,12 +1,14 @@
 const getLoggedUserId = () => {
     let loggedUserId;
-    if (localStorage.id) {
-        loggedUserId = localStorage.getItem('id');
+    if (localStorage.userId) {
+        loggedUserId = localStorage.getItem('userId');
     } else {
-        loggedUserId = sessionStorage.getItem('id'); // ahora es un string (Mongo ID)
+        loggedUserId = sessionStorage.getItem('userId');
     }
 
     return loggedUserId;
-}
+};
 
 export default getLoggedUserId;
+
+

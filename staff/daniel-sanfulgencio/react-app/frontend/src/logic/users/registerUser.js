@@ -1,41 +1,44 @@
-import { errors, validator } from "common"
+import { errors, validator } from "common";
 
-const registerUser = (registerData, callback) => { //registerData = {'email': '', 'password': '', 'confirmation-password': ''}
-    const securityErrors = validator.passwordSecurity(registerData['password'])
+const registerUser = (email, password, callback) => {
+    try {
+        validator.email(email);
+        validator.password(password);
 
-    if (securityErrors.length > 0) throw new errors.FormatError(securityErrors.join(','))
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', `${import.meta.env.VITE_API_APP}/users`, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
 
-    if (registerData['password'] !== registerData['confirmation-password']) {
-        throw new errors.ContentError('password and confirmation password are not the same')
-    }
-
-    validator.email(registerData['email'])
-    validator.password(registerData['password'])
-    validator.password(registerData['confirmation-password'])
-
-    const user = { email: registerData['email'], password: registerData['password'] }
-
-    const xhr = new XMLHttpRequest()
-
-    xhr.open('POST', `${import.meta.env.VITE_API_APP}/users`, true)
-
-    xhr.setRequestHeader('Content-Type', 'application/json')
-
-    xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 201) {
-                callback(null)
-            } else {
-                const response = JSON.parse(xhr.response)
-                if (errors[response.name]) callback(new errors[response.name](response.message)) //new errors.ExistenceError('user not found')
-                else callback(new Error(`${response.name}: ${response.message}`))
-                callback(new errors[response.name](response.message)) //new errors.ExistenceError('user not found')
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 201) {
+                    try {
+                        //const { id } = JSON.parse(xhr.responseText);
+                        //localStorage.setItem("userId", id);
+                        callback(null);
+                    } catch (error) {
+                        callback(new Error("Unexpected response format", error.message));
+                    }
+                } else {
+                    try {
+                        const response = JSON.parse(xhr.responseText);
+                        if (errors[response.name]) {
+                            callback(new errors[response.name](response.message));
+                        } else {
+                            callback(new Error(`${response.name}: ${response.message}`));
+                        }
+                    } catch (parseError) {
+                        callback(new Error("Unexpected response format"));
+                    }
+                }
             }
-        }
+        };
+
+        xhr.send(JSON.stringify({ email, password }));
+    } catch (error) {
+        callback(error);
     }
+};
 
-    xhr.send(JSON.stringify(user))
+export default registerUser;
 
-}
-
-export default registerUser

@@ -1,10 +1,6 @@
 const logoutUser = () => {
-    if (sessionStorage.id) {
-        sessionStorage.removeItem('id')
-    }
-    if (localStorage.id) {
-        localStorage.removeItem('id')
-    }
-}
+    localStorage.removeItem("userId");
+};
 
-export default logoutUser
+export default logoutUser;
+

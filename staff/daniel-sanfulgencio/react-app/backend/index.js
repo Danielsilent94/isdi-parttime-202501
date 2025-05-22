@@ -27,15 +27,15 @@ api.post('/users', async (req, res) => {
         const username = email.split('@')[0];
 
         const existingUser = await User.findOne({ email });
-        if (existingUser) return res.status(409).send('Duplicity error.');
+        if (existingUser) return res.status(409).json({ name: 'DuplicityError', message: 'Duplicity error.' });
 
         const newUser = await User.create({ email, password, username });
         res.status(201).json({ id: newUser._id });
     } catch (error) {
         if (error instanceof TypeError || error instanceof RangeError || error instanceof FormatError) {
-            res.status(400).send(error.message);
+            res.status(400).json({ name: error.name, message: error.message });
         } else {
-            res.status(500).send(error.message);
+            res.status(500).json({ name: error.name, message: error.message });
         }
     }
 });
@@ -49,17 +49,13 @@ api.post('/users/auth', async (req, res) => {
         validator.password(password);
 
         const user = await User.findOne({ email });
-        if (!user) return res.status(404).send('user not found');
+        if (!user) return res.status(404).json({ name: 'ExistenceError', message: 'user not found' });
 
-        if (user.password !== password) return res.status(401).send('invalid credentials');
+        if (user.password !== password) return res.status(401).json({ name: 'AuthError', message: 'invalid credentials' });
 
         res.status(200).json({ id: user._id.toString() });
     } catch (error) {
-        if (error instanceof TypeError || error instanceof RangeError || error instanceof FormatError) {
-            res.status(400).send(error.message);
-        } else {
-            res.status(500).send(error.message);
-        }
+        res.status(500).json({ name: error.name, message: error.message });
     }
 });
 
@@ -70,11 +66,11 @@ api.get('/users/username', async (req, res) => {
 
     try {
         const user = await User.findById(id);
-        if (!user) return res.status(404).send('user not found');
+        if (!user) return res.status(404).json({ name: 'ExistenceError', message: 'user not found' });
 
         res.status(200).send(user.username);
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).json({ name: error.name, message: error.message });
     }
 });
 
@@ -85,11 +81,11 @@ api.get('/users/avatar', async (req, res) => {
 
     try {
         const user = await User.findById(id);
-        if (!user) return res.status(404).send('user not found');
+        if (!user) return res.status(404).json({ name: 'ExistenceError', message: 'user not found' });
 
         res.status(200).send(user.avatar || '');
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).json({ name: error.name, message: error.message });
     }
 });
 
@@ -133,12 +129,7 @@ api.post('/posts', async (req, res) => {
 
         res.status(201).json(post);
     } catch (error) {
-        if (error instanceof TypeError || error instanceof RangeError || error instanceof FormatError) {
-            res.status(400).send(error.message);
-        } else {
-            console.error(error);
-            res.status(500).send('Server error');
-        }
+        res.status(500).json({ name: error.name, message: error.message });
     }
 });
 
@@ -171,7 +162,6 @@ api.get('/posts', async (req, res) => {
 
         res.status(200).json(normalizedPosts);
     } catch (error) {
-        console.error(error);
         res.status(500).json({ name: error.name, message: error.message });
     }
 });
@@ -207,12 +197,7 @@ api.get('/posts/author/:authorId', async (req, res) => {
 
         res.status(200).json(normalizedPosts);
     } catch (error) {
-        if (error instanceof TypeError || error instanceof RangeError || error instanceof FormatError) {
-            res.status(400).send(error.message);
-        } else {
-            console.error(error);
-            res.status(500).send('Server error');
-        }
+        res.status(500).json({ name: error.name, message: error.message });
     }
 });
 
@@ -227,4 +212,3 @@ mongoose.connect('mongodb://127.0.0.1:27017/my-app')
     .catch(error => {
         console.error('❌ Failed to connect to MongoDB', error);
     });
-
