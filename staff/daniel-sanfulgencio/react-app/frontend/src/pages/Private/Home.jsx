@@ -1,121 +1,60 @@
-/*import { useEffect, useRef, useState } from "react"
-import PostList from "../../components/PostList"
-import Btn from "../../components/lib/Btn"
-import CreatePostModal from "../../components/CreatePostModal"
-import './Home.css'
-import logics from "../../logic"
+import { useEffect, useState } from "react";
+import logics from "../../logic";
+import Btn from "../../components/lib/Btn";
+import CreatePostModal from "../../components/CreatePostModal";
+import PostCard from "../../components/PostCard";
+import locales from "../../locales";
 
-const Home = () => {
-    const [refreshPosts, setRefreshPosts] = useState(Date.now())
-    const [showNewPostForm, setShowNewPostForm] = useState(false)
-    const [posts, setPosts] = useState([])
-    const dialogRef = useRef(null)
-    const pageRef = useRef(null)
-    const formRef = useRef(null)
+const Home = ({ locale }) => {
+    const [translations, setTranslations] = useState(locales[locale]['home']);
+    const [posts, setPosts] = useState([]);
+    const [showCreatePostModal, setShowCreatePostModal] = useState(false);
+    const [refreshPosts, setRefreshPosts] = useState(Date.now());
 
     useEffect(() => {
-        try {
-            const retrivedPosts = logics.posts.getAllPosts()
-            setPosts(retrivedPosts)
-        } catch (error) {
-            alert('ups, something is not working!')
-            console.error(error)
-        }
-    }, [refreshPosts])
-
-    const handleOutsideModalClick = (event) => {
-        if (!formRef.current.contains(event.target)) {
-            setShowNewPostForm(false)
-        }
-    }
+        setTranslations(locales[locale]['home']);
+    }, [locale]);
 
     useEffect(() => {
-        if (pageRef.current && showNewPostForm) pageRef.current.addEventListener("click", (event) => handleOutsideModalClick(event))
+        logics.posts.getAllPosts((error, posts) => {
+            if (error) {
+                alert(translations.errorMsg);
+                console.error(error);
+            } else {
+                setPosts(posts);
+            }
+        });
+    }, [refreshPosts]);
 
-        if ((dialogRef.current && dialogRef.current.open) && !showNewPostForm) {
-            dialogRef.current.close()
-        } else if (!(dialogRef.current && dialogRef.current.open) && showNewPostForm) {
-            dialogRef.current.showModal()
-        }
+    const openModal = () => setShowCreatePostModal(true);
+    const closeModal = () => setShowCreatePostModal(false);
 
-        return () => {
-            if (pageRef.current) pageRef.current.removeEventListener("click", handleOutsideModalClick);
-        };
-    }, [showNewPostForm, refreshPosts])
+    return (
+        <div className="main-container">
+            <h1>{translations.title}</h1>
 
-    return <div className="main-container" ref={pageRef}>
-        <PostList posts={posts} refreshPosts={refreshPosts} setRefreshPosts={setRefreshPosts} />
-        <Btn btnClassnames={'home__new-post-button'} btnContent={'+'} btnCallback={() => setShowNewPostForm(!showNewPostForm)} />
-        <dialog ref={dialogRef}>
-            <div ref={formRef}>
-                <CreatePostModal setRefreshPosts={setRefreshPosts} closeModal={() => setShowNewPostForm(false)} />
+            <Btn
+                btnClassnames={"home__create-post--button"}
+                btnContent={translations.newPost}
+                btnCallback={openModal}
+            />
+
+            {showCreatePostModal &&
+                <CreatePostModal
+                    locale={locale}
+                    setRefreshPosts={setRefreshPosts}
+                    closeModal={closeModal}
+                />
+            }
+
+            <div className="home__posts-list">
+                {posts.map(post => (
+                    <PostCard key={post.id} post={post} />
+                ))}
             </div>
-        </dialog>
-    </div>
-}
+        </div>
+    );
+};
 
-export default Home*/
-import { useEffect, useRef, useState } from "react"
-import PostList from "../../components/PostList"
-import Btn from "../../components/lib/Btn"
-import CreatePostModal from "../../components/CreatePostModal"
-import './Home.css'
-import logics from "../../logic"
-import Loader from "../../components/Loader" // Importamos el Loader
+export default Home;
 
-const Home = () => {
-    const [refreshPosts, setRefreshPosts] = useState(Date.now())
-    const [showNewPostForm, setShowNewPostForm] = useState(false)
-    const [posts, setPosts] = useState([])
-    const [loading, setLoading] = useState(true) // Estado para el loader
-
-    const dialogRef = useRef(null)
-    const pageRef = useRef(null)
-    const formRef = useRef(null)
-
-    useEffect(() => {
-        try {
-            const retrivedPosts = logics.posts.getAllPosts()
-            setPosts(retrivedPosts)
-            setTimeout(() => setLoading(false), 1000) // Esperamos 1 seg para ver el loader
-        } catch (error) {
-            alert('ups, something is not working!')
-            console.error(error)
-            setLoading(false)
-        }
-    }, [refreshPosts])
-
-    const handleOutsideModalClick = (event) => {
-        if (!formRef.current.contains(event.target)) {
-            setShowNewPostForm(false)
-        }
-    }
-
-    useEffect(() => {
-        if (pageRef.current && showNewPostForm) pageRef.current.addEventListener("click", (event) => handleOutsideModalClick(event))
-
-        if ((dialogRef.current && dialogRef.current.open) && !showNewPostForm) {
-            dialogRef.current.close()
-        } else if (!(dialogRef.current && dialogRef.current.open) && showNewPostForm) {
-            dialogRef.current.showModal()
-        }
-
-        return () => {
-            if (pageRef.current) pageRef.current.removeEventListener("click", handleOutsideModalClick);
-        };
-    }, [showNewPostForm, refreshPosts])
-
-    if (loading) return <Loader /> // Mostramos el loader antes de cargar todo
-
-    return <div className="main-container" ref={pageRef}>
-        <PostList posts={posts} refreshPosts={refreshPosts} setRefreshPosts={setRefreshPosts} />
-        <Btn btnClassnames={'home__new-post-button'} btnContent={'+'} btnCallback={() => setShowNewPostForm(!showNewPostForm)} />
-        <dialog ref={dialogRef}>
-            <div ref={formRef}>
-                <CreatePostModal setRefreshPosts={setRefreshPosts} closeModal={() => setShowNewPostForm(false)} />
-            </div>
-        </dialog>
-    </div>
-}
-
-export default Home

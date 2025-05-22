@@ -1,47 +1,47 @@
-import { useEffect, useState } from "react"
-import UserCard from "../../components/UserCard"
-import PostList from "../../components/PostList"
-import logics from "../../logic"
-import { useParams } from "react-router"
-import { errors } from "common"
-import NotFound from "../NotFound"
+import { useEffect, useState } from "react";
+import logics from "../../logic";
+import locales from "../../locales";
+import getLoggedUserId from "../../logic/helpers/getLoggedUserId";
 
-const UserProfile = () => {
-    const [posts, setPosts] = useState()
-    const [userId, setUserId] = useState()
-    const [refreshPosts, setRefreshPosts] = useState(Date.now())
-    const { username } = useParams()
+const UserProfile = ({ locale }) => {
+    const [translations, setTranslations] = useState(locales[locale]['userProfile']);
+    const [user, setUser] = useState(null);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        try {
-            const retrivedId = logics.users.getUserIdByUsername(username)
-            setUserId(retrivedId)
-            const retrivedPosts = logics.posts.getPostsByAuthor(retrivedId)
-            setPosts(retrivedPosts)
-        } catch (error) {
-            if (error instanceof errors.ExistenceError) {
-                setUserId('not-found')
+        setTranslations(locales[locale]['userProfile']);
+    }, [locale]);
+
+    useEffect(() => {
+        const userId = getLoggedUserId();
+
+        logics.users.getUserById(userId, (error, userData) => {
+            if (error) {
+                console.error(error);
+                setError("Error fetching user profile.");
             } else {
-                alert('ups, something is not working!')
-                console.error(error)
+                setUser(userData);
             }
-        }
-    }, [refreshPosts])
+        });
+    }, []);
 
-    return <>
-        {
-            userId === 'not-found' ? <NotFound />
-                :
-                <div className="main-container">
-                    {
-                        userId && <UserCard userId={userId} />
-                    }
-                    {
-                        posts && <PostList posts={posts} setRefreshPosts={setRefreshPosts} handleNavigateToUserProfile={setRefreshPosts} />
-                    }
-                </div>
-        }
-    </>
-}
+    if (error) return <div>{error}</div>;
+    if (!user) return <div>{translations.loading}</div>;
 
-export default UserProfile
+    return (
+        <div className="main-container">
+            <h1>{translations.title}</h1>
+            <div className="profile__info">
+                <img
+                    src={user.avatar || "/default-avatar.png"}
+                    alt="Avatar"
+                    className="profile__avatar"
+                />
+                <p><strong>{translations.username}:</strong> {user.username}</p>
+                <p><strong>{translations.email}:</strong> {user.email}</p>
+            </div>
+        </div>
+    );
+};
+
+export default UserProfile;

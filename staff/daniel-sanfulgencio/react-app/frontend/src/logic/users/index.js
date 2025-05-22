@@ -13,6 +13,8 @@ import updateBio from "./updateBio";
 import updateEmail from "./updateEmail";
 import updatePassword from "./updatePassword";
 import updateUsername from "./updateUsername";
+import getUserById from "./getUserById"; 
+
 
 const users = {
     getUserUsername: getUserUsernameById, // alias usado en Header.jsx
@@ -30,6 +32,7 @@ const users = {
     updatePassword,
     updateEmail,
     deleteUserById,
+    getUserById,
     getRandomBio
 }
 
