@@ -5,7 +5,8 @@ const getAllPosts = (callback) => {
     const loggedUserId = getLoggedUserId();
 
     try {
-        validator.id(loggedUserId);
+        // Quitar esta validación ya que el ID de Mongo es un string
+        // validator.id(loggedUserId); ❌
 
         const xhr = new XMLHttpRequest();
         xhr.open('GET', `${import.meta.env.VITE_API_APP}/posts`, true);
@@ -32,7 +33,6 @@ const getAllPosts = (callback) => {
         };
 
         xhr.send();
-
     } catch (error) {
         callback(error);
     }

@@ -47,7 +47,7 @@ const Login = ({ setRefreshHeader, locale }) => {
                     alert(translations.errorMsg);
                     console.error(error);
                 } else {
-                    onSuccess();
+                    onSuccess?.(); // ✅ Prevención si onSuccess no está definido
                     setRefreshHeader(Date.now());
                     navigate('/');
                 }
@@ -77,3 +77,4 @@ const Login = ({ setRefreshHeader, locale }) => {
 };
 
 export default Login;
+

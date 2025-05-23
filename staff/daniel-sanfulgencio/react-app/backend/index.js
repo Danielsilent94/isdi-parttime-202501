@@ -12,12 +12,11 @@ const api = express();
 api.use(cors());
 api.use(json());
 
-// Test endpoint
 api.get('/api', (req, res) => {
     res.status(200).send('Hello World!');
 });
 
-// Registro de usuario
+// Registro
 api.post('/users', async (req, res) => {
     const { email, password } = req.body;
 
@@ -32,15 +31,11 @@ api.post('/users', async (req, res) => {
         const newUser = await User.create({ email, password, username });
         res.status(201).json({ id: newUser._id });
     } catch (error) {
-        if (error instanceof TypeError || error instanceof RangeError || error instanceof FormatError) {
-            res.status(400).json({ name: error.name, message: error.message });
-        } else {
-            res.status(500).json({ name: error.name, message: error.message });
-        }
+        res.status(400).json({ name: error.name, message: error.message });
     }
 });
 
-// Login de usuario
+// Login
 api.post('/users/auth', async (req, res) => {
     const { email, password } = req.body;
 
@@ -55,7 +50,7 @@ api.post('/users/auth', async (req, res) => {
 
         res.status(200).json({ id: user._id.toString() });
     } catch (error) {
-        res.status(500).json({ name: error.name, message: error.message });
+        res.status(400).json({ name: error.name, message: error.message });
     }
 });
 
@@ -89,7 +84,7 @@ api.get('/users/avatar', async (req, res) => {
     }
 });
 
-// Obtener datos de un usuario por ID
+// Obtener datos por ID
 api.get('/users/:id', async (req, res) => {
     const { id } = req.params;
 
@@ -107,14 +102,13 @@ api.get('/users/:id', async (req, res) => {
     }
 });
 
-// Crear nuevo post
+// Crear post
 api.post('/posts', async (req, res) => {
     const authHeader = req.headers.authorization;
     const id = authHeader?.split(" ")[1];
     const { title, description, img } = req.body;
 
     try {
-        validator.id(id);
         validator.text(title, 40, 1, 'Post Title');
         validator.text(description, 210, 1, 'Post Description');
 
@@ -129,23 +123,21 @@ api.post('/posts', async (req, res) => {
 
         res.status(201).json(post);
     } catch (error) {
-        res.status(500).json({ name: error.name, message: error.message });
+        res.status(400).json({ name: error.name, message: error.message });
     }
 });
 
-// Obtener todos los posts
+// Todos los posts
 api.get('/posts', async (req, res) => {
     const authHeader = req.headers.authorization;
     const id = authHeader?.split(" ")[1];
 
     try {
-        validator.id(id);
-
         const posts = await Post.find()
             .populate('author', '_id username avatar')
             .sort({ createdOn: -1 });
 
-        const normalizedPosts = posts.map(post => ({
+        const normalized = posts.map(post => ({
             id: post._id.toString(),
             title: post.title,
             description: post.description,
@@ -160,27 +152,24 @@ api.get('/posts', async (req, res) => {
             isLiked: post.likes.map(u => u.toString()).includes(id)
         }));
 
-        res.status(200).json(normalizedPosts);
+        res.status(200).json(normalized);
     } catch (error) {
         res.status(500).json({ name: error.name, message: error.message });
     }
 });
 
-// Obtener posts de un autor específico
+// Posts por autor
 api.get('/posts/author/:authorId', async (req, res) => {
     const authHeader = req.headers.authorization;
     const loggedUserId = authHeader?.split(" ")[1];
     const authorId = req.params.authorId;
 
     try {
-        validator.id(loggedUserId);
-        validator.id(authorId);
-
         const posts = await Post.find({ author: authorId })
             .populate('author', '_id username avatar')
             .sort({ createdOn: -1 });
 
-        const normalizedPosts = posts.map(post => ({
+        const normalized = posts.map(post => ({
             id: post._id.toString(),
             title: post.title,
             description: post.description,
@@ -195,13 +184,12 @@ api.get('/posts/author/:authorId', async (req, res) => {
             isLiked: post.likes.map(userId => userId.toString()).includes(loggedUserId)
         }));
 
-        res.status(200).json(normalizedPosts);
+        res.status(200).json(normalized);
     } catch (error) {
         res.status(500).json({ name: error.name, message: error.message });
     }
 });
 
-// Conexión a Mongo y arranque del servidor
 mongoose.connect('mongodb://127.0.0.1:27017/my-app')
     .then(() => {
         console.log('✅ Connected to MongoDB');

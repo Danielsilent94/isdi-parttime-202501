@@ -10,9 +10,30 @@ const Register = ({ setRefreshHeader, locale }) => {
     const [translations, setTranslations] = useState(locales[locale]['register']);
     const [formTranslations, setFormTranslations] = useState(locales[locale]['forms']);
 
-    const objectEmail = { label: formTranslations.emailLabel, inputType: 'email', inputPlaceholder: formTranslations.emailPlaceholder, inputId: 'email', isRequired: true };
-    const objectPassword = { label: formTranslations.passwordLabel, inputType: 'password', inputPlaceholder: '·········', inputId: 'password', isRequired: true };
-    const objectConfirmPassword = { label: formTranslations.confirmPasswordLabel, inputType: 'password', inputPlaceholder: '·········', inputId: 'confirmation-password', isRequired: true };
+    const objectEmail = {
+        label: formTranslations.emailLabel,
+        inputType: 'email',
+        inputPlaceholder: formTranslations.emailPlaceholder,
+        inputId: 'email',
+        isRequired: true
+    };
+
+    const objectPassword = {
+        label: formTranslations.passwordLabel,
+        inputType: 'password',
+        inputPlaceholder: '·········',
+        inputId: 'password',
+        isRequired: true
+    };
+
+    const objectConfirmPassword = {
+        label: formTranslations.confirmPasswordLabel,
+        inputType: 'password',
+        inputPlaceholder: '·········',
+        inputId: 'confirmation-password',
+        isRequired: true
+    };
+
     const navigate = useNavigate();
     const [securityErrors, setSecurityErrors] = useState(null);
 
@@ -30,8 +51,8 @@ const Register = ({ setRefreshHeader, locale }) => {
                     alert(formTranslations.errorMsg);
                     console.error(error);
                 } else {
-                    onSuccess?.(); // <-- Verifica si existe antes de llamarlo
-                    logics.users.loginUser({email, password}, (error) => {
+                    onSuccess?.();
+                    logics.users.loginUser(email, password, (error) => {
                         if (error) {
                             alert(formTranslations.errorMsg);
                             console.error(error);
@@ -68,11 +89,14 @@ const Register = ({ setRefreshHeader, locale }) => {
             />
             <div className="register__login">
                 <span className="register__login--text">{translations.notNew}</span>
-                <span className="register__login--button"><Link to="/login">{translations.toLogin}</Link></span>
+                <span className="register__login--button">
+                    <Link to="/login">{translations.toLogin}</Link>
+                </span>
             </div>
         </div>
     );
 };
 
 export default Register;
+
 

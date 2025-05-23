@@ -6,21 +6,22 @@ import PostCard from "../../components/PostCard";
 import locales from "../../locales";
 
 const Home = ({ locale }) => {
-    const [translations, setTranslations] = useState(locales[locale]['home']);
+    const [translations, setTranslations] = useState(locales[locale]?.home || {});
     const [posts, setPosts] = useState([]);
     const [showCreatePostModal, setShowCreatePostModal] = useState(false);
     const [refreshPosts, setRefreshPosts] = useState(Date.now());
 
     useEffect(() => {
-        setTranslations(locales[locale]['home']);
+        setTranslations(locales[locale]?.home || {});
     }, [locale]);
 
     useEffect(() => {
         logics.posts.getAllPosts((error, posts) => {
             if (error) {
-                alert(translations.errorMsg);
+                alert(translations.errorMsg || "Error loading posts");
                 console.error(error);
             } else {
+                console.log("DEBUG posts:", posts); // Depuración
                 setPosts(posts);
             }
         });
@@ -31,30 +32,32 @@ const Home = ({ locale }) => {
 
     return (
         <div className="main-container">
-            <h1>{translations.title}</h1>
+            <h1>{translations.title || "Home"}</h1>
 
             <Btn
                 btnClassnames={"home__create-post--button"}
-                btnContent={translations.newPost}
+                btnContent={translations.newPost || "Create Post"}
                 btnCallback={openModal}
             />
 
-            {showCreatePostModal &&
+            {showCreatePostModal && (
                 <CreatePostModal
                     locale={locale}
                     setRefreshPosts={setRefreshPosts}
                     closeModal={closeModal}
                 />
-            }
+            )}
 
             <div className="home__posts-list">
-                {posts.map(post => (
-                    <PostCard key={post.id} post={post} />
-                ))}
+                {Array.isArray(posts) &&
+                    posts.map((post, i) =>
+                        post?.title ? (
+                            <PostCard key={post.id || i} post={post} />
+                        ) : null
+                    )}
             </div>
         </div>
     );
 };
 
 export default Home;
-
