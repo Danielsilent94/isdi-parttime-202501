@@ -12,11 +12,12 @@ const api = express();
 api.use(cors());
 api.use(json());
 
+// Test endpoint
 api.get('/api', (req, res) => {
     res.status(200).send('Hello World!');
 });
 
-// Registro
+// Registro de usuario
 api.post('/users', async (req, res) => {
     const { email, password } = req.body;
 
@@ -31,11 +32,15 @@ api.post('/users', async (req, res) => {
         const newUser = await User.create({ email, password, username });
         res.status(201).json({ id: newUser._id });
     } catch (error) {
-        res.status(400).json({ name: error.name, message: error.message });
+        if (error instanceof TypeError || error instanceof RangeError || error instanceof FormatError) {
+            res.status(400).send(error.message);
+        } else {
+            res.status(500).send(error.message);
+        }
     }
 });
 
-// Login
+// Login de usuario
 api.post('/users/auth', async (req, res) => {
     const { email, password } = req.body;
 
@@ -50,7 +55,11 @@ api.post('/users/auth', async (req, res) => {
 
         res.status(200).json({ id: user._id.toString() });
     } catch (error) {
-        res.status(400).json({ name: error.name, message: error.message });
+        if (error instanceof TypeError || error instanceof RangeError || error instanceof FormatError) {
+            res.status(400).send(error.message);
+        } else {
+            res.status(500).send(error.message);
+        }
     }
 });
 
@@ -65,7 +74,7 @@ api.get('/users/username', async (req, res) => {
 
         res.status(200).send(user.username);
     } catch (error) {
-        res.status(500).json({ name: error.name, message: error.message });
+        res.status(500).send(error.message);
     }
 });
 
@@ -80,11 +89,11 @@ api.get('/users/avatar', async (req, res) => {
 
         res.status(200).send(user.avatar || '');
     } catch (error) {
-        res.status(500).json({ name: error.name, message: error.message });
+        res.status(500).send(error.message);
     }
 });
 
-// Obtener datos por ID
+// Obtener datos de un usuario por ID
 api.get('/users/:id', async (req, res) => {
     const { id } = req.params;
 
@@ -102,13 +111,14 @@ api.get('/users/:id', async (req, res) => {
     }
 });
 
-// Crear post
+// Crear nuevo post
 api.post('/posts', async (req, res) => {
     const authHeader = req.headers.authorization;
     const id = authHeader?.split(" ")[1];
     const { title, description, img } = req.body;
 
     try {
+        validator.id(id);
         validator.text(title, 40, 1, 'Post Title');
         validator.text(description, 210, 1, 'Post Description');
 
@@ -123,53 +133,81 @@ api.post('/posts', async (req, res) => {
 
         res.status(201).json(post);
     } catch (error) {
-        res.status(400).json({ name: error.name, message: error.message });
+        if (error instanceof TypeError || error instanceof RangeError || error instanceof FormatError) {
+            res.status(400).send(error.message);
+        } else {
+            console.error(error);
+            res.status(500).send('Server error');
+        }
     }
 });
 
-// Todos los posts
+// Obtener todos los posts (con logs)
 api.get('/posts', async (req, res) => {
     const authHeader = req.headers.authorization;
     const id = authHeader?.split(" ")[1];
 
+    console.log('➡️ GET /posts called');
+    console.log('🧠 Extracted user ID:', id);
+
     try {
+        validator.id(id);
+
         const posts = await Post.find()
             .populate('author', '_id username avatar')
             .sort({ createdOn: -1 });
 
-        const normalized = posts.map(post => ({
-            id: post._id.toString(),
-            title: post.title,
-            description: post.description,
-            img: post.img,
-            author: {
-                id: post.author._id.toString(),
-                username: post.author.username,
-                avatar: post.author.avatar || ''
-            },
-            createdOn: post.createdOn.toLocaleString(),
-            likes: post.likes.map(u => u.toString()),
-            isLiked: post.likes.map(u => u.toString()).includes(id)
-        }));
+        console.log('📦 Posts retrieved from DB:', posts.length);
 
-        res.status(200).json(normalized);
+        const normalizedPosts = posts.map(post => {
+            if (!post.author) {
+                console.warn('⚠️ Post with missing author:', post._id);
+            }
+
+            return {
+                id: post._id.toString(),
+                title: post.title,
+                description: post.description,
+                img: post.img,
+                author: post.author
+                    ? {
+                        id: post.author._id.toString(),
+                        username: post.author.username,
+                        avatar: post.author.avatar || ''
+                    }
+                    : {
+                        id: '',
+                        username: 'Unknown',
+                        avatar: ''
+                    },
+                createdOn: post.createdOn.toLocaleString(),
+                likes: Array.isArray(post.likes) ? post.likes.map(u => u.toString()) : [],
+                isLiked: Array.isArray(post.likes) && post.likes.map(u => u.toString()).includes(id)
+            };
+        });
+
+        res.status(200).json(normalizedPosts);
     } catch (error) {
+        console.error('❌ Error in GET /posts:', error);
         res.status(500).json({ name: error.name, message: error.message });
     }
 });
 
-// Posts por autor
+// Obtener posts de un autor específico
 api.get('/posts/author/:authorId', async (req, res) => {
     const authHeader = req.headers.authorization;
     const loggedUserId = authHeader?.split(" ")[1];
     const authorId = req.params.authorId;
 
     try {
+        validator.id(loggedUserId);
+        validator.id(authorId);
+
         const posts = await Post.find({ author: authorId })
             .populate('author', '_id username avatar')
             .sort({ createdOn: -1 });
 
-        const normalized = posts.map(post => ({
+        const normalizedPosts = posts.map(post => ({
             id: post._id.toString(),
             title: post.title,
             description: post.description,
@@ -184,12 +222,18 @@ api.get('/posts/author/:authorId', async (req, res) => {
             isLiked: post.likes.map(userId => userId.toString()).includes(loggedUserId)
         }));
 
-        res.status(200).json(normalized);
+        res.status(200).json(normalizedPosts);
     } catch (error) {
-        res.status(500).json({ name: error.name, message: error.message });
+        if (error instanceof TypeError || error instanceof RangeError || error instanceof FormatError) {
+            res.status(400).send(error.message);
+        } else {
+            console.error(error);
+            res.status(500).send('Server error');
+        }
     }
 });
 
+// Conexión a Mongo y arranque del servidor
 mongoose.connect('mongodb://127.0.0.1:27017/my-app')
     .then(() => {
         console.log('✅ Connected to MongoDB');
@@ -200,3 +244,4 @@ mongoose.connect('mongodb://127.0.0.1:27017/my-app')
     .catch(error => {
         console.error('❌ Failed to connect to MongoDB', error);
     });
+
