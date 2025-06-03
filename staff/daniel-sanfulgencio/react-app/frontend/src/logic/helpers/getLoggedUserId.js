@@ -1,12 +1,7 @@
 const getLoggedUserId = () => {
-    let loggedUserId;
-    if (localStorage.userId) {
-        loggedUserId = localStorage.getItem('userId');
-    } else {
-        loggedUserId = sessionStorage.getItem('userId');
-    }
-
-    return loggedUserId;
+    const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
+    if (!userId) throw new Error('User not logged in');
+    return userId; // no se convierte a número
 };
 
 export default getLoggedUserId;

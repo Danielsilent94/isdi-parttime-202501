@@ -6,7 +6,7 @@ import PostCard from "../../components/PostCard";
 import locales from "../../locales";
 
 const Home = ({ locale }) => {
-    const [translations, setTranslations] = useState(locales[locale]?.home || {});
+    const [translations, setTranslations] = useState({});
     const [posts, setPosts] = useState([]);
     const [showCreatePostModal, setShowCreatePostModal] = useState(false);
     const [refreshPosts, setRefreshPosts] = useState(Date.now());
@@ -18,10 +18,9 @@ const Home = ({ locale }) => {
     useEffect(() => {
         logics.posts.getAllPosts((error, posts) => {
             if (error) {
-                alert(translations.errorMsg || "Error loading posts");
                 console.error(error);
+                alert(error.message || "Error loading posts");
             } else {
-                console.log("DEBUG posts:", posts); // Depuración
                 setPosts(posts);
             }
         });
@@ -35,26 +34,23 @@ const Home = ({ locale }) => {
             <h1>{translations.title || "Home"}</h1>
 
             <Btn
-                btnClassnames={"home__create-post--button"}
-                btnContent={translations.newPost || "Create Post"}
+                btnClassnames="home__create-post--button"
+                btnContent={translations.newPost || "New Post"}
                 btnCallback={openModal}
             />
 
-            {showCreatePostModal && (
+            {showCreatePostModal &&
                 <CreatePostModal
                     locale={locale}
                     setRefreshPosts={setRefreshPosts}
                     closeModal={closeModal}
                 />
-            )}
+            }
 
             <div className="home__posts-list">
-                {Array.isArray(posts) &&
-                    posts.map((post, i) =>
-                        post?.title ? (
-                            <PostCard key={post.id || i} post={post} />
-                        ) : null
-                    )}
+                {posts.map(post => (
+                    <PostCard key={post.id || post._id} post={post} />
+                ))}
             </div>
         </div>
     );

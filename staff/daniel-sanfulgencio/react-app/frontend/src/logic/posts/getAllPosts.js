@@ -1,12 +1,13 @@
-import { errors, validator } from "common";
+import { errors } from "common";
 import getLoggedUserId from "../helpers/getLoggedUserId";
 
 const getAllPosts = (callback) => {
     const loggedUserId = getLoggedUserId();
 
     try {
-        // Quitar esta validación ya que el ID de Mongo es un string
-        // validator.id(loggedUserId); ❌
+        if (!loggedUserId || typeof loggedUserId !== 'string') {
+            throw new TypeError('Invalid logged user ID');
+        }
 
         const xhr = new XMLHttpRequest();
         xhr.open('GET', `${import.meta.env.VITE_API_APP}/posts`, true);
@@ -33,6 +34,7 @@ const getAllPosts = (callback) => {
         };
 
         xhr.send();
+
     } catch (error) {
         callback(error);
     }
