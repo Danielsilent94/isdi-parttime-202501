@@ -69,6 +69,8 @@ api.get('/users/username', async (req, res) => {
     const id = authHeader?.split(" ")[1];
 
     try {
+        if (!id || typeof id !== 'string') throw new TypeError('Invalid user ID');
+
         const user = await User.findById(id);
         if (!user) return res.status(404).json({ name: 'ExistenceError', message: 'user not found' });
 
@@ -84,6 +86,8 @@ api.get('/users/avatar', async (req, res) => {
     const id = authHeader?.split(" ")[1];
 
     try {
+        if (!id || typeof id !== 'string') throw new TypeError('Invalid user ID');
+
         const user = await User.findById(id);
         if (!user) return res.status(404).json({ name: 'ExistenceError', message: 'user not found' });
 
@@ -98,6 +102,8 @@ api.get('/users/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
+        if (!id || typeof id !== 'string') throw new TypeError('Invalid user ID');
+
         const user = await User.findById(id).lean();
         if (!user) return res.status(404).json({ name: 'ExistenceError', message: 'user not found' });
 
@@ -118,7 +124,7 @@ api.post('/posts', async (req, res) => {
     const { title, description, img } = req.body;
 
     try {
-        validator.id(id);
+        if (!id || typeof id !== 'string') throw new TypeError('Invalid user ID');
         validator.text(title, 40, 1, 'Post Title');
         validator.text(description, 210, 1, 'Post Description');
 
@@ -142,7 +148,7 @@ api.post('/posts', async (req, res) => {
     }
 });
 
-// Obtener todos los posts (con logs)
+// Obtener todos los posts
 api.get('/posts', async (req, res) => {
     const authHeader = req.headers.authorization;
     const id = authHeader?.split(" ")[1];
@@ -151,40 +157,32 @@ api.get('/posts', async (req, res) => {
     console.log('🧠 Extracted user ID:', id);
 
     try {
-        validator.id(id);
+        if (!id || typeof id !== 'string') throw new TypeError('Invalid user ID');
 
         const posts = await Post.find()
             .populate('author', '_id username avatar')
             .sort({ createdOn: -1 });
 
-        console.log('📦 Posts retrieved from DB:', posts.length);
-
-        const normalizedPosts = posts.map(post => {
-            if (!post.author) {
-                console.warn('⚠️ Post with missing author:', post._id);
-            }
-
-            return {
-                id: post._id.toString(),
-                title: post.title,
-                description: post.description,
-                img: post.img,
-                author: post.author
-                    ? {
-                        id: post.author._id.toString(),
-                        username: post.author.username,
-                        avatar: post.author.avatar || ''
-                    }
-                    : {
-                        id: '',
-                        username: 'Unknown',
-                        avatar: ''
-                    },
-                createdOn: post.createdOn.toLocaleString(),
-                likes: Array.isArray(post.likes) ? post.likes.map(u => u.toString()) : [],
-                isLiked: Array.isArray(post.likes) && post.likes.map(u => u.toString()).includes(id)
-            };
-        });
+        const normalizedPosts = posts.map(post => ({
+            id: post._id.toString(),
+            title: post.title,
+            description: post.description,
+            img: post.img,
+            author: post.author
+                ? {
+                    id: post.author._id.toString(),
+                    username: post.author.username,
+                    avatar: post.author.avatar || ''
+                }
+                : {
+                    id: '',
+                    username: 'Unknown',
+                    avatar: ''
+                },
+            createdOn: post.createdOn.toLocaleString(),
+            likes: Array.isArray(post.likes) ? post.likes.map(u => u.toString()) : [],
+            isLiked: Array.isArray(post.likes) && post.likes.map(u => u.toString()).includes(id)
+        }));
 
         res.status(200).json(normalizedPosts);
     } catch (error) {
@@ -200,8 +198,8 @@ api.get('/posts/author/:authorId', async (req, res) => {
     const authorId = req.params.authorId;
 
     try {
-        validator.id(loggedUserId);
-        validator.id(authorId);
+        if (!loggedUserId || typeof loggedUserId !== 'string') throw new TypeError('Invalid user ID');
+        if (!authorId || typeof authorId !== 'string') throw new TypeError('Invalid author ID');
 
         const posts = await Post.find({ author: authorId })
             .populate('author', '_id username avatar')

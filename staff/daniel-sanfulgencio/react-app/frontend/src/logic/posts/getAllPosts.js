@@ -5,13 +5,14 @@ const getAllPosts = (callback) => {
     const loggedUserId = getLoggedUserId();
 
     try {
-        if (!loggedUserId || typeof loggedUserId !== 'string') {
-            throw new TypeError('Invalid logged user ID');
+        // 🚫 Eliminamos validación que asume que loggedUserId debe ser número
+        if (!loggedUserId || typeof loggedUserId !== "string") {
+            throw new TypeError("Logged user ID is not valid");
         }
 
         const xhr = new XMLHttpRequest();
-        xhr.open('GET', `${import.meta.env.VITE_API_APP}/posts`, true);
-        xhr.setRequestHeader('Authorization', `Basic ${loggedUserId}`);
+        xhr.open("GET", `${import.meta.env.VITE_API_APP}/posts`, true);
+        xhr.setRequestHeader("Authorization", `Basic ${loggedUserId}`);
 
         xhr.onreadystatechange = () => {
             if (xhr.readyState === 4) {
@@ -26,15 +27,21 @@ const getAllPosts = (callback) => {
 
                     callback(null, posts);
                 } else {
-                    const response = JSON.parse(xhr.response);
-                    if (errors[response.name]) callback(new errors[response.name](response.message));
-                    else callback(new Error(`${response.name}: ${response.message}`));
+                    try {
+                        const response = JSON.parse(xhr.responseText);
+                        if (errors[response.name]) {
+                            callback(new errors[response.name](response.message));
+                        } else {
+                            callback(new Error(`${response.name}: ${response.message}`));
+                        }
+                    } catch {
+                        callback(new Error("Unexpected error retrieving posts"));
+                    }
                 }
             }
         };
 
         xhr.send();
-
     } catch (error) {
         callback(error);
     }
