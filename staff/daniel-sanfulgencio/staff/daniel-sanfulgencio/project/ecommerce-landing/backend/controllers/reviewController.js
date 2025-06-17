@@ -2,29 +2,17 @@ import Review from '../models/review.js'
 import Product from '../models/product.js'
 
 export const createReview = async (req, res) => {
-  const { text, score, author, product } = req.body
+  const { text, score, productId } = req.body
 
   try {
-    const newReview = await Review.create({ text, score, author, product })
+    const review = await Review.create({ text, score, product: productId })
 
-    // Asociar review al producto
-    await Product.findByIdAndUpdate(product, {
-      $push: { reviews: newReview._id }
+    await Product.findByIdAndUpdate(productId, {
+      $push: { reviews: review._id }
     })
 
-    res.status(201).json(newReview)
+    res.status(201).json(review)
   } catch (err) {
     res.status(500).json({ error: 'Error al crear review' })
-  }
-}
-
-export const getReviewsByProduct = async (req, res) => {
-  const { productId } = req.params
-
-  try {
-    const reviews = await Review.find({ product: productId }).populate('author', 'name')
-    res.status(200).json(reviews)
-  } catch (err) {
-    res.status(500).json({ error: 'Error al obtener reviews' })
   }
 }

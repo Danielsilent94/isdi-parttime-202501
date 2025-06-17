@@ -1,7 +1,6 @@
-import React from 'react'
-
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getAllProducts } from '../logic/getAllProducts'
+import { Link } from 'react-router-dom'
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([])
@@ -28,9 +27,11 @@ const ProductsPage = () => {
             <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
             <p className="mb-2">{product.description}</p>
             <p className="font-bold mb-4">${product.price.toFixed(2)}</p>
-            <button className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-              Reviews
-            </button>
+            <Link to={`/product/${product._id}`}>
+              <button className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                Reviews
+              </button>
+            </Link>
           </div>
         ))}
       </div>
@@ -39,4 +40,5 @@ const ProductsPage = () => {
 }
 
 export default ProductsPage
+
 
