@@ -1,42 +1,49 @@
-import Product from '../models/product.js'
+import Product from '../models/Product.js'
 
 export const createProduct = async (req, res) => {
-  const { name, description, price } = req.body
-
   try {
-    const newProduct = await Product.create({ name, description, price })
-    res.status(201).json(newProduct)
-  } catch (err) {
-    res.status(500).json({ error: 'Error al crear producto' })
+    const { name, description, price, category } = req.body
+
+    const product = new Product({
+      name,
+      description,
+      price,
+      category: category.toLowerCase() // forzamos minúsculas
+    })
+
+    await product.save()
+    res.status(201).json(product)
+  } catch (error) {
+    res.status(500).json({ message: 'Error al crear producto', error })
   }
 }
 
 export const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find().populate('reviews')
-    res.status(200).json(products)
-  } catch (err) {
-    res.status(500).json({ error: 'Error al obtener productos' })
+    const products = await Product.find()
+    res.json(products)
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener productos', error })
+  }
+}
+
+export const getProductById = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id)
+    if (!product) return res.status(404).json({ message: 'Producto no encontrado' })
+    res.json(product)
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener producto', error })
   }
 }
 
 export const deleteProduct = async (req, res) => {
-  const { id } = req.params
   try {
-    await Product.findByIdAndDelete(id)
-    res.status(200).json({ message: 'Producto eliminado' })
-  } catch (err) {
-    res.status(500).json({ error: 'Error al eliminar producto' })
-  }
-}
-export const getProductById = async (req, res) => {
-  const { id } = req.params
-  try {
-    const product = await Product.findById(id).populate('reviews')
-    if (!product) return res.status(404).json({ error: 'Producto no encontrado' })
-    res.json(product)
-  } catch (err) {
-    res.status(500).json({ error: 'Error al obtener producto' })
+    const product = await Product.findByIdAndDelete(req.params.id)
+    if (!product) return res.status(404).json({ message: 'Producto no encontrado' })
+    res.json({ message: 'Producto eliminado' })
+  } catch (error) {
+    res.status(500).json({ message: 'Error al eliminar producto', error })
   }
 }
 

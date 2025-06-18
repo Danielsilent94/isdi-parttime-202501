@@ -1,45 +1,61 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
-const Navbar = () => {
-  const [showMenu, setShowMenu] = useState(false)
+const Navbar = ({ user, setUser, cart }) => {
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    setUser(null)
+    navigate('/')
+  }
+
+  const totalItems = cart?.reduce((acc, item) => acc + item.quantity, 0) || 0
 
   return (
-    <nav className="flex justify-between items-center px-6 py-4 bg-[#1d1259] shadow-md sticky top-0 z-50">
-      <Link to="/" className="text-3xl font-bold text-white">
-        BOLD <span className="text-blue-400">TECH</span>
-      </Link>
-
-      <div className="space-x-6 hidden md:flex">
-        <Link to="/about" className="hover:text-blue-300">about</Link>
-        <div className="relative group">
-          <button
-            onClick={() => setShowMenu(!showMenu)}
-            className="hover:text-blue-300"
-          >
-            products
-          </button>
-          {showMenu && (
-            <div className="absolute top-full mt-2 bg-white text-black p-4 rounded shadow-lg space-y-2">
-              <Link to="/products?cat=laptops" className="block hover:underline">Laptops</Link>
-              <Link to="/products?cat=smartphones" className="block hover:underline">Smartphones</Link>
-              <Link to="/products?cat=accessories" className="block hover:underline">Accessories</Link>
-              <Link to="/products?cat=tablets" className="block hover:underline">Tablets</Link>
-              <Link to="/products?cat=headphones" className="block hover:underline">Headphones</Link>
-            </div>
-          )}
-        </div>
-        <Link to="/contact" className="hover:text-blue-300">contact us</Link>
-        <Link to="/cart" className="hover:text-blue-300">my cart</Link>
+    <nav className="bg-gray-900 text-white px-6 py-4 flex justify-between items-center">
+      <div className="text-2xl font-bold">
+        <Link to="/">BOLD TECH</Link>
       </div>
 
-      <div className="space-x-4 hidden md:flex">
-        <Link to="/login" className="font-semibold hover:text-blue-300">LOGIN</Link>
-        <Link to="/register" className="font-semibold hover:text-blue-300">SIGN UP</Link>
+      <div className="flex gap-4 items-center">
+        <Link to="/products" className="hover:text-blue-400">Productos</Link>
+        <Link to="/about" className="hover:text-blue-400">Sobre Nosotros</Link>
+
+        {!user ? (
+          <>
+            <Link to="/login" className="hover:text-green-400">Login</Link>
+            <Link to="/register" className="hover:text-yellow-400">Registro</Link>
+          </>
+        ) : (
+          <>
+            <Link to="/cart" className="relative hover:text-blue-400">
+              🛒
+              {totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full px-1.5">
+                  {totalItems}
+                </span>
+              )}
+            </Link>
+
+            <Link to="/profile">
+              <img
+                src={user.avatar || 'https://i.pravatar.cc/40'}
+                alt="avatar"
+                className="w-8 h-8 rounded-full border border-white hover:ring"
+              />
+            </Link>
+
+            <button
+              onClick={handleLogout}
+              className="bg-red-600 px-3 py-1 rounded hover:bg-red-700"
+            >
+              Logout
+            </button>
+          </>
+        )}
       </div>
     </nav>
   )
 }
 
 export default Navbar
-
