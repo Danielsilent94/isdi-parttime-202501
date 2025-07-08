@@ -1,30 +1,22 @@
-import Review from '../models/review.js'
-import Product from '../models/product.js'
-import Review from '../models/review.js'
+import * as logic from '../logic/reviewLogic.js';
 
+export const createReview = async (req, res, next) => {
+  const { text, score, productId } = req.body;
+  const author = req.userId;
 
-export const createReview = async (req, res) => {
   try {
-    const { text, score, productId } = req.body
-    const author = req.userId // Asegúrate de tener el usuario autenticado
-
-    const review = await Review.create({ text, score, product: productId, author })
-
-    // Añadir review al producto
-    await Product.findByIdAndUpdate(productId, { $push: { reviews: review._id } })
-
-    res.status(201).json(review)
-  } catch (err) {
-    res.status(400).json({ error: err.message })
+    const review = await logic.createReview({ text, score, productId, author });
+    res.status(201).json(review);
+  } catch (error) {
+    next(error);
   }
-}
+};
 
-export const getReviewsByProduct = async (req, res) => {
+export const getReviewsByProduct = async (req, res, next) => {
   try {
-    const { productId } = req.params
-    const reviews = await Review.find({ product: productId }).populate('author', 'name')
-    res.json(reviews)
-  } catch (err) {
-    res.status(500).json({ error: err.message })
+    const reviews = await logic.getReviewsByProduct(req.params.productId);
+    res.json(reviews);
+  } catch (error) {
+    next(error);
   }
-}
+};

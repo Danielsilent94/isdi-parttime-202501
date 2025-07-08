@@ -2,8 +2,8 @@ import express from 'express'
 import {
   createProduct,
   getAllProducts,
-  deleteProduct,
-  getProductById
+  getProductById,
+  deleteProduct
 } from '../controllers/productController.js'
 
 const router = express.Router()

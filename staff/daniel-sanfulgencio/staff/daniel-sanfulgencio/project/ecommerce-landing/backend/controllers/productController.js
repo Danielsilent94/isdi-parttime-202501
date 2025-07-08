@@ -1,49 +1,38 @@
-import Product from '../models/Product.js'
+import * as logic from '../logic/productLogic.js';
 
-export const createProduct = async (req, res) => {
+export const createProduct = async (req, res, next) => {
   try {
-    const { name, description, price, category } = req.body
-
-    const product = new Product({
-      name,
-      description,
-      price,
-      category: category.toLowerCase() // forzamos minúsculas
-    })
-
-    await product.save()
-    res.status(201).json(product)
+    const { name, description, price, category } = req.body;
+    const product = await logic.createProduct({ name, description, price, category });
+    res.status(201).json(product);
   } catch (error) {
-    res.status(500).json({ message: 'Error al crear producto', error })
+    next(error);
   }
-}
+};
 
-export const getAllProducts = async (req, res) => {
+export const getAllProducts = async (req, res, next) => {
   try {
-    const products = await Product.find()
-    res.json(products)
+    const products = await logic.getAllProducts();
+    res.json(products);
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener productos', error })
+    next(error);
   }
-}
+};
 
-export const getProductById = async (req, res) => {
+export const getProductById = async (req, res, next) => {
   try {
-    const product = await Product.findById(req.params.id)
-    if (!product) return res.status(404).json({ message: 'Producto no encontrado' })
-    res.json(product)
+    const product = await logic.getProductById(req.params.id);
+    res.json(product);
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener producto', error })
+    next(error);
   }
-}
+};
 
-export const deleteProduct = async (req, res) => {
+export const deleteProduct = async (req, res, next) => {
   try {
-    const product = await Product.findByIdAndDelete(req.params.id)
-    if (!product) return res.status(404).json({ message: 'Producto no encontrado' })
-    res.json({ message: 'Producto eliminado' })
+    await logic.deleteProduct(req.params.id);
+    res.json({ message: 'Producto eliminado correctamente' });
   } catch (error) {
-    res.status(500).json({ message: 'Error al eliminar producto', error })
+    next(error);
   }
-}
-
+};
