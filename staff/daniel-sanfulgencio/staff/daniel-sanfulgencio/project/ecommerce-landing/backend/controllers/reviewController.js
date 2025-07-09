@@ -1,22 +1,19 @@
-import * as logic from '../logic/reviewLogic.js';
+import * as reviewLogic from '../logic/reviewLogic.js';
 
 export const createReview = async (req, res, next) => {
-  const { text, score, productId } = req.body;
-  const author = req.userId;
-
   try {
-    const review = await logic.createReview({ text, score, productId, author });
+    const review = await reviewLogic.createReview(req.body);
     res.status(201).json(review);
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 };
 
 export const getReviewsByProduct = async (req, res, next) => {
   try {
-    const reviews = await logic.getReviewsByProduct(req.params.productId);
+    const reviews = await reviewLogic.getReviewsByProduct(req.params.productId);
     res.json(reviews);
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 };

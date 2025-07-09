@@ -20,7 +20,6 @@ app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/reviews', reviewRoutes);
 
-// Manejo de errores al final
 app.use(errorHandler);
 
 export default app;

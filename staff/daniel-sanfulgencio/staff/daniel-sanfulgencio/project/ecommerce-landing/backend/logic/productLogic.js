@@ -28,9 +28,5 @@ export const getProductById = async (id) => {
 export const deleteProduct = async (id) => {
   const deleted = await Product.findByIdAndDelete(id);
   if (!deleted) throw new ExistenceError('Producto no encontrado');
-
-  // Elimina también sus reviews asociadas
-  await Review.deleteMany({ product: deleted._id });
-
   return deleted;
 };

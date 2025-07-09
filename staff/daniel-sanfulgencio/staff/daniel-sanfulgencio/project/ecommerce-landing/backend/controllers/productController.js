@@ -1,38 +1,37 @@
-import * as logic from '../logic/productLogic.js';
+import * as productLogic from '../logic/productLogic.js';
 
 export const createProduct = async (req, res, next) => {
   try {
-    const { name, description, price, category } = req.body;
-    const product = await logic.createProduct({ name, description, price, category });
+    const product = await productLogic.createProduct(req.body);
     res.status(201).json(product);
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 };
 
 export const getAllProducts = async (req, res, next) => {
   try {
-    const products = await logic.getAllProducts();
+    const products = await productLogic.getAllProducts();
     res.json(products);
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 };
 
 export const getProductById = async (req, res, next) => {
   try {
-    const product = await logic.getProductById(req.params.id);
+    const product = await productLogic.getProductById(req.params.id);
     res.json(product);
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 };
 
 export const deleteProduct = async (req, res, next) => {
   try {
-    await logic.deleteProduct(req.params.id);
-    res.json({ message: 'Producto eliminado correctamente' });
-  } catch (error) {
-    next(error);
+    const deleted = await productLogic.deleteProduct(req.params.id);
+    res.json(deleted);
+  } catch (err) {
+    next(err);
   }
 };
