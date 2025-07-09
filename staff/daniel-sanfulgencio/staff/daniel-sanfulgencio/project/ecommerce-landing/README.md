@@ -1,38 +1,36 @@
-NOMBRE DE LA APP
-<insertar imagen>
+# BOLD TECH
 
-
-Description
+## Descripción
 ecommerce (concepto)
 
-Functional Description
-UseCases
-Login
-Register (create user)
-Product reviews
-Publish products
-Filter/search products
-Delete products
-Update user access data (password/email)
-Add to cart
+## Use Cases
+- Login
+- Register (create user)
+- Product reviews
+- Publish products
+- Filter/search products
+- Delete products
+- Update user access data (password/email)
+- Add to cart
 
-UI/UX Design
+## UI/UX Design
 Include link of main distribution to Figma
 
-Technical Description
-Technologies and libraries
-React
-Vite
-Tailwind
-react-router
-Express
-Node
-Mongo+Mongoose
-Mocha Chai
-Bcrypt / Token Library (jose, jwt, etc)
+## Technical Description
+**Technologies and libraries**
+- React
+- Vite
+- Tailwind
+- react-router
+- Express
+- Node
+- Mongo + Mongoose
+- Mocha Chai
+- Bcrypt / Token Library (jose, jwt, etc)
 
-Data Models
-Users:
+## Data Models
+
+**Users**
 Id: Object Id
 Password: string
 Email: string
@@ -42,19 +40,19 @@ Cart: [{
       ammount: number}
 ]
 
-Products:
+**Products**
 Id: ObjectId
 Name: string,
 Description: string,
 Price: number
 Reviews: [ReviewId]
 
-Reviews:
+**Reviews**
 Id: object id
 Text: string,
 Author: UserId
 Score: number
 Product: ProductId
 
-Test Coverage
+## Test Coverage
 <insertar captura de pantalla>
