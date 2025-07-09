@@ -1,5 +1,6 @@
+import axios from 'axios';
+
 export async function getReviewsByProduct(productId) {
-  const res = await fetch(`http://localhost:4000/api/reviews/${productId}`)
-  if (!res.ok) throw new Error('No se pudieron cargar las reviews')
-  return await res.json()
+  const res = await axios.get(`/api/products/${productId}/reviews`);
+  return res.data;
 }

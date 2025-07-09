@@ -1,15 +1,11 @@
-import getToken from './getToken'
+import axios from 'axios';
 
-export async function createReview({ text, score, productId }) {
-  const token = getToken()
-  const res = await fetch('http://localhost:4000/api/reviews', {
-    method: 'POST',
+export async function createReview(review) {
+  const token = localStorage.getItem('token');
+  const res = await axios.post('/api/reviews', review, {
     headers: {
-      'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
-    },
-    body: JSON.stringify({ text, score, productId })
-  })
-  if (!res.ok) throw new Error('Error al crear review')
-  return await res.json()
+    }
+  });
+  return res.data;
 }
