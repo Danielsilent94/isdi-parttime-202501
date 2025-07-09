@@ -15,4 +15,3 @@ mongoose.connect(MONGO_URL)
     })
   })
   .catch(err => console.error('❌ Error de conexión MongoDB:', err))
-

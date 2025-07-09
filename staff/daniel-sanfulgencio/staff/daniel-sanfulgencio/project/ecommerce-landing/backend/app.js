@@ -1,25 +1,25 @@
-import express from 'express';
-import morgan from 'morgan';
-import cors from 'cors';
-import dotenv from 'dotenv';
+import express from 'express'
+import morgan from 'morgan'
+import cors from 'cors'
+import dotenv from 'dotenv'
 
-import productRoutes from './routes/productRoutes.js';
-import userRoutes from './routes/userRoutes.js';
-import reviewRoutes from './routes/reviewRoutes.js';
-import { errorHandler } from './middlewares/errorHandler.js';
+import productRoutes from './routes/productRoutes.js'
+import userRoutes from './routes/userRoutes.js'
+import reviewRoutes from './routes/reviewRoutes.js'
+import { errorHandler } from './middlewares/errorHandler.js'
 
-dotenv.config();
+dotenv.config()
 
-const app = express();
+const app = express()
 
-app.use(cors());
-app.use(morgan('dev'));
-app.use(express.json());
+app.use(cors())
+app.use(morgan('dev'))
+app.use(express.json())
 
-app.use('/api/products', productRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/reviews', reviewRoutes);
+app.use('/api/products', productRoutes)
+app.use('/api/users', userRoutes)
+app.use('/api/reviews', reviewRoutes)
 
-app.use(errorHandler);
+app.use(errorHandler)
 
-export default app;
+export default app

@@ -1,15 +1,13 @@
-import mongoose from 'mongoose'
-import dotenv from 'dotenv'
-
-dotenv.config()
+import mongoose from 'mongoose';
 
 before(async () => {
   await mongoose.connect('mongodb://localhost:27017/ecommerce-test', {
     useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
-})
+    useUnifiedTopology: true,
+  });
+});
 
 after(async () => {
-  await mongoose.connection.close()
-})
+  await mongoose.connection.dropDatabase();
+  await mongoose.connection.close();
+});
