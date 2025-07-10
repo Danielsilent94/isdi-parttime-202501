@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { describe, it, before, after, afterEach } from 'mocha';
 import { expect } from 'chai';
 import { connect, disconnect } from '../data/database.mjs';
