@@ -1,8 +1,6 @@
-import mongoose from 'mongoose'
-import dotenv from 'dotenv'
-import app from './app.js'
-
-dotenv.config()
+const mongoose = require('mongoose')
+const app = require('./app.js')
+require('dotenv').config()
 
 const PORT = process.env.PORT || 4000
 const MONGO_URL = process.env.MONGO_URL || 'mongodb://localhost:27017/ecommerce'

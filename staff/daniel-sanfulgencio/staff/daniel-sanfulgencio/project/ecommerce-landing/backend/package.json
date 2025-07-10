@@ -4,13 +4,14 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon server.js",
-    "test": "cross-env NODE_ENV=test mocha --timeout 10000 --require test/setup.js \"test/**/*.test.js\"",
+    "start": "node server.js",
+    "test": "cross-env NODE_ENV=test mocha --timeout 10000 \"test/**/*.test.cjs\"",
     "coverage": "nyc npm test"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
     "chai": "^5.2.0",
-    "chai-http": "^5.1.2",
+    "chai-http": "^4.4.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "dotenv": "^16.5.0",

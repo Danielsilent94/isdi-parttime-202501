@@ -1,14 +1,14 @@
-import express from 'express'
-import morgan from 'morgan'
-import cors from 'cors'
-import dotenv from 'dotenv'
-
-import productRoutes from './routes/productRoutes.js'
-import userRoutes from './routes/userRoutes.js'
-import reviewRoutes from './routes/reviewRoutes.js'
-import { errorHandler } from './middlewares/errorHandler.js'
+const express = require('express')
+const morgan = require('morgan')
+const cors = require('cors')
+const dotenv = require('dotenv')
 
 dotenv.config()
+
+const productRoutes = require('./routes/productRoutes.js')
+const userRoutes = require('./routes/userRoutes.js')
+const reviewRoutes = require('./routes/reviewRoutes.js')
+const { errorHandler } = require('./middlewares/errorHandler.js')
 
 const app = express()
 
@@ -22,4 +22,4 @@ app.use('/api/reviews', reviewRoutes)
 
 app.use(errorHandler)
 
-export default app
+module.exports = app
