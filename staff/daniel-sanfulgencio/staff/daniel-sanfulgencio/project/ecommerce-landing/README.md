@@ -1,7 +1,7 @@
 # BOLD TECH
 
 ## Descripción
-ecommerce (concepto)
+Technology eCommerce website
 
 ## Use Cases
 - Login
@@ -14,7 +14,7 @@ ecommerce (concepto)
 - Add to cart
 
 ## UI/UX Design
-Include link of main distribution to Figma
+https://www.figma.com/design/nA8mvruTSwsh9xwJOLGxHW/Ecommerce-Website?node-id=5-11&t=ss1rS1Vrt1dorLx2-0
 
 ## Technical Description
 **Technologies and libraries**
@@ -55,4 +55,13 @@ Score: number
 Product: ProductId
 
 ## Test Coverage
-<insertar captura de pantalla>
+
+![Coverage](./docs/coverage.jpeg)
+
+Coverage was measured using c8 with Mocha on both integration and unit tests.
+
+**Summary:**
+- Branches ~69%
+- Statements ~97.5%
+- Functions 100%
+- Lines ~97.5%

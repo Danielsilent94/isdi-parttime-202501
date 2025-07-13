@@ -1,11 +1,11 @@
-import { apiUrl } from './helpers/constants'
-import { getAuthHeaders } from './helpers/getAuthHeaders'
+import { apiUrl } from './helpers/constants';
+import { getAuthHeaders } from './helpers/getAuthHeaders';
 
 export const getReviewsByProduct = async (productId) => {
-  const res = await fetch(`${apiUrl}/reviews/product/${productId}`)
-  if (!res.ok) throw new Error('Error al cargar reviews')
-  return res.json()
-}
+  const res = await fetch(`${apiUrl}/reviews/product/${productId}`);
+  if (!res.ok) throw new Error('Error al cargar reviews');
+  return res.json();
+};
 
 export const createReview = async ({ productId, text, score }) => {
   const res = await fetch(`${apiUrl}/reviews`, {
@@ -15,7 +15,7 @@ export const createReview = async ({ productId, text, score }) => {
       ...getAuthHeaders()
     },
     body: JSON.stringify({ productId, text, score })
-  })
-  if (!res.ok) throw new Error('Error al enviar review')
-  return res.json()
-}
+  });
+  if (!res.ok) throw new Error('Error al enviar review');
+  return res.json();
+};

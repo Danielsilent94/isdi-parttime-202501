@@ -1,13 +1,13 @@
 import 'dotenv/config';
 import { describe, it, before, after, afterEach } from 'mocha';
 import { expect } from 'chai';
-import { connect, disconnect } from '../data/database.mjs';
-import * as Products from '../logic/productsLogic.mjs';
+import { connect, disconnect } from '../../data/database.mjs';
+import * as Products from '../../logic/productsLogic.mjs';
 
-describe('Product Logic', () => {
+describe('Integration - Product Logic', () => {
   before(() => connect(process.env.MONGO_URL, process.env.MONGO_DB_TEST));
   after(() => disconnect());
-  afterEach(() => import('../models/Product.mjs').then(({ default: Product }) => Product.deleteMany()));
+  afterEach(() => import('../../models/Product.mjs').then(({ default: Product }) => Product.deleteMany()));
 
   const productData = {
     name: 'Test Product',
@@ -30,14 +30,13 @@ describe('Product Logic', () => {
   it('should get product by ID', async () => {
     const created = await Products.createProduct(productData);
     const found = await Products.getProductById(created._id);
-    expect(found).to.have.property('_id');
     expect(found._id.toString()).to.equal(created._id.toString());
   });
 
   it('should delete product by ID', async () => {
     const created = await Products.createProduct(productData);
     await Products.deleteProductById(created._id);
-    const { default: Product } = await import('../models/Product.mjs');
+    const { default: Product } = await import('../../models/Product.mjs');
     const check = await Product.findById(created._id);
     expect(check).to.be.null;
   });

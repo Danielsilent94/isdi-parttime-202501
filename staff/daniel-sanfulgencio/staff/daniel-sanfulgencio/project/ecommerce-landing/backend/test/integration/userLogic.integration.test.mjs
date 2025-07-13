@@ -1,19 +1,19 @@
 import 'dotenv/config';
 import { describe, it, before, after, afterEach } from 'mocha';
 import { expect } from 'chai';
-import { connect, disconnect } from '../data/database.mjs';
-import * as Users from '../logic/usersLogic.mjs';
+import { connect, disconnect } from '../../data/database.mjs';
+import * as Users from '../../logic/usersLogic.mjs';
 
-describe('User Logic', () => {
+describe('Integration - User Logic', () => {
   before(() => connect(process.env.MONGO_URL, process.env.MONGO_DB_TEST));
   after(() => disconnect());
-  afterEach(() => import('../models/User.mjs').then(({ default: User }) => User.deleteMany()));
+  afterEach(() => import('../../models/User.mjs').then(({ default: User }) => User.deleteMany()));
 
   const userData = { name: 'Test User', email: 'test@example.com', password: 'password123' };
 
   it('should register a new user', async () => {
     await Users.registerUser(userData);
-    const { default: User } = await import('../models/User.mjs');
+    const { default: User } = await import('../../models/User.mjs');
     const user = await User.findOne({ email: userData.email });
     expect(user).to.exist;
   });

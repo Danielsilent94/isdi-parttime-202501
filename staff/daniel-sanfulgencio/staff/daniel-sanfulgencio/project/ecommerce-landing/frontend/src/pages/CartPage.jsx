@@ -1,55 +1,59 @@
-import React from 'react'
+import React from 'react';
 
 const CartPage = ({ cart, setCart }) => {
-  const removeItem = id => {
+  const removeItem = (_id) => {
     const updatedCart = cart
       .map(item => {
-        if (item._id === id) {
+        if (item._id === _id) {
           if (item.quantity > 1) {
-            return { ...item, quantity: item.quantity - 1 }
+            return { ...item, quantity: item.quantity - 1 };
           }
-          return null
+          return null; // marcar para filtrar
         }
-        return item
+        return item;
       })
-      .filter(Boolean)
+      .filter(Boolean);
 
-    setCart(updatedCart)
-  }
+    setCart(updatedCart);
+  };
 
-  const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0)
+  const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   return (
-    <section className="p-10 text-white">
-      <h2 className="text-3xl font-bold mb-6">Mi carrito</h2>
+    <section className="max-w-4xl mx-auto p-6 md:p-10 text-white">
+      <h2 className="text-4xl font-bold mb-8 text-center">🛒 Mi Carrito</h2>
 
       {cart.length === 0 ? (
-        <p>No hay productos en el carrito.</p>
+        <p className="text-center text-gray-300">Tu carrito está vacío. ¡Agrega productos para comenzar!</p>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-6">
           {cart.map(item => (
-            <div key={item._id} className="bg-gray-800 p-4 rounded-lg flex justify-between items-center">
-              <div>
-                <h3 className="text-xl">{item.name}</h3>
-                <p>Cantidad: {item.quantity}</p>
-                <p className="text-sm text-gray-400">${(item.price * item.quantity).toFixed(2)}</p>
+            <div
+              key={item._id}
+              className="bg-gray-900 rounded-xl p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center shadow-lg hover:shadow-xl transition"
+            >
+              <div className="flex-1 mb-4 sm:mb-0">
+                <h3 className="text-xl font-bold mb-1">{item.name}</h3>
+                <p className="text-gray-400 mb-1">Cantidad: <span className="font-semibold">{item.quantity}</span></p>
+                <p className="text-green-400 font-semibold">${(item.price * item.quantity).toFixed(2)}</p>
               </div>
+
               <button
                 onClick={() => removeItem(item._id)}
-                className="bg-red-600 px-3 py-1 rounded hover:bg-red-700"
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition w-full sm:w-auto"
               >
-                Quitar 1
+                ➖ Quitar 1
               </button>
             </div>
           ))}
 
-          <div className="text-right text-xl mt-6 font-semibold">
-            Total: ${total.toFixed(2)}
+          <div className="bg-gray-800 rounded-xl p-6 text-right shadow-lg">
+            <h4 className="text-2xl font-bold text-green-400">Total: ${total.toFixed(2)}</h4>
           </div>
         </div>
       )}
     </section>
-  )
-}
+  );
+};
 
-export default CartPage
+export default CartPage;

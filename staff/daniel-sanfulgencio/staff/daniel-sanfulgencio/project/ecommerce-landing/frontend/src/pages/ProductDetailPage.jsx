@@ -12,7 +12,7 @@ const ProductDetailPage = ({ cart, setCart }) => {
 
   const fetchProduct = async () => {
     try {
-      const res = await fetch(`http://localhost:4000/api/products/${id}`)
+      const res = await fetch(`http://localhost:3000/api/products/${id}`)
       if (!res.ok) throw new Error('Error al cargar el producto')
       const data = await res.json()
       setProduct(data)
@@ -28,9 +28,9 @@ const ProductDetailPage = ({ cart, setCart }) => {
   const handleSubmit = async e => {
     e.preventDefault()
     try {
-      const token = localStorage.getItem('token') // Requiere login con JWT
+      const token = localStorage.getItem('token')
 
-      const res = await fetch('http://localhost:4000/api/reviews', {
+      const res = await fetch('http://localhost:3000/api/reviews', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -51,11 +51,11 @@ const ProductDetailPage = ({ cart, setCart }) => {
   }
 
   const addToCart = () => {
-    const exists = cart.find(item => item._id === product._id)
+    const exists = cart.find(item => item.id === product.id)
     if (exists) {
       setCart(
         cart.map(item =>
-          item._id === product._id
+          item.id === product.id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         )
@@ -85,7 +85,7 @@ const ProductDetailPage = ({ cart, setCart }) => {
       <ul className="space-y-2 mb-6">
         {product.reviews?.length > 0 ? (
           product.reviews.map((review, idx) => (
-            <li key={idx} className="bg-gray-800 p-3 rounded">
+            <li key={review.id || idx} className="bg-gray-800 p-3 rounded">
               <p className="text-sm italic">
                 Puntuación: {review.score}/5 — <span className="text-green-300">{review.author?.name || 'Anónimo'}</span>
               </p>

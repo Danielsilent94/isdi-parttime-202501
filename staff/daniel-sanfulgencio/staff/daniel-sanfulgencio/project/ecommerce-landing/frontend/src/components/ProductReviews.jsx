@@ -58,15 +58,19 @@ const ProductReviews = ({ productId }) => {
       </form>
 
       <ul className="space-y-4">
-        {reviews.map((r) => (
-          <li key={r._id} className="bg-gray-800 p-4 rounded text-white">
-            <p className="text-sm text-gray-400">
-              Por {r.author?.name || 'Usuario'} - {new Date(r.createdAt).toLocaleDateString()}
-            </p>
-            <p className="font-semibold">⭐ {r.score}</p>
-            <p>{r.text}</p>
-          </li>
-        ))}
+        {Array.isArray(reviews) && reviews.length > 0 ? (
+          reviews.map((r) => (
+            <li key={r.id} className="bg-gray-800 p-4 rounded text-white">
+              <p className="text-sm text-gray-400">
+                Por {r.author?.name || 'Usuario'} - {new Date(r.createdAt).toLocaleDateString()}
+              </p>
+              <p className="font-semibold">⭐ {r.score}</p>
+              <p>{r.text}</p>
+            </li>
+          ))
+        ) : (
+          <p className="text-gray-400">No hay opiniones todavía.</p>
+        )}
       </ul>
     </div>
   )

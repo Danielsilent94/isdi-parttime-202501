@@ -3,16 +3,35 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "test": "cross-env NODE_ENV=test mocha --timeout 10000 \"test/**/*.test.mjs\""
+    "dev": "nodemon server.mjs",
+    "test": "cross-env NODE_ENV=test mocha --timeout 10000 \"test/**/*.test.mjs\"",
+    "test:unit": "cross-env NODE_ENV=test mocha --timeout 10000 \"test/unit/**/*.test.mjs\" --exit",
+    "test:integration": "cross-env NODE_ENV=test mocha --timeout 10000 \"test/integration/**/*.test.mjs\" --exit",
+    "coverage": "nyc --reporter=text --reporter=html --reporter=lcov mocha --timeout 10000 \"test/**/*.test.mjs\"",
+    "report": "nyc report --reporter=html"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
     "chai": "^5.2.0",
+    "chai-as-promised": "^7.1.1",
+    "cors": "^2.8.5",
     "cross-env": "^7.0.3",
-    "dotenv": "^16.5.0",
-    "mongoose": "^8.15.2"
+    "dotenv": "^16.6.1",
+    "express": "^5.1.0",
+    "mongoose": "^8.16.3"
   },
   "devDependencies": {
-    "mocha": "^11.7.1"
+    "mocha": "^11.7.1",
+    "nodemon": "^3.1.0",
+    "nyc": "^17.1.0"
+  },
+  "nyc": {
+    "all": true,
+    "include": [
+      "logic/*.mjs"
+    ],
+    "exclude": [
+      "test"
+    ]
   }
 }
