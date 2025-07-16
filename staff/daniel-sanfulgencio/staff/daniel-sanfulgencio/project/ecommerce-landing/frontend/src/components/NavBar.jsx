@@ -1,50 +1,47 @@
-import React from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { getLoggedUser } from '../logic/getLoggedUser';
 
-const Navbar = ({ user, setUser, cart }) => {
-  const navigate = useNavigate()
+const Navbar = ({ cart, onLogout }) => {
+  const navigate = useNavigate();
+  const user = getLoggedUser();
+
+  const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   const handleLogout = () => {
-    setUser(null)
-    navigate('/')
-  }
-
-  const totalItems = cart?.reduce((acc, item) => acc + item.quantity, 0) || 0
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userName');
+    onLogout();
+    navigate('/login');
+  };
 
   return (
-    <nav className="bg-gray-900 text-white px-6 py-4 flex justify-between items-center">
-      <div className="text-2xl font-bold">
-        <Link to="/">BOLD TECH</Link>
-      </div>
+    <header className="bg-black text-white p-4 flex justify-between items-center">
+      <Link to="/" className="text-xl font-bold">
+        BOLD TECH
+      </Link>
+      <nav className="flex gap-4 items-center">
+        <Link to="/products">Productos</Link>
+        <Link to="/about">Sobre Nosotros</Link>
 
-      <div className="flex gap-4 items-center">
-        <Link to="/products" className="hover:text-blue-400">Productos</Link>
-        <Link to="/about" className="hover:text-blue-400">Sobre Nosotros</Link>
+        <Link to="/cart" className="relative">
+          🛒
+          {cartCount > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-600 text-xs px-2 py-0.5 rounded-full">
+              {cartCount}
+            </span>
+          )}
+        </Link>
 
-        {!user ? (
+        {user ? (
           <>
-            <Link to="/login" className="hover:text-green-400">Login</Link>
-            <Link to="/register" className="hover:text-yellow-400">Registro</Link>
-          </>
-        ) : (
-          <>
-            <Link to="/cart" className="relative hover:text-blue-400">
-              🛒
-              {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full px-1.5">
-                  {totalItems}
-                </span>
-              )}
-            </Link>
-
             <Link to="/profile">
               <img
-                src={user.avatar || 'https://i.pravatar.cc/40'}
-                alt="avatar"
-                className="w-8 h-8 rounded-full border border-white hover:ring"
+                src={`https://i.pravatar.cc/30?u=${user.id}`}
+                alt="Perfil"
+                className="rounded-full w-8 h-8 inline-block"
               />
             </Link>
-
             <button
               onClick={handleLogout}
               className="bg-red-600 px-3 py-1 rounded hover:bg-red-700"
@@ -52,10 +49,15 @@ const Navbar = ({ user, setUser, cart }) => {
               Logout
             </button>
           </>
+        ) : (
+          <>
+            <Link to="/login">Login</Link>
+            <Link to="/register">Registro</Link>
+          </>
         )}
-      </div>
-    </nav>
-  )
-}
+      </nav>
+    </header>
+  );
+};
 
-export default Navbar
+export default Navbar;

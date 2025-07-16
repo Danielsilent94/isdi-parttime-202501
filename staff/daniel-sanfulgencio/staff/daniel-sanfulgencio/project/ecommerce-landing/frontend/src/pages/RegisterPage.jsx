@@ -1,34 +1,28 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { registerUser } from '../logic/users/registerUser';
 
 const RegisterPage = () => {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState(null)
-  const navigate = useNavigate()
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async e => {
-    e.preventDefault()
+    e.preventDefault();
 
     try {
-      const res = await fetch('http://localhost:4000/api/users/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password })
-      })
-
-      if (!res.ok) throw new Error('Error en el registro')
-      navigate('/login')
+      await registerUser(name, email, password);
+      navigate('/login');
     } catch (err) {
-      setError(err.message)
+      setError(err.message);
     }
-  }
+  };
 
   return (
     <section className="p-10 text-white max-w-md mx-auto">
       <h2 className="text-3xl font-bold mb-6">Crear cuenta</h2>
-
       {error && <p className="text-red-400 mb-4">{error}</p>}
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -61,7 +55,7 @@ const RegisterPage = () => {
         </button>
       </form>
     </section>
-  )
-}
+  );
+};
 
-export default RegisterPage
+export default RegisterPage;

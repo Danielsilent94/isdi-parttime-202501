@@ -1,68 +1,36 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import { getLoggedUser } from '../logic/getLoggedUser';
 
-const ProfilePage = ({ user, setUser }) => {
-  const navigate = useNavigate()
-  const [name, setName] = useState(user?.name || '')
-  const [description, setDescription] = useState(user?.description || '')
-  const [avatar, setAvatar] = useState(user?.avatar || 'https://i.pravatar.cc/100')
+const ProfilePage = () => {
+  const [user, setUser] = useState(null);
 
-  const handleSave = () => {
-    const updatedUser = { ...user, name, description, avatar }
-    setUser(updatedUser)
-    navigate('/')
+  useEffect(() => {
+    setUser(getLoggedUser());
+  }, []);
+
+  if (!user) {
+    return (
+      <section className="p-10 text-white text-center">
+        <h2 className="text-3xl font-bold mb-6">Perfil</h2>
+        <p>No has iniciado sesión.</p>
+      </section>
+    );
   }
 
-  if (!user) return <p className="text-white p-10">Debes iniciar sesión para ver tu perfil.</p>
-
   return (
-    <section className="p-10 text-white max-w-xl mx-auto">
-      <h2 className="text-3xl font-bold mb-6">Mi Perfil</h2>
-
-      <div className="flex flex-col items-center gap-4 mb-8">
+    <section className="p-10 text-white max-w-lg mx-auto">
+      <h2 className="text-3xl font-bold mb-6 text-center">Mi Perfil</h2>
+      <div className="flex flex-col items-center">
         <img
-          src={avatar}
-          alt="avatar"
-          className="w-24 h-24 rounded-full border border-white"
+          src={`https://i.pravatar.cc/150?u=${user.id}`}
+          alt="Avatar"
+          className="w-24 h-24 rounded-full mb-4"
         />
-        <input
-          type="url"
-          placeholder="URL de nueva imagen"
-          value={avatar}
-          onChange={e => setAvatar(e.target.value)}
-          className="p-2 rounded text-black w-full"
-        />
-      </div>
-
-      <div className="flex flex-col gap-4 mb-6">
-        <input
-          type="text"
-          placeholder="Nombre"
-          value={name}
-          onChange={e => setName(e.target.value)}
-          className="p-2 rounded text-black"
-        />
-        <textarea
-          placeholder="Descripción (ej: apasionado por la tecnología...)"
-          value={description}
-          onChange={e => setDescription(e.target.value)}
-          className="p-2 rounded text-black"
-        />
-      </div>
-
-      <button
-        onClick={handleSave}
-        className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded w-full"
-      >
-        Guardar cambios
-      </button>
-
-      <div className="mt-10 text-gray-300">
-        <h3 className="text-xl font-semibold mb-2">Historial de compras</h3>
-        <p>Aquí se mostrarán tus compras pasadas (en desarrollo).</p>
+        <h3 className="text-xl font-semibold">{user.name}</h3>
+        <p className="text-gray-300 mb-4">ID: {user.id}</p>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default ProfilePage
+export default ProfilePage;

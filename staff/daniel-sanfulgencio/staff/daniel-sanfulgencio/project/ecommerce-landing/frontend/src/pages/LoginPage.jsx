@@ -1,56 +1,53 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { loginUser } from '../logic/users/loginUser';
 
 const LoginPage = ({ setUser }) => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const navigate = useNavigate()
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async e => {
-    e.preventDefault()
+    e.preventDefault();
 
-    // Aquí iría la llamada al backend real.
-    if (email && password) {
-      const mockUser = {
-        name: 'Usuario Demo',
-        email,
-        avatar: 'https://i.pravatar.cc/40',
-      }
-      setUser(mockUser)
-      navigate('/')
+    try {
+      const userData = await loginUser(email, password);
+      setUser({ id: userData.userId, name: userData.name });
+      navigate('/products');
+    } catch (err) {
+      setError(err.message);
     }
-  }
+  };
 
   return (
     <section className="p-10 text-white max-w-md mx-auto">
       <h2 className="text-3xl font-bold mb-6">Iniciar sesión</h2>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      {error && <p className="text-red-400 mb-4">{error}</p>}
+
+      <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="email"
           placeholder="Email"
+          className="w-full p-2 rounded text-black"
           value={email}
-          className="p-2 rounded text-black"
           onChange={e => setEmail(e.target.value)}
           required
         />
         <input
           type="password"
           placeholder="Contraseña"
+          className="w-full p-2 rounded text-black"
           value={password}
-          className="p-2 rounded text-black"
           onChange={e => setPassword(e.target.value)}
           required
         />
-        <button
-          type="submit"
-          className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded"
-        >
-          Entrar
+        <button className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
+          Iniciar sesión
         </button>
       </form>
     </section>
-  )
-}
+  );
+};
 
-export default LoginPage
-
+export default LoginPage;

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getAllProducts } from '../logic/getAllProducts';
 import { getReviewsByProduct } from '../logic/getReviewsByProduct';
 import { createReview } from '../logic/createReview';
-import getLoggedUserId from '../logic/getLoggedUserId';
+import { getLoggedUser } from '../logic/getLoggedUser';
 
 const ProductsPage = ({ cart, setCart }) => {
   const [products, setProducts] = useState([]);
@@ -12,8 +12,7 @@ const ProductsPage = ({ cart, setCart }) => {
   const [reviewsVisible, setReviewsVisible] = useState({});
   const [reviews, setReviews] = useState({});
   const [newReview, setNewReview] = useState({});
-  const [reviewFormVisible, setReviewFormVisible] = useState({});
-  const userId = getLoggedUserId();
+  const user = getLoggedUser();
 
   useEffect(() => {
     getAllProducts()
@@ -79,13 +78,6 @@ const ProductsPage = ({ cart, setCart }) => {
     }
   };
 
-  const toggleReviewForm = (productId) => {
-    setReviewFormVisible(prev => ({
-      ...prev,
-      [productId]: !prev[productId]
-    }));
-  };
-
   const handleReviewSubmit = async (e, productId) => {
     e.preventDefault();
     if (!newReview[productId]?.text || !newReview[productId]?.score) return;
@@ -99,7 +91,6 @@ const ProductsPage = ({ cart, setCart }) => {
       const updated = await getReviewsByProduct(productId);
       setReviews(prev => ({ ...prev, [productId]: updated }));
       setNewReview(prev => ({ ...prev, [productId]: { text: '', score: '' } }));
-      setReviewFormVisible(prev => ({ ...prev, [productId]: false }));
     } catch (err) {
       console.error('❌ Error creating review:', err);
       setError('Error al enviar la opinión');
@@ -113,7 +104,6 @@ const ProductsPage = ({ cart, setCart }) => {
       <h2 className="text-4xl font-bold mb-8 text-center">🛒 Todos los Productos</h2>
       {error && <p className="text-red-400 text-center">{error}</p>}
 
-      {/* Filtros */}
       <div className="flex flex-wrap justify-center gap-3 mb-8">
         {categories.map(cat => (
           <button
@@ -130,7 +120,6 @@ const ProductsPage = ({ cart, setCart }) => {
         ))}
       </div>
 
-      {/* Lista */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredProducts.map(product => (
           <div
@@ -183,57 +172,47 @@ const ProductsPage = ({ cart, setCart }) => {
                   <p className="text-gray-500">Aún no hay opiniones.</p>
                 )}
 
-                {userId && (
-                  <div className="mt-4">
+                {user && (
+                  <form onSubmit={e => handleReviewSubmit(e, product._id)} className="mt-4 space-y-3">
+                    <h5 className="font-medium">📝 Agregar tu opinión:</h5>
+                    <textarea
+                      placeholder="Escribe tu opinión..."
+                      value={newReview[product._id]?.text || ''}
+                      onChange={e =>
+                        setNewReview(prev => ({
+                          ...prev,
+                          [product._id]: {
+                            ...prev[product._id],
+                            text: e.target.value
+                          }
+                        }))
+                      }
+                      className="w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
+                    />
+                    <input
+                      type="number"
+                      min="1"
+                      max="5"
+                      placeholder="Puntuación (1-5)"
+                      value={newReview[product._id]?.score || ''}
+                      onChange={e =>
+                        setNewReview(prev => ({
+                          ...prev,
+                          [product._id]: {
+                            ...prev[product._id],
+                            score: e.target.value
+                          }
+                        }))
+                      }
+                      className="w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
+                    />
                     <button
-                      onClick={() => toggleReviewForm(product._id)}
-                      className="bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded-lg transition w-full"
+                      type="submit"
+                      className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition"
                     >
-                      {reviewFormVisible[product._id] ? 'Cancelar' : '➕ Agregar Opinión'}
+                      Enviar Opinión
                     </button>
-
-                    {reviewFormVisible[product._id] && (
-                      <form onSubmit={e => handleReviewSubmit(e, product._id)} className="mt-4 space-y-3">
-                        <textarea
-                          placeholder="Escribe tu opinión..."
-                          value={newReview[product._id]?.text || ''}
-                          onChange={e =>
-                            setNewReview(prev => ({
-                              ...prev,
-                              [product._id]: {
-                                ...prev[product._id],
-                                text: e.target.value
-                              }
-                            }))
-                          }
-                          className="w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
-                        />
-                        <input
-                          type="number"
-                          min="1"
-                          max="5"
-                          placeholder="Puntuación (1-5)"
-                          value={newReview[product._id]?.score || ''}
-                          onChange={e =>
-                            setNewReview(prev => ({
-                              ...prev,
-                              [product._id]: {
-                                ...prev[product._id],
-                                score: e.target.value
-                              }
-                            }))
-                          }
-                          className="w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
-                        />
-                        <button
-                          type="submit"
-                          className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition w-full"
-                        >
-                          Enviar Opinión
-                        </button>
-                      </form>
-                    )}
-                  </div>
+                  </form>
                 )}
               </div>
             )}
