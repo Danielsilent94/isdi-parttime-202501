@@ -1,65 +1,81 @@
-import React from 'react';
+import React from "react";
+import { Link } from "react-router-dom";
 
-const CartPage = ({ cart, setCart }) => {
-  const removeItem = (_id) => {
-    const updatedCart = cart
-      .map(item => {
-        if (item._id === _id) {
-          if (item.quantity > 1) {
-            return { ...item, quantity: item.quantity - 1 };
-          }
-          return null;
-        }
-        return item;
-      })
-      .filter(Boolean);
-
-    setCart(updatedCart);
+export default function CartPage({ cart, setCart }) {
+  // Quitar un producto del carrito
+  const handleRemove = (id) => {
+    setCart((prev) => prev.filter((item) => item._id !== id));
   };
 
-  const total = cart.reduce((acc, item) => {
-    const price = Number(item.price) || 0;
-    const quantity = Number(item.quantity) || 0;
-    return acc + price * quantity;
-  }, 0);
+  // Calcular total general
+  const total = cart.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
 
   return (
-    <section className="max-w-4xl mx-auto p-6 md:p-10 text-white">
-      <h2 className="text-4xl font-bold mb-8 text-center">🛒 Mi Carrito</h2>
+    <div className="min-h-screen bg-[#0f172a] text-white p-6">
+      <h1 className="text-3xl font-bold mb-6">Tu Carrito</h1>
 
       {cart.length === 0 ? (
-        <p className="text-center text-gray-300">Tu carrito está vacío. ¡Agrega productos para comenzar!</p>
+        <div>
+          <p className="text-gray-400">El carrito está vacío.</p>
+          <Link
+            to="/products"
+            className="mt-4 inline-block bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-lg font-medium"
+          >
+            Ver productos
+          </Link>
+        </div>
       ) : (
-        <div className="space-y-6">
-          {cart.map((item, index) => (
+        <div className="space-y-4">
+          {cart.map((item) => (
             <div
-              key={`${item._id}-${index}`}
-              className="bg-gray-900 rounded-xl p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center shadow-lg hover:shadow-xl transition"
+              key={item._id}
+              className="bg-gray-800 rounded-xl p-4 flex items-center gap-4"
             >
-              <div className="flex-1 mb-4 sm:mb-0">
-                <h3 className="text-xl font-bold mb-1">{item.name}</h3>
-                <p className="text-gray-400 mb-1">Cantidad: <span className="font-semibold">{item.quantity}</span></p>
-                <p className="text-green-400 font-semibold">
-                  {Number(item.price * item.quantity).toFixed(2)} €
+              {/* Miniatura */}
+              <img
+                src={item.image || "/default-product.png"}
+                alt={item.name}
+                className="w-20 h-20 object-contain rounded-lg bg-white p-2"
+              />
+
+              {/* Info */}
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold">{item.name}</h3>
+                <p className="text-gray-400 text-sm">{item.description}</p>
+                <p className="text-green-400 font-bold">
+                  {item.price} € x {item.quantity} ={" "}
+                  {(item.price * item.quantity).toFixed(2)} €
                 </p>
               </div>
 
+              {/* Botón eliminar */}
               <button
-                onClick={() => removeItem(item._id)}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition w-full sm:w-auto"
+                onClick={() => handleRemove(item._id)}
+                className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded"
               >
-                ➖ Quitar 1
+                Eliminar
               </button>
             </div>
           ))}
 
-          <div className="bg-gray-800 rounded-xl p-6 text-right shadow-lg">
-            <h4 className="text-2xl font-bold text-green-400">Total: {total.toFixed(2)} €</h4>
+          {/* Total y checkout */}
+          <div className="bg-gray-900 rounded-xl p-6 mt-6">
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-xl font-semibold">Total:</span>
+              <span className="text-2xl font-bold text-green-400">
+                {total.toFixed(2)} €
+              </span>
+            </div>
+
+            <button className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-3 rounded-lg text-lg">
+              Finalizar compra
+            </button>
           </div>
         </div>
       )}
-    </section>
+    </div>
   );
-};
-
-export default CartPage;
+}

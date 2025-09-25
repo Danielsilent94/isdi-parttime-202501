@@ -1,29 +1,13 @@
-import React, { useEffect, useState } from "react";
-import getAllProducts from "../logic/getAllProducts";
+import React from "react";
 import ProductCard from "../components/ProductCard";
 
-const ProductsPage = ({ onAddToCart }) => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const fetched = await getAllProducts();
-      setProducts(fetched);
-      setLoading(false);
-    };
-    fetchProducts();
-  }, []);
-
-  if (loading) {
-    return <div className="p-4 text-white">Cargando productos...</div>;
-  }
-
+const ProductsPage = ({ products = [], onAddToCart }) => {
   return (
-    <div className="min-h-screen bg-blue-900 text-white p-4">
-      <h2 className="text-2xl font-bold mb-4">Todos los productos</h2>
+    <div className="min-h-screen bg-[#0f172a] text-white p-6">
+      <h2 className="text-2xl font-bold mb-6">Todos los productos</h2>
+
       {products.length === 0 ? (
-        <p>No hay productos disponibles.</p>
+        <p className="text-gray-400">No hay productos disponibles.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((product) => (

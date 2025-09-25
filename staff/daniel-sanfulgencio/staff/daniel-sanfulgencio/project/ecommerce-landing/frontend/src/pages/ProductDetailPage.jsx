@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import getLoggedUser from '../logic/getLoggedUser';
-import createReview from '../logic/createReview';
-import getReviewsByProduct from '../logic/getReviewsByProduct';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import getLoggedUser from "../logic/getLoggedUser";
+import createReview from "../logic/createReview";
+import getReviewsByProduct from "../logic/getReviewsByProduct";
 
 const ProductDetailPage = ({ products = [], onAddToCart }) => {
   const { id } = useParams();
   const product = products.find((p) => p._id === id);
   const user = getLoggedUser();
 
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState("");
   const [rating, setRating] = useState(5);
   const [reviews, setReviews] = useState([]);
 
@@ -19,7 +19,7 @@ const ProductDetailPage = ({ products = [], onAddToCart }) => {
         const result = await getReviewsByProduct(id);
         setReviews(result || []);
       } catch (err) {
-        console.error('❌ Error cargando reseñas:', err);
+        console.error("Error cargando reseñas:", err);
         setReviews([]);
       }
     };
@@ -29,19 +29,19 @@ const ProductDetailPage = ({ products = [], onAddToCart }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!user) {
-      alert('Debes iniciar sesión para opinar');
+      alert("Debes iniciar sesión para opinar");
       return;
     }
 
     try {
-      await createReview(product._id, comment, rating);
-      setComment('');
+      await createReview(product._id, user.userId, comment, rating);
+      setComment("");
       setRating(5);
 
       const updatedReviews = await getReviewsByProduct(product._id);
       setReviews(updatedReviews || []);
-    } catch (error) {
-      alert(error.message || 'Error al enviar la reseña');
+    } catch (err) {
+      alert("Error al enviar la reseña");
     }
   };
 
@@ -71,8 +71,16 @@ const ProductDetailPage = ({ products = [], onAddToCart }) => {
           <ul className="space-y-3">
             {reviews.map((review) => (
               <li key={review._id} className="bg-gray-800 p-4 rounded-lg">
-                <p className="text-sm text-gray-200 mb-1">⭐ {review.rating} estrellas</p>
+                <p className="text-yellow-400">⭐ {review.rating} estrellas</p>
                 <p className="text-sm text-gray-300 italic">"{review.comment}"</p>
+                <p className="text-xs text-gray-400 mt-1">
+                  — {review.user?.name || "Usuario"} ·{" "}
+                  {new Date(review.createdAt).toLocaleDateString("es-ES", {
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </p>
               </li>
             ))}
           </ul>
@@ -97,7 +105,9 @@ const ProductDetailPage = ({ products = [], onAddToCart }) => {
               className="text-black p-2 rounded"
             >
               {[5, 4, 3, 2, 1].map((r) => (
-                <option key={r} value={r}>{r} estrellas</option>
+                <option key={r} value={r}>
+                  {r} estrellas
+                </option>
               ))}
             </select>
             <button

@@ -1,42 +1,43 @@
 import React, { useEffect, useState } from "react";
 
-export default function ProfilePage() {
-  const userId = localStorage.getItem("userId");
-  const [user, setUser] = useState(null);
+export default function ProfilePage({ user, setUser }) {
+  const [profile, setProfile] = useState(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/users/${userId}`);
+        const res = await fetch(`http://localhost:3000/api/users/${user.id}`);
         const data = await res.json();
-        setUser(data);
+        setProfile(data);
       } catch {
         setError("No se pudo cargar tu perfil.");
       }
     };
-    if (userId) load();
-  }, [userId]);
+    if (user?.id) load();
+  }, [user]);
 
   const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true);
     setError("");
     try {
-      const res = await fetch(`http://localhost:3000/api/users/${userId}`, {
+      const res = await fetch(`http://localhost:3000/api/users/${user.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: user.name || "",
-          bio: user.bio || "",
-          avatarUrl: user.avatarUrl || "",
+          name: profile.name || "",
+          bio: profile.bio || "",
+          avatarUrl: profile.avatarUrl || "",
         }),
       });
       if (!res.ok) throw new Error();
       const updated = await res.json();
-      setUser(updated);
-      localStorage.setItem("userName", updated.name || "");
+      setProfile(updated);
+
+      // Actualizamos App.jsx también
+      setUser({ id: updated._id, name: updated.name });
     } catch {
       setError("No se pudo guardar.");
     } finally {
@@ -44,7 +45,7 @@ export default function ProfilePage() {
     }
   };
 
-  if (!userId) {
+  if (!user) {
     return (
       <div className="min-h-screen bg-[#0f172a] text-white p-6">
         Debes iniciar sesión para ver tu perfil.
@@ -52,7 +53,7 @@ export default function ProfilePage() {
     );
   }
 
-  if (!user) {
+  if (!profile) {
     return (
       <div className="min-h-screen bg-[#0f172a] text-white p-6">
         Cargando perfil...
@@ -67,14 +68,14 @@ export default function ProfilePage() {
 
         <div className="bg-gray-800 rounded-2xl p-6 mb-6 flex items-center gap-4">
           <img
-            src={user.avatarUrl || "https://i.pravatar.cc/100"}
+            src={profile.avatarUrl || "https://i.pravatar.cc/100"}
             alt="avatar"
             className="w-20 h-20 rounded-full object-cover"
           />
           <div>
-            <p className="text-lg font-semibold">{user.name || "Sin nombre"}</p>
-            <p className="text-gray-300 text-sm">{user.email}</p>
-            {user.bio && <p className="text-gray-400 text-sm mt-1">{user.bio}</p>}
+            <p className="text-lg font-semibold">{profile.name || "Sin nombre"}</p>
+            <p className="text-gray-300 text-sm">{profile.email}</p>
+            {profile.bio && <p className="text-gray-400 text-sm mt-1">{profile.bio}</p>}
           </div>
         </div>
 
@@ -85,8 +86,8 @@ export default function ProfilePage() {
             <label className="block text-sm text-gray-300 mb-1">Nombre</label>
             <input
               className="w-full p-3 rounded bg-gray-700 text-white"
-              value={user.name || ""}
-              onChange={(e) => setUser({ ...user, name: e.target.value })}
+              value={profile.name || ""}
+              onChange={(e) => setProfile({ ...profile, name: e.target.value })}
             />
           </div>
 
@@ -94,8 +95,8 @@ export default function ProfilePage() {
             <label className="block text-sm text-gray-300 mb-1">Descripción (bio)</label>
             <textarea
               className="w-full p-3 rounded bg-gray-700 text-white h-28"
-              value={user.bio || ""}
-              onChange={(e) => setUser({ ...user, bio: e.target.value })}
+              value={profile.bio || ""}
+              onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
               placeholder="Cuéntanos algo sobre ti…"
             />
           </div>
@@ -104,8 +105,8 @@ export default function ProfilePage() {
             <label className="block text-sm text-gray-300 mb-1">Avatar (URL)</label>
             <input
               className="w-full p-3 rounded bg-gray-700 text-white"
-              value={user.avatarUrl || ""}
-              onChange={(e) => setUser({ ...user, avatarUrl: e.target.value })}
+              value={profile.avatarUrl || ""}
+              onChange={(e) => setProfile({ ...profile, avatarUrl: e.target.value })}
               placeholder="https://imagen-tu-avatar..."
             />
           </div>

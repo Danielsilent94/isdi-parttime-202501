@@ -4,7 +4,7 @@ import authMiddleware from "../middlewares/authMiddleware.mjs";
 
 const router = express.Router();
 
-// Crear reseña (requiere estar autenticado)
+// Crear reseña (requiere autenticación)
 router.post("/", authMiddleware, async (req, res) => {
   try {
     const { productId, comment, rating } = req.body;
@@ -21,6 +21,8 @@ router.post("/", authMiddleware, async (req, res) => {
     });
 
     await review.save();
+    await review.populate("user", "name"); // 👈 añadimos autor
+
     res.status(201).json(review);
   } catch (err) {
     console.error("❌ Error al crear reseña:", err);
@@ -28,13 +30,12 @@ router.post("/", authMiddleware, async (req, res) => {
   }
 });
 
-// Obtener reseñas por producto
+// Obtener reseñas por producto (ordenadas)
 router.get("/product/:productId", async (req, res) => {
   try {
-    const { productId } = req.params;
-    const reviews = await Review.find({ product: productId })
-      .populate("user", "name") // opcional: incluir el nombre del usuario
-      .sort({ createdAt: -1 }); // reseñas más recientes primero
+    const reviews = await Review.find({ product: req.params.productId })
+      .populate("user", "name")
+      .sort({ createdAt: -1 }); // 👈 más recientes primero
 
     res.json(reviews);
   } catch (err) {
