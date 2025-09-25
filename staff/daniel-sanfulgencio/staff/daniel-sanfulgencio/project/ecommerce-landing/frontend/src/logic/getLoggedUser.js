@@ -1,6 +1,8 @@
-export function getLoggedUser() {
+export default function getLoggedUser() {
   const id = localStorage.getItem('userId');
   const name = localStorage.getItem('userName');
-  if (!id) return null;
+
+  if (!id || !name) return null;
+
   return { id, name };
 }

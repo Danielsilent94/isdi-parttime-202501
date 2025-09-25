@@ -1,36 +1,45 @@
-import express from 'express';
-import Review from '../models/Review.mjs';
+import express from "express";
+import Review from "../models/Review.mjs";
+import authMiddleware from "../middlewares/authMiddleware.mjs";
 
 const router = express.Router();
 
-// Crear nueva review
-router.post('/', async (req, res) => {
+// Crear reseña (requiere estar autenticado)
+router.post("/", authMiddleware, async (req, res) => {
   try {
-    const { text, score, productId, author } = req.body;
+    const { productId, comment, rating } = req.body;
 
-    if (!text || !score || !productId || !author) {
-      return res.status(400).json({ error: 'Missing required fields' });
+    if (!productId || !comment || !rating) {
+      return res.status(400).json({ error: "Faltan datos en la reseña" });
     }
 
-    const newReview = new Review({ text, score, product: productId, author });
-    await newReview.save();
+    const review = new Review({
+      product: productId,
+      user: req.user.id, // viene del token
+      comment,
+      rating,
+    });
 
-    res.status(201).json(newReview);
+    await review.save();
+    res.status(201).json(review);
   } catch (err) {
-    console.error('❌ Error creating review:', err);
-    res.status(500).json({ error: 'Failed to create review' });
+    console.error("❌ Error al crear reseña:", err);
+    res.status(500).json({ error: "Error al crear la reseña" });
   }
 });
 
-// Obtener reviews por producto
-router.get('/product/:productId', async (req, res) => {
+// Obtener reseñas por producto
+router.get("/product/:productId", async (req, res) => {
   try {
     const { productId } = req.params;
-    const reviews = await Review.find({ product: productId }).populate('author', 'name');
+    const reviews = await Review.find({ product: productId })
+      .populate("user", "name") // opcional: incluir el nombre del usuario
+      .sort({ createdAt: -1 }); // reseñas más recientes primero
+
     res.json(reviews);
   } catch (err) {
-    console.error('❌ Error getting reviews:', err);
-    res.status(500).json({ error: 'Failed to fetch reviews' });
+    console.error("❌ Error al obtener reseñas:", err);
+    res.status(500).json({ error: "Error al obtener reseñas" });
   }
 });
 

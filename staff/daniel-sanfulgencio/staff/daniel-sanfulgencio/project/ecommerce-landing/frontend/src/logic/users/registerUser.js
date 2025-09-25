@@ -1,16 +1,24 @@
-import { apiUrl } from '../helpers/constants';
+export default async function registerUser(name, email, password) {
+  try {
+    const response = await fetch("http://localhost:3000/api/users/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password }),
+    });
 
-export async function registerUser(name, email, password) {
-  const res = await fetch(`${apiUrl}/users/register`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, email, password })
-  });
+    if (!response.ok) {
+      throw new Error("Error al registrar usuario");
+    }
 
-  if (!res.ok) throw new Error('Error en el registro');
-  const data = await res.json();
+    const data = await response.json();
 
-  localStorage.setItem('userId', data._id);
-  localStorage.setItem('userName', data.name);
-  return data;
+    // Guardamos en localStorage
+    localStorage.setItem("userId", data.user._id);
+    localStorage.setItem("userName", data.user.name);
+
+    return data;
+  } catch (error) {
+    console.error("Register error:", error);
+    throw error;
+  }
 }

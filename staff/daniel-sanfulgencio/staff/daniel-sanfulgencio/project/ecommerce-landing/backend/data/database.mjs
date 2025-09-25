@@ -1,14 +1,24 @@
 import mongoose from 'mongoose';
 
-export async function connect(mongoUrl, dbName) {
-  if (!mongoUrl || !dbName) {
-    throw new Error(`❌ Missing mongoUrl or dbName. Got mongoUrl="${mongoUrl}", dbName="${dbName}"`);
+export const connect = async (mongoUrl, dbName) => {
+  if (!mongoUrl) {
+    throw new Error(`❌ Missing mongoUrl. Got mongoUrl="${mongoUrl}"`);
   }
 
-  await mongoose.connect(mongoUrl, { dbName });
-  console.log(`✅ Connected to DB: ${dbName}`);
-}
+  if (!dbName) {
+    throw new Error(`❌ Missing dbName. Got dbName="${dbName}"`);
+  }
 
-export function disconnect() {
-  return mongoose.connection.dropDatabase().then(() => mongoose.disconnect());
-}
+  const fullUri = `${mongoUrl}/${dbName}`;
+  
+  try {
+    await mongoose.connect(fullUri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('✅ DB connected to', fullUri);
+  } catch (error) {
+    console.error('❌ Error connecting to DB:', error.message);
+    throw error;
+  }
+};

@@ -1,16 +1,12 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getLoggedUser } from '../logic/getLoggedUser';
 
-const Navbar = ({ cart, onLogout }) => {
+const NavBar = ({ cart = [], onLogout, user }) => {
   const navigate = useNavigate();
-  const user = getLoggedUser();
 
-  const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+  const cartCount = cart.reduce((acc, item) => acc + (item.quantity || 1), 0);
 
   const handleLogout = () => {
-    localStorage.removeItem('userId');
-    localStorage.removeItem('userName');
     onLogout();
     navigate('/login');
   };
@@ -23,7 +19,6 @@ const Navbar = ({ cart, onLogout }) => {
       <nav className="flex gap-4 items-center">
         <Link to="/products">Productos</Link>
         <Link to="/about">Sobre Nosotros</Link>
-
         <Link to="/cart" className="relative">
           🛒
           {cartCount > 0 && (
@@ -32,15 +27,15 @@ const Navbar = ({ cart, onLogout }) => {
             </span>
           )}
         </Link>
-
         {user ? (
           <>
-            <Link to="/profile">
+            <Link to="/profile" className="flex items-center gap-2">
               <img
-                src={`https://i.pravatar.cc/30?u=${user.id}`}
+                src={user.avatar || "https://i.pravatar.cc/30"}
                 alt="Perfil"
                 className="rounded-full w-8 h-8 inline-block"
               />
+              <span className="hidden sm:inline">{user.name}</span>
             </Link>
             <button
               onClick={handleLogout}
@@ -60,4 +55,4 @@ const Navbar = ({ cart, onLogout }) => {
   );
 };
 
-export default Navbar;
+export default NavBar;

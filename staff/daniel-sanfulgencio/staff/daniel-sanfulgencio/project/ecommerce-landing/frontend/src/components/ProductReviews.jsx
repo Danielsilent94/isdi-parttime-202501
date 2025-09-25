@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { getReviewsByProduct, createReview } from '../logic/reviews'
-import { getLoggedUserId } from '../logic/helpers/getLoggedUserId'
+
 
 const ProductReviews = ({ productId }) => {
   const [reviews, setReviews] = useState([])

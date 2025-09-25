@@ -1,35 +1,78 @@
-import React, { useState, useEffect } from 'react';
-import { getLoggedUser } from '../logic/getLoggedUser';
+import React from "react";
+import getLoggedUser from "../logic/getLoggedUser";
+import updateUser from "../logic/updateUser"; // ✅ está en logic, no en logic/users
+import deleteUser from "../logic/deleteUser"; // ✅ también en logic
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
-const ProfilePage = () => {
-  const [user, setUser] = useState(null);
+const ProfilePage = ({ onLogout }) => {
+  const navigate = useNavigate();
+  const user = getLoggedUser();
 
-  useEffect(() => {
-    setUser(getLoggedUser());
-  }, []);
+  const [name, setName] = useState(user?.name || "");
+  const [description, setDescription] = useState("");
 
-  if (!user) {
-    return (
-      <section className="p-10 text-white text-center">
-        <h2 className="text-3xl font-bold mb-6">Perfil</h2>
-        <p>No has iniciado sesión.</p>
-      </section>
-    );
-  }
+  const handleUpdate = async () => {
+    const token = localStorage.getItem("token");
+    const updated = await updateUser(user.id, { name, description }, token);
+    if (updated) {
+      alert("Perfil actualizado");
+      localStorage.setItem("userName", name);
+    } else {
+      alert("Error al actualizar");
+    }
+  };
+
+  const handleDelete = async () => {
+    const token = localStorage.getItem("token");
+    const confirmed = window.confirm("¿Seguro que quieres eliminar tu cuenta?");
+    if (confirmed) {
+      const deleted = await deleteUser(user.id, token);
+      if (deleted) {
+        localStorage.clear();
+        onLogout();
+        navigate("/register");
+      } else {
+        alert("Error al eliminar cuenta");
+      }
+    }
+  };
 
   return (
-    <section className="p-10 text-white max-w-lg mx-auto">
-      <h2 className="text-3xl font-bold mb-6 text-center">Mi Perfil</h2>
-      <div className="flex flex-col items-center">
-        <img
-          src={`https://i.pravatar.cc/150?u=${user.id}`}
-          alt="Avatar"
-          className="w-24 h-24 rounded-full mb-4"
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-4">Perfil de Usuario</h2>
+      <div className="mb-4">
+        <label className="block mb-1">Nombre:</label>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="border px-3 py-2 w-full"
         />
-        <h3 className="text-xl font-semibold">{user.name}</h3>
-        <p className="text-gray-300 mb-4">ID: {user.id}</p>
       </div>
-    </section>
+      <div className="mb-4">
+        <label className="block mb-1">Descripción:</label>
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="border px-3 py-2 w-full"
+        ></textarea>
+      </div>
+      <div className="flex gap-4">
+        <button
+          onClick={handleUpdate}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Guardar cambios
+        </button>
+        <button
+          onClick={handleDelete}
+          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+        >
+          Eliminar cuenta
+        </button>
+      </div>
+    </div>
   );
 };
 

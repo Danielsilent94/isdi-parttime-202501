@@ -8,7 +8,7 @@ const CartPage = ({ cart, setCart }) => {
           if (item.quantity > 1) {
             return { ...item, quantity: item.quantity - 1 };
           }
-          return null; // marcar para filtrar
+          return null;
         }
         return item;
       })
@@ -17,7 +17,11 @@ const CartPage = ({ cart, setCart }) => {
     setCart(updatedCart);
   };
 
-  const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const total = cart.reduce((acc, item) => {
+    const price = Number(item.price) || 0;
+    const quantity = Number(item.quantity) || 0;
+    return acc + price * quantity;
+  }, 0);
 
   return (
     <section className="max-w-4xl mx-auto p-6 md:p-10 text-white">
@@ -27,15 +31,17 @@ const CartPage = ({ cart, setCart }) => {
         <p className="text-center text-gray-300">Tu carrito está vacío. ¡Agrega productos para comenzar!</p>
       ) : (
         <div className="space-y-6">
-          {cart.map(item => (
+          {cart.map((item, index) => (
             <div
-              key={item._id}
+              key={`${item._id}-${index}`}
               className="bg-gray-900 rounded-xl p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center shadow-lg hover:shadow-xl transition"
             >
               <div className="flex-1 mb-4 sm:mb-0">
                 <h3 className="text-xl font-bold mb-1">{item.name}</h3>
                 <p className="text-gray-400 mb-1">Cantidad: <span className="font-semibold">{item.quantity}</span></p>
-                <p className="text-green-400 font-semibold">${(item.price * item.quantity).toFixed(2)}</p>
+                <p className="text-green-400 font-semibold">
+                  {Number(item.price * item.quantity).toFixed(2)} €
+                </p>
               </div>
 
               <button
@@ -48,7 +54,7 @@ const CartPage = ({ cart, setCart }) => {
           ))}
 
           <div className="bg-gray-800 rounded-xl p-6 text-right shadow-lg">
-            <h4 className="text-2xl font-bold text-green-400">Total: ${total.toFixed(2)}</h4>
+            <h4 className="text-2xl font-bold text-green-400">Total: {total.toFixed(2)} €</h4>
           </div>
         </div>
       )}

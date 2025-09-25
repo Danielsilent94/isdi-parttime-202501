@@ -1,35 +1,46 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import { connect } from './data/database.mjs';
-import productRoutes from './routes/productRoutes.mjs';
-import userRoutes from './routes/userRoutes.mjs';
-import reviewRoutes from './routes/reviewRoutes.mjs';
+import express from "express";
+import cors from "cors";
+import mongoose from "mongoose";
 
-dotenv.config();
+import userRoutes from "./routes/userRoutes.mjs";
+import productRoutes from "./routes/productRoutes.mjs";
+import reviewRoutes from "./routes/reviewRoutes.mjs";
 
+// Crear app Express
 const app = express();
 
+// Middlewares
 app.use(cors());
 app.use(express.json());
 
-app.use('/api/products', productRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/reviews', reviewRoutes);
+// Rutas principales
+app.use("/api/users", userRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/reviews", reviewRoutes);
 
-app.get('/', (req, res) => {
-  res.send('✅ BOLD TECH backend is running');
+// Ruta de prueba (útil para saber si el backend responde)
+app.get("/api", (req, res) => {
+  res.json({ message: "✅ API funcionando correctamente" });
 });
 
-const mongoUrl = process.env.MONGO_URL;
-const dbName = process.env.DB_NAME;
+// Manejo de rutas inexistentes
+app.use((req, res) => {
+  res.status(404).json({ error: "Ruta no encontrada" });
+});
 
-connect(mongoUrl, dbName)
+// Conexión a MongoDB
+const MONGO_URI = "mongodb://localhost:27017/ecommerce"; // 🔹 cámbialo si usas Atlas
+mongoose
+  .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
-    const PORT = process.env.PORT || 3000;
-    app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+    console.log("✅ Conectado a MongoDB");
+    // Arrancar servidor solo si DB conectada
+    const PORT = 3000;
+    app.listen(PORT, () =>
+      console.log(`✅ Servidor en http://localhost:${PORT}`)
+    );
   })
-  .catch((error) => {
-    console.error('❌ DB connection failed:', error);
+  .catch((err) => {
+    console.error("❌ Error conectando a MongoDB:", err.message);
     process.exit(1);
   });

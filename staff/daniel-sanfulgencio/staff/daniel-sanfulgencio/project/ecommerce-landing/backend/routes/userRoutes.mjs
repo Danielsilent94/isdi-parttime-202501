@@ -1,99 +1,108 @@
-import express from 'express';
-import bcrypt from 'bcrypt';
-import User from '../models/User.mjs';
+import express from "express";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import User from "../models/User.mjs";
 
 const router = express.Router();
+const JWT_SECRET = process.env.JWT_SECRET || "secreto_super_seguro";
 
-// Registrar usuario
-router.post('/register', async (req, res) => {
+// 🔑 Registro
+router.post("/register", async (req, res) => {
   try {
-    const { email, password, name } = req.body;
-    if (!email || !password || !name) {
-      return res.status(400).json({ error: 'Faltan campos obligatorios' });
+    const { name, email, password } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: "Todos los campos son obligatorios" });
     }
 
-    const existing = await User.findOne({ email });
-    if (existing) {
-      return res.status(400).json({ error: 'El email ya está en uso' });
+    // Verificar si ya existe el usuario
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: "El usuario ya existe" });
     }
 
-    const hash = await bcrypt.hash(password, 10);
-    const user = new User({ email, password: hash, name });
-    await user.save();
+    // Encriptar contraseña
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({ name, email, password: hashedPassword });
+    await newUser.save();
 
     res.status(201).json({
-      message: 'Usuario creado correctamente',
-      userId: user._id
+      message: "Usuario registrado con éxito",
+      user: { _id: newUser._id, name: newUser.name, email: newUser.email },
     });
   } catch (err) {
-    console.error('❌ Error registrando usuario:', err);
-    res.status(500).json({ error: 'Error al registrar usuario' });
+    console.error("❌ Error en registro:", err);
+    res.status(500).json({ error: "Error al registrar usuario" });
   }
 });
 
-// Login usuario
-router.post('/login', async (req, res) => {
+// 🔑 Login
+router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-    if (!email || !password) {
-      return res.status(400).json({ error: 'Faltan email o password' });
-    }
 
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ error: 'Credenciales incorrectas' });
-    }
+    if (!user) return res.status(400).json({ error: "Credenciales inválidas" });
 
-    const valid = await bcrypt.compare(password, user.password);
-    if (!valid) {
-      return res.status(400).json({ error: 'Credenciales incorrectas' });
-    }
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword)
+      return res.status(400).json({ error: "Credenciales inválidas" });
+
+    // Generar token JWT
+    const token = jwt.sign(
+      { id: user._id, email: user.email },
+      JWT_SECRET,
+      { expiresIn: "7d" }
+    );
 
     res.json({
-      message: 'Login exitoso',
-      userId: user._id,
-      name: user.name
+      message: "Login exitoso",
+      token,
+      user: { _id: user._id, name: user.name, email: user.email },
     });
   } catch (err) {
-    console.error('❌ Error en login:', err);
-    res.status(500).json({ error: 'Error al iniciar sesión' });
+    console.error("❌ Error en login:", err);
+    res.status(500).json({ error: "Error al iniciar sesión" });
   }
 });
 
-// Obtener perfil de usuario por ID
-router.get('/:id', async (req, res) => {
+// Obtener usuario por ID
+router.get("/:id", async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).select('-password');
-    if (!user) {
-      return res.status(404).json({ error: 'Usuario no encontrado' });
-    }
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ error: "Usuario no encontrado" });
     res.json(user);
   } catch (err) {
-    console.error('❌ Error obteniendo usuario:', err);
-    res.status(500).json({ error: 'Error al obtener usuario' });
+    res.status(500).json({ error: "Error al obtener el usuario" });
   }
 });
 
-// Actualizar perfil de usuario por ID
-router.put('/:id', async (req, res) => {
+// Actualizar usuario
+router.put("/:id", async (req, res) => {
   try {
-    const updates = {};
-    if (req.body.name) updates.name = req.body.name;
-    if (req.body.avatar) updates.avatar = req.body.avatar;
-    if (req.body.description) updates.description = req.body.description;
-
-    const user = await User.findByIdAndUpdate(req.params.id, updates, {
-      new: true
-    }).select('-password');
-
-    if (!user) {
-      return res.status(404).json({ error: 'Usuario no encontrado' });
-    }
-
-    res.json(user);
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      { name: req.body.name },
+      { new: true }
+    );
+    if (!updatedUser)
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    res.json(updatedUser);
   } catch (err) {
-    console.error('❌ Error actualizando usuario:', err);
-    res.status(500).json({ error: 'Error al actualizar usuario' });
+    res.status(500).json({ error: "Error al actualizar el usuario" });
+  }
+});
+
+// Eliminar usuario
+router.delete("/:id", async (req, res) => {
+  try {
+    const deleted = await User.findByIdAndDelete(req.params.id);
+    if (!deleted)
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    res.json({ message: "Usuario eliminado" });
+  } catch (err) {
+    res.status(500).json({ error: "Error al eliminar el usuario" });
   }
 });
 

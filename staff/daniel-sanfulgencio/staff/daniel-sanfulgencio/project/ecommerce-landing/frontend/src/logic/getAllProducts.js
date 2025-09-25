@@ -1,7 +1,11 @@
-import { apiUrl } from './helpers/constants';
+export default async function getAllProducts() {
+  try {
+    const response = await fetch("http://localhost:3000/api/products");
+    if (!response.ok) throw new Error("Error al obtener productos");
 
-export const getAllProducts = async () => {
-  const res = await fetch(`${apiUrl}/products`);
-  if (!res.ok) throw new Error('No se pudo cargar productos');
-  return await res.json();
-};
+    return await response.json();
+  } catch (error) {
+    console.error("❌ Fetch products error:", error);
+    return [];
+  }
+}

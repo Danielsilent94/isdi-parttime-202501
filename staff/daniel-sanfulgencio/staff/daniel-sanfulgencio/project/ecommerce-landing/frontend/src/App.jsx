@@ -11,22 +11,30 @@ import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
 import CartPage from './pages/CartPage';
 
+import getAllProducts from './logic/getAllProducts';
+
 function App() {
-  // Estado de usuario
   const [user, setUser] = useState(() => {
     const id = localStorage.getItem('userId');
     const name = localStorage.getItem('userName');
-    if (id && name) return { id, name };
-    return null;
+    return id && name ? { id, name } : null;
   });
 
-  // Estado de carrito
   const [cart, setCart] = useState(() => {
     const storedCart = localStorage.getItem('cart');
     return storedCart ? JSON.parse(storedCart) : [];
   });
 
-  // Mantener user en localStorage
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const data = await getAllProducts();
+      setProducts(data);
+    };
+    fetchProducts();
+  }, []);
+
   useEffect(() => {
     if (user) {
       localStorage.setItem('userId', user.id);
@@ -37,16 +45,29 @@ function App() {
     }
   }, [user]);
 
-  // Mantener carrito en localStorage
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cart));
   }, [cart]);
 
-  // Logout handler
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem('userId');
     localStorage.removeItem('userName');
+  };
+
+  const handleAddToCart = (product) => {
+    setCart((prevCart) => {
+      const existingItem = prevCart.find((item) => item._id === product._id);
+      if (existingItem) {
+        return prevCart.map((item) =>
+          item._id === product._id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      } else {
+        return [...prevCart, { ...product, quantity: 1 }];
+      }
+    });
   };
 
   return (
@@ -56,11 +77,30 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
-          <Route path="/products" element={<ProductsPage cart={cart} setCart={setCart} />} />
-          <Route path="/product/:id" element={<ProductDetailPage />} />
+          <Route
+            path="/products"
+            element={
+              <ProductsPage
+                products={products}
+                onAddToCart={handleAddToCart}
+              />
+            }
+          />
+          <Route
+            path="/product/:id"
+            element={
+              <ProductDetailPage
+                products={products}
+                onAddToCart={handleAddToCart}
+              />
+            }
+          />
           <Route path="/login" element={<LoginPage setUser={setUser} />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/profile" element={<ProfilePage user={user} setUser={setUser} />} />
+          <Route
+            path="/profile"
+            element={<ProfilePage user={user} setUser={setUser} />}
+          />
           <Route path="/cart" element={<CartPage cart={cart} setCart={setCart} />} />
         </Routes>
       </div>

@@ -1,130 +1,116 @@
-import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import getLoggedUser from '../logic/getLoggedUser';
+import createReview from '../logic/createReview';
+import getReviewsByProduct from '../logic/getReviewsByProduct';
 
-const ProductDetailPage = ({ cart, setCart }) => {
-  const { id } = useParams()
-  const [product, setProduct] = useState(null)
-  const [error, setError] = useState(null)
+const ProductDetailPage = ({ products = [], onAddToCart }) => {
+  const { id } = useParams();
+  const product = products.find((p) => p._id === id);
+  const user = getLoggedUser();
 
-  const [text, setText] = useState('')
-  const [score, setScore] = useState(5)
-  const [reviewError, setReviewError] = useState(null)
-
-  const fetchProduct = async () => {
-    try {
-      const res = await fetch(`http://localhost:3000/api/products/${id}`)
-      if (!res.ok) throw new Error('Error al cargar el producto')
-      const data = await res.json()
-      setProduct(data)
-    } catch (err) {
-      setError('Error al cargar el producto')
-    }
-  }
+  const [comment, setComment] = useState('');
+  const [rating, setRating] = useState(5);
+  const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
-    fetchProduct()
-  }, [id])
+    const loadReviews = async () => {
+      try {
+        const result = await getReviewsByProduct(id);
+        setReviews(result || []);
+      } catch (err) {
+        console.error('❌ Error cargando reseñas:', err);
+        setReviews([]);
+      }
+    };
+    loadReviews();
+  }, [id]);
 
-  const handleSubmit = async e => {
-    e.preventDefault()
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!user) {
+      alert('Debes iniciar sesión para opinar');
+      return;
+    }
+
     try {
-      const token = localStorage.getItem('token')
+      await createReview(product._id, comment, rating);
+      setComment('');
+      setRating(5);
 
-      const res = await fetch('http://localhost:3000/api/reviews', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ text, score, productId: id }),
-      })
-
-      if (!res.ok) throw new Error('Error al enviar la review')
-
-      setText('')
-      setScore(5)
-      setReviewError(null)
-      fetchProduct()
-    } catch (err) {
-      setReviewError(err.message)
+      const updatedReviews = await getReviewsByProduct(product._id);
+      setReviews(updatedReviews || []);
+    } catch (error) {
+      alert(error.message || 'Error al enviar la reseña');
     }
-  }
+  };
 
-  const addToCart = () => {
-    const exists = cart.find(item => item.id === product.id)
-    if (exists) {
-      setCart(
-        cart.map(item =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        )
-      )
-    } else {
-      setCart([...cart, { ...product, quantity: 1 }])
-    }
+  if (!product) {
+    return <div className="p-4 text-white">Producto no encontrado</div>;
   }
-
-  if (error) return <p className="text-red-400 p-10">{error}</p>
-  if (!product) return <p className="text-white p-10">Cargando...</p>
 
   return (
-    <section className="p-10 text-white">
-      <h1 className="text-4xl font-bold mb-4">{product.name}</h1>
-      <p className="mb-2">{product.description}</p>
-      <p className="text-2xl font-semibold mb-4">${product.price.toFixed(2)}</p>
+    <div className="p-6 max-w-3xl mx-auto text-white">
+      <h2 className="text-3xl font-bold mb-4">{product.name}</h2>
+      <p className="mb-2 text-gray-300">{product.description}</p>
+      <p className="mb-4 font-bold text-green-400">{product.price} €</p>
 
       <button
-        onClick={addToCart}
-        className="bg-blue-600 px-4 py-2 mb-6 rounded hover:bg-blue-700"
+        onClick={() => onAddToCart(product)}
+        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
       >
         Añadir al carrito
       </button>
 
-      <h2 className="text-xl font-bold mt-10 mb-2">Reseñas</h2>
-      <ul className="space-y-2 mb-6">
-        {product.reviews?.length > 0 ? (
-          product.reviews.map((review, idx) => (
-            <li key={review.id || idx} className="bg-gray-800 p-3 rounded">
-              <p className="text-sm italic">
-                Puntuación: {review.score}/5 — <span className="text-green-300">{review.author?.name || 'Anónimo'}</span>
-              </p>
-              <p>{review.text}</p>
-            </li>
-          ))
+      {/* Reseñas */}
+      <div className="mt-10">
+        <h3 className="text-xl font-semibold mb-3">Reseñas</h3>
+        {reviews.length === 0 ? (
+          <p className="text-gray-400">No hay reseñas todavía.</p>
         ) : (
-          <p className="text-gray-400">Este producto aún no tiene reseñas.</p>
+          <ul className="space-y-3">
+            {reviews.map((review) => (
+              <li key={review._id} className="bg-gray-800 p-4 rounded-lg">
+                <p className="text-sm text-gray-200 mb-1">⭐ {review.rating} estrellas</p>
+                <p className="text-sm text-gray-300 italic">"{review.comment}"</p>
+              </li>
+            ))}
+          </ul>
         )}
-      </ul>
+      </div>
 
-      <h3 className="text-lg font-semibold mb-2">Escribe una reseña</h3>
-      {reviewError && <p className="text-red-400 mb-2">{reviewError}</p>}
+      {/* Formulario de reseña */}
+      {user && (
+        <div className="mt-10">
+          <h3 className="text-lg font-semibold mb-2">Escribe una reseña</h3>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+            <textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="Tu opinión..."
+              className="border p-2 rounded text-black"
+              required
+            />
+            <select
+              value={rating}
+              onChange={(e) => setRating(Number(e.target.value))}
+              className="text-black p-2 rounded"
+            >
+              {[5, 4, 3, 2, 1].map((r) => (
+                <option key={r} value={r}>{r} estrellas</option>
+              ))}
+            </select>
+            <button
+              type="submit"
+              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            >
+              Enviar reseña
+            </button>
+          </form>
+        </div>
+      )}
+    </div>
+  );
+};
 
-      <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
-        <textarea
-          value={text}
-          onChange={e => setText(e.target.value)}
-          placeholder="Tu opinión sobre el producto..."
-          required
-          className="w-full p-2 text-black rounded"
-        />
-        <select
-          value={score}
-          onChange={e => setScore(Number(e.target.value))}
-          className="w-full p-2 text-black rounded"
-        >
-          <option value={5}>⭐⭐⭐⭐⭐ (5)</option>
-          <option value={4}>⭐⭐⭐⭐ (4)</option>
-          <option value={3}>⭐⭐⭐ (3)</option>
-          <option value={2}>⭐⭐ (2)</option>
-          <option value={1}>⭐ (1)</option>
-        </select>
-        <button className="bg-green-600 px-4 py-2 rounded text-white hover:bg-green-700">
-          Enviar reseña
-        </button>
-      </form>
-    </section>
-  )
-}
-
-export default ProductDetailPage
+export default ProductDetailPage;
