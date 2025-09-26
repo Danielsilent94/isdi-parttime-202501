@@ -2,36 +2,45 @@ import React from "react";
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white p-6">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Sobre BOLD TECH</h1>
+    <div className="min-h-screen bg-[#0f172a] text-white px-6 py-12">
+      <div className="max-w-4xl mx-auto space-y-8">
+        <h1 className="text-4xl font-bold text-center mb-6">Sobre Nosotros</h1>
 
-        <p className="text-gray-300 mb-8">
-          En <span className="font-semibold">BOLD TECH</span> creemos que la tecnología
-          debería ser accesible, confiable y emocionante. Nuestro objetivo es ofrecer
-          productos de primera calidad en portátiles, smartphones y accesorios,
-          acompañados de un servicio cercano y transparente.
+        <p className="text-gray-300 text-lg leading-relaxed">
+          En <span className="text-blue-400 font-semibold">BOLD TECH</span>,
+          creemos que la tecnología debe ser accesible para todos. Nuestra
+          misión es ofrecer productos de alta calidad con precios competitivos,
+          junto con una experiencia de compra sencilla y segura.
         </p>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="bg-gray-800 rounded-2xl p-6 shadow hover:shadow-lg transition">
-            <h3 className="text-xl font-semibold mb-2">🚀 Misión</h3>
-            <p className="text-gray-400 text-sm">
-              Acercar la mejor tecnología al mejor precio, siempre con atención rápida y humana.
+        <div className="grid md:grid-cols-3 gap-6 mt-10">
+          <div className="bg-gray-800 p-6 rounded-xl shadow-md">
+            <h2 className="text-xl font-semibold text-blue-400 mb-2">
+              🚀 Innovación
+            </h2>
+            <p className="text-gray-300 text-sm">
+              Siempre buscamos las últimas tendencias tecnológicas para
+              mantenerte actualizado.
             </p>
           </div>
 
-          <div className="bg-gray-800 rounded-2xl p-6 shadow hover:shadow-lg transition">
-            <h3 className="text-xl font-semibold mb-2">🔒 Confianza</h3>
-            <p className="text-gray-400 text-sm">
-              Pagos seguros, envíos rápidos y soporte cuando lo necesites. La seguridad es lo primero.
+          <div className="bg-gray-800 p-6 rounded-xl shadow-md">
+            <h2 className="text-xl font-semibold text-blue-400 mb-2">
+              🤝 Confianza
+            </h2>
+            <p className="text-gray-300 text-sm">
+              Productos garantizados y soporte cercano para que compres con
+              tranquilidad.
             </p>
           </div>
 
-          <div className="bg-gray-800 rounded-2xl p-6 shadow hover:shadow-lg transition">
-            <h3 className="text-xl font-semibold mb-2">💡 Selección</h3>
-            <p className="text-gray-400 text-sm">
-              Nuestro catálogo está cuidadosamente seleccionado para recomendar solo lo mejor.
+          <div className="bg-gray-800 p-6 rounded-xl shadow-md">
+            <h2 className="text-xl font-semibold text-blue-400 mb-2">
+              🌍 Compromiso
+            </h2>
+            <p className="text-gray-300 text-sm">
+              Apostamos por prácticas responsables y un futuro tecnológico más
+              sostenible.
             </p>
           </div>
         </div>

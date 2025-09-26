@@ -4,18 +4,14 @@ import { Link } from "react-router-dom";
 export default function CartPage({ cart, setCart }) {
   const [checkoutSuccess, setCheckoutSuccess] = useState(false);
 
+  const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
   // Quitar un producto del carrito
   const handleRemove = (id) => {
     setCart((prev) => prev.filter((item) => item._id !== id));
   };
 
-  // Calcular total general
-  const total = cart.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
-
-  // Finalizar compra y guardar en MongoDB
+  // Finalizar compra → guardar pedido en backend
   const handleCheckout = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -24,32 +20,28 @@ export default function CartPage({ cart, setCart }) {
         return;
       }
 
-      const response = await fetch("http://localhost:3000/api/orders", {
+      const items = cart.map((item) => ({
+        product: item._id,
+        quantity: item.quantity,
+        price: item.price,
+      }));
+
+      const res = await fetch("http://localhost:3000/api/orders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          items: cart.map((item) => ({
-            product: item._id,
-            name: item.name,
-            price: item.price,
-            quantity: item.quantity,
-            image: item.image || "/default-product.png",
-          })),
-          total,
-        }),
+        body: JSON.stringify({ items, total }),
       });
 
-      if (!response.ok) throw new Error("Error creando pedido");
+      if (!res.ok) throw new Error("Error al crear pedido");
 
-      await response.json();
       setCart([]);
       setCheckoutSuccess(true);
     } catch (err) {
       console.error("❌ Error en checkout:", err);
-      alert("No se pudo procesar el pedido");
+      alert("No se pudo finalizar la compra.");
     }
   };
 
@@ -73,7 +65,7 @@ export default function CartPage({ cart, setCart }) {
           </Link>
         </div>
       ) : cart.length === 0 ? (
-        <div>
+        <div className="text-center">
           <p className="text-gray-400">El carrito está vacío.</p>
           <Link
             to="/products"
@@ -89,14 +81,11 @@ export default function CartPage({ cart, setCart }) {
               key={item._id}
               className="bg-gray-800 rounded-xl p-4 flex items-center gap-4"
             >
-              {/* Miniatura */}
               <img
                 src={item.image || "/default-product.png"}
                 alt={item.name}
                 className="w-20 h-20 object-contain rounded-lg bg-white p-2"
               />
-
-              {/* Info */}
               <div className="flex-1">
                 <h3 className="text-lg font-semibold">{item.name}</h3>
                 <p className="text-gray-400 text-sm">{item.description}</p>
@@ -105,8 +94,6 @@ export default function CartPage({ cart, setCart }) {
                   {(item.price * item.quantity).toFixed(2)} €
                 </p>
               </div>
-
-              {/* Botón eliminar */}
               <button
                 onClick={() => handleRemove(item._id)}
                 className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded"
@@ -116,7 +103,6 @@ export default function CartPage({ cart, setCart }) {
             </div>
           ))}
 
-          {/* Total y checkout */}
           <div className="bg-gray-900 rounded-xl p-6 mt-6">
             <div className="flex justify-between items-center mb-4">
               <span className="text-xl font-semibold">Total:</span>
@@ -124,7 +110,6 @@ export default function CartPage({ cart, setCart }) {
                 {total.toFixed(2)} €
               </span>
             </div>
-
             <button
               onClick={handleCheckout}
               className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-3 rounded-lg text-lg"

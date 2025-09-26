@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 
 export default function ProfilePage({ user, setUser }) {
   const [profile, setProfile] = useState(null);
+  const [orders, setOrders] = useState([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-  const [orders, setOrders] = useState([]);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -20,15 +20,16 @@ export default function ProfilePage({ user, setUser }) {
     const loadOrders = async () => {
       try {
         const token = localStorage.getItem("token");
-        if (!token) return;
-        const res = await fetch("http://localhost:3000/api/orders/my-orders", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!res.ok) throw new Error();
+        const res = await fetch(
+          `http://localhost:3000/api/orders/user/${user.id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         const data = await res.json();
         setOrders(data);
       } catch {
-        setOrders([]);
+        console.error("Error cargando pedidos");
       }
     };
 
@@ -91,7 +92,9 @@ export default function ProfilePage({ user, setUser }) {
             className="w-20 h-20 rounded-full object-cover"
           />
           <div>
-            <p className="text-lg font-semibold">{profile.name || "Sin nombre"}</p>
+            <p className="text-lg font-semibold">
+              {profile.name || "Sin nombre"}
+            </p>
             <p className="text-gray-300 text-sm">{profile.email}</p>
             {profile.bio && (
               <p className="text-gray-400 text-sm mt-1">{profile.bio}</p>
@@ -131,7 +134,9 @@ export default function ProfilePage({ user, setUser }) {
           </div>
 
           <div>
-            <label className="block text-sm text-gray-300 mb-1">Avatar (URL)</label>
+            <label className="block text-sm text-gray-300 mb-1">
+              Avatar (URL)
+            </label>
             <input
               className="w-full p-3 rounded bg-gray-700 text-white"
               value={profile.avatarUrl || ""}
@@ -153,30 +158,31 @@ export default function ProfilePage({ user, setUser }) {
 
         {/* Historial de pedidos */}
         <div className="mt-10">
-          <h2 className="text-2xl font-bold mb-4">Mis pedidos</h2>
+          <h2 className="text-2xl font-semibold mb-4">Historial de pedidos</h2>
           {orders.length === 0 ? (
-            <p className="text-gray-400">Aún no has realizado ninguna compra.</p>
+            <p className="text-gray-400">No has realizado pedidos aún.</p>
           ) : (
-            <div className="space-y-4">
+            <ul className="space-y-4">
               {orders.map((order) => (
-                <div key={order._id} className="bg-gray-800 rounded-xl p-4">
-                  <p className="text-sm text-gray-400 mb-2">
-                    Pedido realizado el{" "}
-                    {new Date(order.createdAt).toLocaleString()}
+                <li key={order._id} className="bg-gray-800 p-4 rounded-xl">
+                  <p className="text-sm text-gray-400">
+                    {new Date(order.createdAt).toLocaleDateString("es-ES")}
                   </p>
-                  <ul className="space-y-1 mb-2">
-                    {order.items.map((item, idx) => (
-                      <li key={idx} className="text-gray-200 text-sm">
-                        {item.quantity} x {item.name} ({item.price} €)
+                  <ul className="mt-2 space-y-1">
+                    {order.items.map((item, i) => (
+                      <li key={i} className="text-gray-200 text-sm">
+                        {item.product?.name || "Producto eliminado"} x{" "}
+                        {item.quantity} ={" "}
+                        {(item.price * item.quantity).toFixed(2)} €
                       </li>
                     ))}
                   </ul>
-                  <p className="font-bold text-green-400">
+                  <p className="font-bold text-green-400 mt-2">
                     Total: {order.total.toFixed(2)} €
                   </p>
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           )}
         </div>
       </div>

@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 import userRoutes from "./routes/userRoutes.mjs";
 import productRoutes from "./routes/productRoutes.mjs";
 import reviewRoutes from "./routes/reviewRoutes.mjs";
-import orderRoutes from "./routes/orderRoutes.mjs"; // 🔹 NUEVO
+import orderRoutes from "./routes/orderRoutes.mjs"; // 👈 añadido
 
 // Crear app Express
 const app = express();
@@ -18,9 +18,9 @@ app.use(express.json());
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/reviews", reviewRoutes);
-app.use("/api/orders", orderRoutes); // 🔹 NUEVO
+app.use("/api/orders", orderRoutes); // 👈 añadido
 
-// Ruta de prueba (útil para saber si el backend responde)
+// Ruta de prueba
 app.get("/api", (req, res) => {
   res.json({ message: "✅ API funcionando correctamente" });
 });
@@ -36,7 +36,6 @@ mongoose
   .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log("✅ Conectado a MongoDB");
-    // Arrancar servidor solo si DB conectada
     const PORT = 3000;
     app.listen(PORT, () =>
       console.log(`✅ Servidor en http://localhost:${PORT}`)

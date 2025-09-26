@@ -1,74 +1,72 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import loginUser from "../logic/users/loginUser";
 
-const LoginPage = ({ onLogin }) => {
+export default function LoginPage({ setUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setLoading(true);
     try {
-      const data = await loginUser(email, password); // guarda userId y userName en localStorage
-      // Si el padre pasó un callback, lo llamamos; si no, no pasa nada (y no peta)
-      if (typeof onLogin === "function") {
-        onLogin({ userId: data.user._id, userName: data.user.name });
-      }
-      navigate("/"); // o a /products si prefieres
-    } catch (err) {
-      setError(err?.message || "Error al iniciar sesión");
-    } finally {
-      setLoading(false);
+      const data = await loginUser(email, password);
+      setUser({ id: data.user._id, name: data.user.name });
+      navigate("/");
+    } catch {
+      setError("Credenciales inválidas");
     }
   };
 
   return (
-    <div className="min-h-screen bg-blue-900 text-white flex items-center justify-center p-4">
-      <form
-        onSubmit={handleLogin}
-        className="bg-gray-800 rounded-2xl p-8 w-full max-w-md"
-      >
-        <h2 className="text-2xl font-bold mb-6 text-center">Iniciar sesión</h2>
+    <div className="min-h-screen bg-[#0f172a] flex items-center justify-center px-4">
+      <div className="bg-gray-800 rounded-2xl shadow-lg p-8 w-full max-w-md">
+        <h1 className="text-3xl font-bold text-white mb-6 text-center">Iniciar Sesión</h1>
 
         {error && (
-          <div className="mb-4 text-sm bg-red-600/20 border border-red-500 rounded p-2">
+          <div className="bg-red-600/20 border border-red-500 text-red-400 rounded p-2 mb-4">
             {error}
           </div>
         )}
 
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full mb-3 p-3 rounded bg-gray-700 text-white"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-gray-300 text-sm mb-1">Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full p-3 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-gray-300 text-sm mb-1">Contraseña</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full p-3 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg"
+          >
+            Entrar
+          </button>
+        </form>
 
-        <input
-          type="password"
-          placeholder="Contraseña"
-          className="w-full mb-6 p-3 rounded bg-gray-700 text-white"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full py-3 rounded bg-blue-600 hover:bg-blue-700 disabled:opacity-60"
-        >
-          {loading ? "Entrando..." : "Entrar"}
-        </button>
-      </form>
+        <p className="text-gray-400 text-sm text-center mt-6">
+          ¿No tienes cuenta?{" "}
+          <Link to="/register" className="text-blue-400 hover:underline">
+            Regístrate aquí
+          </Link>
+        </p>
+      </div>
     </div>
   );
-};
-
-export default LoginPage;
+}
