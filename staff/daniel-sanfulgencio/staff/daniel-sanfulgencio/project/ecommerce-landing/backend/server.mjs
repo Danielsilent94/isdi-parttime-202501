@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import userRoutes from "./routes/userRoutes.mjs";
 import productRoutes from "./routes/productRoutes.mjs";
 import reviewRoutes from "./routes/reviewRoutes.mjs";
+import orderRoutes from "./routes/orderRoutes.mjs"; // 🔹 NUEVO
 
 // Crear app Express
 const app = express();
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/orders", orderRoutes); // 🔹 NUEVO
 
 // Ruta de prueba (útil para saber si el backend responde)
 app.get("/api", (req, res) => {

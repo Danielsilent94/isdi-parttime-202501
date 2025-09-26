@@ -15,20 +15,42 @@ export default function CartPage({ cart, setCart }) {
     0
   );
 
-  // Simular finalizar compra
-  const handleCheckout = () => {
-    const order = {
-      id: Date.now(),
-      items: cart,
-      total,
-      date: new Date().toLocaleString(),
-    };
+  // Finalizar compra y guardar en MongoDB
+  const handleCheckout = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Debes iniciar sesión para comprar");
+        return;
+      }
 
-    const existingOrders = JSON.parse(localStorage.getItem("orders")) || [];
-    localStorage.setItem("orders", JSON.stringify([...existingOrders, order]));
+      const response = await fetch("http://localhost:3000/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          items: cart.map((item) => ({
+            product: item._id,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+            image: item.image || "/default-product.png",
+          })),
+          total,
+        }),
+      });
 
-    setCart([]); // vaciamos carrito
-    setCheckoutSuccess(true);
+      if (!response.ok) throw new Error("Error creando pedido");
+
+      await response.json();
+      setCart([]);
+      setCheckoutSuccess(true);
+    } catch (err) {
+      console.error("❌ Error en checkout:", err);
+      alert("No se pudo procesar el pedido");
+    }
   };
 
   return (

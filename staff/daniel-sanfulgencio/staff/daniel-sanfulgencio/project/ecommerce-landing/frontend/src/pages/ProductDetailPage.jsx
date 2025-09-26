@@ -1,126 +1,138 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import getLoggedUser from "../logic/getLoggedUser";
 import createReview from "../logic/createReview";
 import getReviewsByProduct from "../logic/getReviewsByProduct";
 
-const ProductDetailPage = ({ products = [], onAddToCart }) => {
+export default function ProductDetailPage({ products, onAddToCart }) {
   const { id } = useParams();
   const product = products.find((p) => p._id === id);
-  const user = getLoggedUser();
 
+  const [reviews, setReviews] = useState([]);
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(5);
-  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
+  // Cargar reseñas
   useEffect(() => {
-    const loadReviews = async () => {
+    const fetchReviews = async () => {
       try {
-        const result = await getReviewsByProduct(id);
-        setReviews(result || []);
+        const data = await getReviewsByProduct(id);
+        setReviews(data);
       } catch (err) {
         console.error("Error cargando reseñas:", err);
-        setReviews([]);
+        setError("No se pudieron cargar las reseñas.");
+      } finally {
+        setLoading(false);
       }
     };
-    loadReviews();
+    fetchReviews();
   }, [id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!user) {
-      alert("Debes iniciar sesión para opinar");
-      return;
-    }
-
+    setError("");
     try {
-      await createReview(product._id, user.userId, comment, rating);
+      const newReview = await createReview(product._id, comment, rating);
+      setReviews((prev) => [newReview, ...prev]); // actualizar en pantalla
       setComment("");
       setRating(5);
-
-      const updatedReviews = await getReviewsByProduct(product._id);
-      setReviews(updatedReviews || []);
     } catch (err) {
-      alert("Error al enviar la reseña");
+      console.error("Error en handleSubmit:", err);
+      setError(err.message || "No se pudo enviar la reseña.");
     }
   };
 
   if (!product) {
-    return <div className="p-4 text-white">Producto no encontrado</div>;
+    return (
+      <div className="min-h-screen bg-[#0f172a] text-white p-6">
+        <h2>Producto no encontrado</h2>
+      </div>
+    );
   }
 
   return (
-    <div className="p-6 max-w-3xl mx-auto text-white">
-      <h2 className="text-3xl font-bold mb-4">{product.name}</h2>
-      <p className="mb-2 text-gray-300">{product.description}</p>
-      <p className="mb-4 font-bold text-green-400">{product.price} €</p>
+    <div className="min-h-screen bg-[#0f172a] text-white p-6">
+      <div className="max-w-3xl mx-auto">
+        {/* Info del producto */}
+        <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
+        <p className="text-gray-400 mb-4">{product.description}</p>
+        <p className="text-green-400 text-2xl font-bold mb-6">
+          {product.price} €
+        </p>
+        <button
+          onClick={() => onAddToCart(product)}
+          className="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-lg font-medium"
+        >
+          Añadir al carrito
+        </button>
 
-      <button
-        onClick={() => onAddToCart(product)}
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-      >
-        Añadir al carrito
-      </button>
-
-      {/* Reseñas */}
-      <div className="mt-10">
-        <h3 className="text-xl font-semibold mb-3">Reseñas</h3>
-        {reviews.length === 0 ? (
-          <p className="text-gray-400">No hay reseñas todavía.</p>
-        ) : (
-          <ul className="space-y-3">
-            {reviews.map((review) => (
-              <li key={review._id} className="bg-gray-800 p-4 rounded-lg">
-                <p className="text-yellow-400">⭐ {review.rating} estrellas</p>
-                <p className="text-sm text-gray-300 italic">"{review.comment}"</p>
-                <p className="text-xs text-gray-400 mt-1">
-                  — {review.user?.name || "Usuario"} ·{" "}
-                  {new Date(review.createdAt).toLocaleDateString("es-ES", {
-                    day: "2-digit",
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      {/* Formulario de reseña */}
-      {user && (
+        {/* Reseñas */}
         <div className="mt-10">
-          <h3 className="text-lg font-semibold mb-2">Escribe una reseña</h3>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+          <h2 className="text-2xl font-semibold mb-4">Reseñas</h2>
+
+          {loading ? (
+            <p className="text-gray-400">Cargando reseñas...</p>
+          ) : reviews.length === 0 ? (
+            <p className="text-gray-400">No hay reseñas todavía.</p>
+          ) : (
+            <div className="space-y-4">
+              {reviews.map((rev) => (
+                <div
+                  key={rev._id}
+                  className="bg-gray-800 p-4 rounded-lg shadow"
+                >
+                  <p className="text-yellow-400 font-semibold">
+                    ⭐ {rev.rating} estrellas
+                  </p>
+                  <p className="text-gray-200 italic">"{rev.comment}"</p>
+                  {rev.user?.name && (
+                    <p className="text-gray-400 text-sm mt-1">
+                      — {rev.user.name}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Formulario reseña */}
+        <div className="mt-10">
+          <h3 className="text-xl font-semibold mb-2">Escribe una reseña</h3>
+          {error && (
+            <div className="bg-red-600/20 border border-red-500 rounded p-2 mb-3">
+              {error}
+            </div>
+          )}
+          <form onSubmit={handleSubmit} className="space-y-4">
             <textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              placeholder="Tu opinión..."
-              className="border p-2 rounded text-black"
               required
+              className="w-full p-3 rounded bg-gray-700 text-white"
+              placeholder="Tu opinión..."
             />
             <select
               value={rating}
               onChange={(e) => setRating(Number(e.target.value))}
-              className="text-black p-2 rounded"
+              className="w-full p-3 rounded bg-gray-700 text-white"
             >
-              {[5, 4, 3, 2, 1].map((r) => (
-                <option key={r} value={r}>
-                  {r} estrellas
-                </option>
-              ))}
+              <option value={5}>5 estrellas</option>
+              <option value={4}>4 estrellas</option>
+              <option value={3}>3 estrellas</option>
+              <option value={2}>2 estrellas</option>
+              <option value={1}>1 estrella</option>
             </select>
             <button
               type="submit"
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+              className="bg-green-600 hover:bg-green-700 px-5 py-2 rounded-lg font-medium"
             >
               Enviar reseña
             </button>
           </form>
         </div>
-      )}
+      </div>
     </div>
   );
-};
-
-export default ProductDetailPage;
+}

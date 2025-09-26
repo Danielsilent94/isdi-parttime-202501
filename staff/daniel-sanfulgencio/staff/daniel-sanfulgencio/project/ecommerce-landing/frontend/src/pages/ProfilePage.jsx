@@ -4,9 +4,10 @@ export default function ProfilePage({ user, setUser }) {
   const [profile, setProfile] = useState(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    const load = async () => {
+    const loadProfile = async () => {
       try {
         const res = await fetch(`http://localhost:3000/api/users/${user.id}`);
         const data = await res.json();
@@ -15,7 +16,26 @@ export default function ProfilePage({ user, setUser }) {
         setError("No se pudo cargar tu perfil.");
       }
     };
-    if (user?.id) load();
+
+    const loadOrders = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+        const res = await fetch("http://localhost:3000/api/orders/my-orders", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        setOrders(data);
+      } catch {
+        setOrders([]);
+      }
+    };
+
+    if (user?.id) {
+      loadProfile();
+      loadOrders();
+    }
   }, [user]);
 
   const handleSave = async (e) => {
@@ -35,8 +55,6 @@ export default function ProfilePage({ user, setUser }) {
       if (!res.ok) throw new Error();
       const updated = await res.json();
       setProfile(updated);
-
-      // Actualizamos App.jsx también
       setUser({ id: updated._id, name: updated.name });
     } catch {
       setError("No se pudo guardar.");
@@ -60,9 +78,6 @@ export default function ProfilePage({ user, setUser }) {
       </div>
     );
   }
-
-  // Cargar historial de pedidos
-  const orders = JSON.parse(localStorage.getItem("orders")) || [];
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white p-6">
@@ -140,19 +155,18 @@ export default function ProfilePage({ user, setUser }) {
         <div className="mt-10">
           <h2 className="text-2xl font-bold mb-4">Mis pedidos</h2>
           {orders.length === 0 ? (
-            <p className="text-gray-400">
-              Aún no has realizado ninguna compra.
-            </p>
+            <p className="text-gray-400">Aún no has realizado ninguna compra.</p>
           ) : (
             <div className="space-y-4">
               {orders.map((order) => (
-                <div key={order.id} className="bg-gray-800 rounded-xl p-4">
+                <div key={order._id} className="bg-gray-800 rounded-xl p-4">
                   <p className="text-sm text-gray-400 mb-2">
-                    Pedido realizado el {order.date}
+                    Pedido realizado el{" "}
+                    {new Date(order.createdAt).toLocaleString()}
                   </p>
                   <ul className="space-y-1 mb-2">
-                    {order.items.map((item) => (
-                      <li key={item._id} className="text-gray-200 text-sm">
+                    {order.items.map((item, idx) => (
+                      <li key={idx} className="text-gray-200 text-sm">
                         {item.quantity} x {item.name} ({item.price} €)
                       </li>
                     ))}
