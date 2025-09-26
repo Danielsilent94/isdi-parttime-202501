@@ -61,6 +61,9 @@ export default function ProfilePage({ user, setUser }) {
     );
   }
 
+  // Cargar historial de pedidos
+  const orders = JSON.parse(localStorage.getItem("orders")) || [];
+
   return (
     <div className="min-h-screen bg-[#0f172a] text-white p-6">
       <div className="max-w-3xl mx-auto">
@@ -75,12 +78,21 @@ export default function ProfilePage({ user, setUser }) {
           <div>
             <p className="text-lg font-semibold">{profile.name || "Sin nombre"}</p>
             <p className="text-gray-300 text-sm">{profile.email}</p>
-            {profile.bio && <p className="text-gray-400 text-sm mt-1">{profile.bio}</p>}
+            {profile.bio && (
+              <p className="text-gray-400 text-sm mt-1">{profile.bio}</p>
+            )}
           </div>
         </div>
 
-        <form onSubmit={handleSave} className="bg-gray-800 rounded-2xl p-6 space-y-4">
-          {error && <div className="bg-red-600/20 border border-red-500 rounded p-2">{error}</div>}
+        <form
+          onSubmit={handleSave}
+          className="bg-gray-800 rounded-2xl p-6 space-y-4"
+        >
+          {error && (
+            <div className="bg-red-600/20 border border-red-500 rounded p-2">
+              {error}
+            </div>
+          )}
 
           <div>
             <label className="block text-sm text-gray-300 mb-1">Nombre</label>
@@ -92,7 +104,9 @@ export default function ProfilePage({ user, setUser }) {
           </div>
 
           <div>
-            <label className="block text-sm text-gray-300 mb-1">Descripción (bio)</label>
+            <label className="block text-sm text-gray-300 mb-1">
+              Descripción (bio)
+            </label>
             <textarea
               className="w-full p-3 rounded bg-gray-700 text-white h-28"
               value={profile.bio || ""}
@@ -106,7 +120,9 @@ export default function ProfilePage({ user, setUser }) {
             <input
               className="w-full p-3 rounded bg-gray-700 text-white"
               value={profile.avatarUrl || ""}
-              onChange={(e) => setProfile({ ...profile, avatarUrl: e.target.value })}
+              onChange={(e) =>
+                setProfile({ ...profile, avatarUrl: e.target.value })
+              }
               placeholder="https://imagen-tu-avatar..."
             />
           </div>
@@ -119,6 +135,36 @@ export default function ProfilePage({ user, setUser }) {
             {saving ? "Guardando..." : "Guardar cambios"}
           </button>
         </form>
+
+        {/* Historial de pedidos */}
+        <div className="mt-10">
+          <h2 className="text-2xl font-bold mb-4">Mis pedidos</h2>
+          {orders.length === 0 ? (
+            <p className="text-gray-400">
+              Aún no has realizado ninguna compra.
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {orders.map((order) => (
+                <div key={order.id} className="bg-gray-800 rounded-xl p-4">
+                  <p className="text-sm text-gray-400 mb-2">
+                    Pedido realizado el {order.date}
+                  </p>
+                  <ul className="space-y-1 mb-2">
+                    {order.items.map((item) => (
+                      <li key={item._id} className="text-gray-200 text-sm">
+                        {item.quantity} x {item.name} ({item.price} €)
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="font-bold text-green-400">
+                    Total: {order.total.toFixed(2)} €
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
