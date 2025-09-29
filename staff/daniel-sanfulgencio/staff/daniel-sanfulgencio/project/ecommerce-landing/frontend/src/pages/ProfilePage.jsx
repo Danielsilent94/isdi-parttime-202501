@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import getUserById from "../logic/users/getUserById";
+import updateUser from "../logic/users/updateUser";
+import getMyOrders from "../logic/orders/getMyOrders";
 
 export default function ProfilePage({ user, setUser }) {
   const [profile, setProfile] = useState(null);
@@ -7,36 +10,19 @@ export default function ProfilePage({ user, setUser }) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const loadProfile = async () => {
+    const loadAll = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/users/${user.id}`);
-        const data = await res.json();
-        setProfile(data);
-      } catch {
-        setError("No se pudo cargar tu perfil.");
+        const [u, o] = await Promise.all([
+          getUserById(user.id),
+          getMyOrders(user.id, localStorage.getItem("token")),
+        ]);
+        setProfile(u);
+        setOrders(o);
+      } catch (e) {
+        setError("No se pudo cargar tu perfil o tus pedidos.");
       }
     };
-
-    const loadOrders = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const res = await fetch(
-          `http://localhost:3000/api/orders/user/${user.id}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        const data = await res.json();
-        setOrders(data);
-      } catch {
-        console.error("Error cargando pedidos");
-      }
-    };
-
-    if (user?.id) {
-      loadProfile();
-      loadOrders();
-    }
+    if (user?.id) loadAll();
   }, [user]);
 
   const handleSave = async (e) => {
@@ -44,17 +30,11 @@ export default function ProfilePage({ user, setUser }) {
     setSaving(true);
     setError("");
     try {
-      const res = await fetch(`http://localhost:3000/api/users/${user.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: profile.name || "",
-          bio: profile.bio || "",
-          avatarUrl: profile.avatarUrl || "",
-        }),
+      const updated = await updateUser(user.id, {
+        name: profile.name || "",
+        bio: profile.bio || "",
+        avatarUrl: profile.avatarUrl || "",
       });
-      if (!res.ok) throw new Error();
-      const updated = await res.json();
       setProfile(updated);
       setUser({ id: updated._id, name: updated.name });
     } catch {
@@ -92,25 +72,14 @@ export default function ProfilePage({ user, setUser }) {
             className="w-20 h-20 rounded-full object-cover"
           />
           <div>
-            <p className="text-lg font-semibold">
-              {profile.name || "Sin nombre"}
-            </p>
+            <p className="text-lg font-semibold">{profile.name || "Sin nombre"}</p>
             <p className="text-gray-300 text-sm">{profile.email}</p>
-            {profile.bio && (
-              <p className="text-gray-400 text-sm mt-1">{profile.bio}</p>
-            )}
+            {profile.bio && <p className="text-gray-400 text-sm mt-1">{profile.bio}</p>}
           </div>
         </div>
 
-        <form
-          onSubmit={handleSave}
-          className="bg-gray-800 rounded-2xl p-6 space-y-4"
-        >
-          {error && (
-            <div className="bg-red-600/20 border border-red-500 rounded p-2">
-              {error}
-            </div>
-          )}
+        <form onSubmit={handleSave} className="bg-gray-800 rounded-2xl p-6 space-y-4">
+          {error && <div className="bg-red-600/20 border border-red-500 rounded p-2">{error}</div>}
 
           <div>
             <label className="block text-sm text-gray-300 mb-1">Nombre</label>
@@ -122,9 +91,7 @@ export default function ProfilePage({ user, setUser }) {
           </div>
 
           <div>
-            <label className="block text-sm text-gray-300 mb-1">
-              Descripción (bio)
-            </label>
+            <label className="block text-sm text-gray-300 mb-1">Descripción (bio)</label>
             <textarea
               className="w-full p-3 rounded bg-gray-700 text-white h-28"
               value={profile.bio || ""}
@@ -134,15 +101,11 @@ export default function ProfilePage({ user, setUser }) {
           </div>
 
           <div>
-            <label className="block text-sm text-gray-300 mb-1">
-              Avatar (URL)
-            </label>
+            <label className="block text-sm text-gray-300 mb-1">Avatar (URL)</label>
             <input
               className="w-full p-3 rounded bg-gray-700 text-white"
               value={profile.avatarUrl || ""}
-              onChange={(e) =>
-                setProfile({ ...profile, avatarUrl: e.target.value })
-              }
+              onChange={(e) => setProfile({ ...profile, avatarUrl: e.target.value })}
               placeholder="https://imagen-tu-avatar..."
             />
           </div>
@@ -171,8 +134,7 @@ export default function ProfilePage({ user, setUser }) {
                   <ul className="mt-2 space-y-1">
                     {order.items.map((item, i) => (
                       <li key={i} className="text-gray-200 text-sm">
-                        {item.product?.name || "Producto eliminado"} x{" "}
-                        {item.quantity} ={" "}
+                        {item.product?.name || "Producto eliminado"} x {item.quantity} ={" "}
                         {(item.price * item.quantity).toFixed(2)} €
                       </li>
                     ))}
