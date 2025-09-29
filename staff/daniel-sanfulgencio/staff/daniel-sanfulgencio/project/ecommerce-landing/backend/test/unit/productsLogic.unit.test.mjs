@@ -1,11 +1,10 @@
-import * as chai from 'chai';
+import { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-chai.use(chaiAsPromised);
-const { expect } = chai;
-
 import * as productsLogic from '../../logic/productsLogic.mjs';
 
-describe('Unit Test - productsLogic', () => {
+chai.use(chaiAsPromised);
+
+describe('Unit - productsLogic', () => {
   it('should export createProduct function', () => {
     expect(productsLogic.createProduct).to.be.a('function');
   });

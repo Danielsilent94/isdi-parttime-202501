@@ -4,15 +4,15 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon server.mjs",
-    "test": "cross-env NODE_ENV=test mocha --timeout 10000 \"test/**/*.test.mjs\"",
-    "test:unit": "cross-env NODE_ENV=test mocha --timeout 10000 \"test/unit/**/*.test.mjs\" --exit",
-    "test:integration": "cross-env NODE_ENV=test mocha --timeout 10000 \"test/integration/**/*.test.mjs\" --exit",
-    "coverage": "nyc --reporter=text --reporter=html --reporter=lcov mocha --timeout 10000 \"test/**/*.test.mjs\"",
+    "start": "node server.mjs",
+    "test": "cross-env NODE_ENV=test node --experimental-vm-modules ./node_modules/mocha/bin/mocha.js --timeout 10000 \"test/**/*.test.mjs\"",
+    "test:unit": "cross-env NODE_ENV=test node --experimental-vm-modules ./node_modules/mocha/bin/mocha.js --timeout 10000 \"test/unit/**/*.test.mjs\" --exit",
+    "test:integration": "cross-env NODE_ENV=test node --experimental-vm-modules ./node_modules/mocha/bin/mocha.js --timeout 10000 \"test/integration/**/*.test.mjs\" --exit",
+    "coverage": "cross-env NODE_ENV=test nyc node --experimental-vm-modules ./node_modules/mocha/bin/mocha.js --timeout 10000 \"test/**/*.test.mjs\"",
     "report": "nyc report --reporter=html"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
-    "canvas": "^3.2.0",
     "chai": "^5.2.0",
     "chai-as-promised": "^7.1.1",
     "cors": "^2.8.5",
@@ -25,7 +25,8 @@
   "devDependencies": {
     "mocha": "^11.7.1",
     "nodemon": "^3.1.0",
-    "nyc": "^17.1.0"
+    "nyc": "^17.1.0",
+    "supertest": "^6.3.4"
   },
   "nyc": {
     "all": true,

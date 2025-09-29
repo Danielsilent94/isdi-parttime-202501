@@ -1,48 +1,39 @@
-import express from "express";
-import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-
-import userRoutes from "./routes/userRoutes.mjs";
-import productRoutes from "./routes/productRoutes.mjs";
-import reviewRoutes from "./routes/reviewRoutes.mjs";
-import orderRoutes from "./routes/orderRoutes.mjs";
+import app from "./app.mjs";
 
 dotenv.config();
 
-// Crear app Express
-const app = express();
+const PORT = process.env.PORT || 3000;
 
-// Middlewares
-app.use(cors());
-app.use(express.json());
+// Usamos DB diferente en test para no ensuciar la principal
+const MONGO_URI =
+  process.env.NODE_ENV === "test"
+    ? process.env.MONGO_URI_TEST
+    : process.env.MONGO_URI;
 
-// Rutas principales
-app.use("/api/users", userRoutes);
-app.use("/api/products", productRoutes);
-app.use("/api/reviews", reviewRoutes);
-app.use("/api/orders", orderRoutes);
+if (!MONGO_URI) {
+  console.error("❌ No se ha definido la URI de MongoDB en el .env");
+  process.exit(1);
+}
 
-// Ruta de prueba
-app.get("/api", (req, res) => {
-  res.json({ message: "API funcionando correctamente" });
-});
-
-// 404
-app.use((req, res) => {
-  res.status(404).json({ error: "Ruta no encontrada" });
-});
-
-// Conexión a MongoDB
-const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/ecommerce";
 mongoose
-  .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => {
-    console.log("Conectado a MongoDB");
-    const PORT = process.env.PORT || 3000;
-    app.listen(PORT, () => console.log(`Servidor en http://localhost:${PORT}`));
+    console.log(`✅ Conectado a MongoDB (${process.env.NODE_ENV || "dev"})`);
+    // En entorno de test, Mocha/Supertest importa app directamente y no necesitamos levantar servidor
+    if (process.env.NODE_ENV !== "test") {
+      app.listen(PORT, () =>
+        console.log(`🚀 Servidor en http://localhost:${PORT}`)
+      );
+    }
   })
   .catch((err) => {
-    console.error("Error conectando a MongoDB:", err.message);
+    console.error("❌ Error conectando a MongoDB:", err.message);
     process.exit(1);
   });
+
+export default app;

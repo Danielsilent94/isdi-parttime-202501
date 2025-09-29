@@ -1,13 +1,12 @@
-import 'dotenv/config';
-import { describe, it, before, after, afterEach } from 'mocha';
+import { describe, it, afterEach } from 'mocha';
 import { expect } from 'chai';
-import { connect, disconnect } from '../../data/database.mjs';
 import * as Products from '../../logic/productsLogic.mjs';
+import Product from '../../models/Product.mjs';
 
 describe('Integration - Product Logic', () => {
-  before(() => connect(process.env.MONGO_URL, process.env.MONGO_DB_TEST));
-  after(() => disconnect());
-  afterEach(() => import('../../models/Product.mjs').then(({ default: Product }) => Product.deleteMany()));
+  afterEach(async () => {
+    await Product.deleteMany();
+  });
 
   const productData = {
     name: 'Test Product',
@@ -36,7 +35,6 @@ describe('Integration - Product Logic', () => {
   it('should delete product by ID', async () => {
     const created = await Products.createProduct(productData);
     await Products.deleteProductById(created._id);
-    const { default: Product } = await import('../../models/Product.mjs');
     const check = await Product.findById(created._id);
     expect(check).to.be.null;
   });
