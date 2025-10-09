@@ -12,13 +12,15 @@ export default function ProfilePage({ user, setUser }) {
   useEffect(() => {
     const loadAll = async () => {
       try {
+        const token = localStorage.getItem("token");
         const [u, o] = await Promise.all([
           getUserById(user.id),
-          getMyOrders(user.id, localStorage.getItem("token")),
+          getMyOrders(user.id, token),
         ]);
         setProfile(u);
-        setOrders(o);
+        setOrders(Array.isArray(o) ? o : []);
       } catch (e) {
+        console.error(e);
         setError("No se pudo cargar tu perfil o tus pedidos.");
       }
     };
@@ -74,12 +76,18 @@ export default function ProfilePage({ user, setUser }) {
           <div>
             <p className="text-lg font-semibold">{profile.name || "Sin nombre"}</p>
             <p className="text-gray-300 text-sm">{profile.email}</p>
-            {profile.bio && <p className="text-gray-400 text-sm mt-1">{profile.bio}</p>}
+            {profile.bio && (
+              <p className="text-gray-400 text-sm mt-1">{profile.bio}</p>
+            )}
           </div>
         </div>
 
         <form onSubmit={handleSave} className="bg-gray-800 rounded-2xl p-6 space-y-4">
-          {error && <div className="bg-red-600/20 border border-red-500 rounded p-2">{error}</div>}
+          {error && (
+            <div className="bg-red-600/20 border border-red-500 rounded p-2">
+              {error}
+            </div>
+          )}
 
           <div>
             <label className="block text-sm text-gray-300 mb-1">Nombre</label>
@@ -105,7 +113,9 @@ export default function ProfilePage({ user, setUser }) {
             <input
               className="w-full p-3 rounded bg-gray-700 text-white"
               value={profile.avatarUrl || ""}
-              onChange={(e) => setProfile({ ...profile, avatarUrl: e.target.value })}
+              onChange={(e) =>
+                setProfile({ ...profile, avatarUrl: e.target.value })
+              }
               placeholder="https://imagen-tu-avatar..."
             />
           </div>
@@ -119,7 +129,6 @@ export default function ProfilePage({ user, setUser }) {
           </button>
         </form>
 
-        {/* Historial de pedidos */}
         <div className="mt-10">
           <h2 className="text-2xl font-semibold mb-4">Historial de pedidos</h2>
           {orders.length === 0 ? (

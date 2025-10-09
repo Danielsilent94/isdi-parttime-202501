@@ -3,20 +3,17 @@ import { Link } from "react-router-dom";
 
 export default function CartPage({ cart, setCart }) {
   const [checkoutSuccess, setCheckoutSuccess] = useState(false);
-
   const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-  // Quitar un producto del carrito
   const handleRemove = (id) => {
     setCart((prev) => prev.filter((item) => item._id !== id));
   };
 
-  // Finalizar compra → guardar pedido en backend
   const handleCheckout = async () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        alert("Debes iniciar sesión para comprar");
+        console.warn("Debes iniciar sesión para comprar");
         return;
       }
 
@@ -26,7 +23,7 @@ export default function CartPage({ cart, setCart }) {
         price: item.price,
       }));
 
-      const res = await fetch("http://localhost:3000/api/orders", {
+      const response = await fetch("http://localhost:3000/api/orders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -35,13 +32,14 @@ export default function CartPage({ cart, setCart }) {
         body: JSON.stringify({ items, total }),
       });
 
-      if (!res.ok) throw new Error("Error al crear pedido");
+      if (!response.ok) {
+        throw new Error(`Error al crear pedido (${response.status})`);
+      }
 
       setCart([]);
       setCheckoutSuccess(true);
     } catch (err) {
-      console.error("❌ Error en checkout:", err);
-      alert("No se pudo finalizar la compra.");
+      console.error("Error en checkout:", err);
     }
   };
 
@@ -52,7 +50,7 @@ export default function CartPage({ cart, setCart }) {
       {checkoutSuccess ? (
         <div className="bg-green-600/20 border border-green-500 rounded-xl p-6 text-center">
           <h2 className="text-2xl font-bold text-green-400 mb-2">
-            ✅ ¡Gracias por tu compra!
+            ¡Gracias por tu compra!
           </h2>
           <p className="text-gray-300 mb-4">
             Tu pedido ha sido procesado correctamente.

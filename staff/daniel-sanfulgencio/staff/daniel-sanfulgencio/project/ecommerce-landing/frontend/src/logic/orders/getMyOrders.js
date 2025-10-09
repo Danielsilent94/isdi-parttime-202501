@@ -1,9 +1,13 @@
-import { apiUrl } from "../helpers/constants";
-
 export default async function getMyOrders(userId, token) {
-  const res = await fetch(`${apiUrl}/orders/user/${userId}`, {
+  if (!userId || !token) throw new Error("Faltan credenciales");
+
+  const response = await fetch(`http://localhost:3000/api/orders/user/${userId}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
-  if (!res.ok) throw new Error("No se pudieron cargar los pedidos");
-  return res.json();
+
+  if (!response.ok) {
+    throw new Error("Error al obtener pedidos");
+  }
+
+  return response.json();
 }
